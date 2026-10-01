@@ -10,7 +10,8 @@ const CORE = [
   'When a reference image is supplied, analyze it as visual evidence: geometry, openings, proportions, furniture identity, materials, palette, lighting, camera relationship and negative constraints.',
   'Resolve conflicts between agents using the priority hierarchy. Produce one coherent decision, never 17 disconnected opinions.',
   'For architecture/interior scenes, preserve real-world plausibility, scale, perspective and material behavior.',
-  'Return production-ready English prompt text only unless JSON is explicitly requested.'
+  'Return production-ready English prompt text only unless JSON is explicitly requested.',
+  'If a MASTER IMAGE exists, preserve it as the single spatial source of truth throughout every stage. The final prompt must explicitly protect MASTER geometry, openings, proportions, camera relationship and existing object identity while allowing only requested creative development.'
 ].join(' ');
 
 const VISION = [
