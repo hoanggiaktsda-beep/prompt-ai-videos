@@ -441,7 +441,7 @@ async function pollVideoJob(id){
   await new Promise(r=>setTimeout(r,4000));
   const r=await fetch(apiBase()+'/api/generate-status?id='+encodeURIComponent(id));const d=await r.json();
   document.getElementById('generationText').textContent=JSON.stringify(d,null,2);
-  if(d.status==='completed'&&d.video_url){lastGeneratedOutput=d.video_url;toast('VIDEO READY — HÃY VERIFY');return;}
+  if(d.status==='completed'&&d.video_url){lastGeneratedOutput=d.video_url;toast('VIDEO READY — TEMPORAL VERIFY');await runTemporalVerify();return;}
   if(d.status==='failed'||d.error){toast('VIDEO FAILED');return;}
  }
  toast('VIDEO POLLING TIMEOUT');
