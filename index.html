@@ -65,8 +65,9 @@ button,input,textarea,select{touch-action:manipulation}
 <div class="field"><label>Mô tả cảnh / yêu cầu đặc biệt</label><textarea id="brief" placeholder="Ví dụ: phòng khách cao cấp, sofa da, đá travertine, ánh sáng chiều, chuyển động máy chậm và sang trọng..."></textarea></div>
 <div class="grid2">
 <div class="field"><label>Thời lượng</label><select id="duration"><option>8 giây</option><option>10 giây</option><option>12 giây</option><option>15 giây</option><option>20 giây</option></select></div>
-<div class="field"><label>Tỷ lệ</label><select id="ratio"><option>16:9</option><option>9:16</option><option>1:1</option></select></div>
-</div></section>
+<div class="field"><label>Tỷ lệ</label><select id="ratio"><option>16:9 — Widescreen</option><option>9:16 — Vertical</option><option>1:1 — Square</option><option>4:5 — Portrait</option><option>3:4 — Portrait</option><option>4:3 — Standard</option><option>3:2 — Photo / DSLR</option><option>2:3 — Portrait Photo</option><option>1.85:1 — Cinema</option><option>2:1 — Univisium</option><option>2.39:1 — Anamorphic Cinema</option><option>2.40:1 — Ultra Widescreen</option><option>21:9 — Ultrawide</option><option>32:9 — Super Ultrawide</option><option>360° — 2:1</option></select></div>
+</div>
+<div class="grid2"><div class="field"><label>Độ phân giải</label><select id="resolution"><option>8K UHD — 7680×4320</option><option>8K DCI — 8192×4320</option><option>7K — 7168×3584</option><option>6K — 6144×3160</option><option>6K DCI — 6144×3240</option><option>5K — 5120×2880</option><option>4K UHD — 3840×2160</option><option>4K DCI — 4096×2160</option><option>4K Vertical — 2160×3840</option><option>2.5K / WQHD — 2560×1440</option><option>2K DCI — 2048×1080</option><option>2K QHD — 2560×1440</option><option>Full HD — 1920×1080</option><option>Full HD Vertical — 1080×1920</option><option>HD — 1280×720</option><option>HD Vertical — 720×1280</option><option>DCI 4K Scope — 4096×1716</option><option>Social 1080×1350 — 4:5</option><option>Social 1080×1080 — 1:1</option><option>Custom / Native</option></select></div><div class="field"><label>Tốc độ khung hình (FPS)</label><select id="fps"><option>23.976 fps</option><option>24 fps</option><option>25 fps</option><option>29.97 fps</option><option>30 fps</option><option>47.952 fps</option><option>48 fps</option><option>50 fps</option><option>59.94 fps</option><option>60 fps</option><option>90 fps</option><option>100 fps</option><option>119.88 fps</option><option>120 fps</option><option>144 fps</option><option>240 fps</option></select></div></div></section>
 
 <section class="step" id="image"><div class="step-head"><strong>02 / MASTER IMAGE</strong><small>SPATIAL SOURCE OF TRUTH</small></div>
 <label class="drop" id="drop"><input id="ref" type="file" accept="image/*"><div><strong>THẢ ẢNH MASTER VÀO ĐÂY</strong><small>1 ảnh duy nhất · kiến trúc và nội thất được khóa làm nguồn tham chiếu</small><div class="actions"><button class="btn" type="button" id="pick">CHỌN ẢNH</button></div></div></label>
@@ -161,7 +162,7 @@ $('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('drag');setIm
 $('close').onclick=()=>$('modal').classList.remove('show');$('modal').onclick=e=>{if(e.target.id==='modal')$('modal').classList.remove('show')};
 function val(id){return $(id).value.trim()}
 function collect(){return{
-purpose:val('purpose'),style:val('style'),brief:val('brief'),duration:val('duration'),ratio:val('ratio'),
+purpose:val('purpose'),style:val('style'),brief:val('brief'),duration:val('duration'),ratio:val('ratio'),resolution:val('resolution'),fps:val('fps'),
 scene:selections.scene,time:selections.time,mood:selections.mood,activity:selections.activity,
 lens:val('lens'),angle:val('angle'),motion:val('motion'),light:val('light'),contrast:val('contrast'),constraints:val('constraints'),master:!!master
 }}
@@ -188,7 +189,7 @@ function buildPrompt(){
 const d=collect();
 const source=d.master?'Use the uploaded MASTER IMAGE as the single spatial source of truth.':'No master image supplied; infer only from the written brief.';
 const base=d.brief||d.scene;
-return 'Create a '+d.duration+' '+d.ratio+' high-end cinematic architectural interior video.\n\n'+
+return 'Create a '+d.duration+' '+d.ratio+' '+d.resolution+' '+d.fps+' high-end cinematic architectural interior video.\n\n'+
 'SCENE: '+base+'. Design style: '+d.style+'. Time: '+d.time+'. Mood: '+d.mood+'. Activity: '+d.activity+'.\n\n'+
 'CREATIVE DIRECTION: Apply one coordinated professional decision across 17 expert disciplines: '+expert.join('; ')+'. Do not output separate agent opinions.\n\n'+
 'CAMERA: '+d.lens+' lens, '+d.angle+', '+d.motion+'. Maintain stable verticals, believable perspective and deliberate architectural framing.\n\n'+
