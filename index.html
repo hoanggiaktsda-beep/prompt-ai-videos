@@ -24,7 +24,7 @@ main{padding:24px 18px 60px;min-width:0}.hero{padding:6px 4px 22px}.eyebrow{colo
 @media(max-width:1100px){.layout{grid-template-columns:190px minmax(0,1fr)}.right{grid-column:1/-1;position:relative;top:auto;height:auto;border-left:0;border-top:1px solid var(--line)}}
 @media(max-width:760px){.layout{display:block}.side{position:relative;top:auto;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:8px}.side h4,.side-note{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.right{border-top:1px solid var(--line)}.grid2{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.shots{grid-template-columns:repeat(3,1fr)}main{padding:15px 10px 40px}.hero h1{font-size:38px}.bar{padding:9px 12px}}
 @media(max-width:430px){.cards{grid-template-columns:1fr}.shots{grid-template-columns:1fr 1fr}.step{padding:12px}.preview{grid-template-columns:repeat(3,1fr)}}
-</style>
+.dna-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.dna-grid textarea{min-height:78px}@media(max-width:900px){.dna-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.dna-grid{grid-template-columns:1fr}}</style>
 <style id="responsive-platform">
 html{min-width:0;overflow-x:hidden}body{overflow-x:hidden;-webkit-text-size-adjust:100%;padding-bottom:env(safe-area-inset-bottom)}
 button,input,textarea,select{touch-action:manipulation}
@@ -92,13 +92,26 @@ button,input,textarea,select{touch-action:manipulation}
 <option value="no people">Không có người</option><option value="single adult">1 người trưởng thành</option><option value="couple">Cặp đôi</option><option value="family">Gia đình</option><option value="small group">Nhóm nhỏ</option><option value="designer / architect">Kiến trúc sư / Designer</option><option value="client / homeowner">Chủ nhà / Khách hàng</option><option value="staff / service">Nhân viên / Service</option><option value="crowd">Đông người</option><option value="silhouette">Silhouette</option>
 </select></div>
 <div class="field" style="grid-column:1/-1">
-<label>Ý TƯỞNG NHÂN VẬT · CHARACTER IDEA GENERATOR</label>
-<textarea id="characterIdea" placeholder="Mô tả theo ý Ốc: ví dụ “một phụ nữ khoảng 35 tuổi, kiến trúc sư, phong cách quiet luxury, mặc suit màu kem, xuất hiện tự nhiên trong phòng khách...”"></textarea>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-<button class="btn" type="button" id="generateCharacter">PHÁT TRIỂN NHÂN VẬT</button>
-<button class="btn ghost" type="button" id="clearCharacter">XÓA Ý TƯỞNG</button>
+<label>CHARACTER DNA SYSTEM · HỆ DNA NHÂN VẬT</label>
+<div class="dna-grid">
+<div class="field"><label>01 / Identity · Danh tính</label><textarea id="characterIdentity" placeholder="Tên/định danh, độ tuổi, giới tính, nguồn gốc..."></textarea></div>
+<div class="field"><label>02 / Appearance · Ngoại hình</label><textarea id="characterAppearance" placeholder="Khuôn mặt, tóc, vóc dáng, đặc điểm nhận diện..."></textarea></div>
+<div class="field"><label>03 / Wardrobe · Trang phục</label><textarea id="characterWardrobe" placeholder="Trang phục, màu sắc, chất liệu, phụ kiện, giày..."></textarea></div>
+<div class="field"><label>04 / Role · Vai trò</label><textarea id="characterRole" placeholder="Kiến trúc sư, chủ nhà, khách, nhân vật lifestyle..."></textarea></div>
+<div class="field"><label>05 / Behavior · Tính cách</label><textarea id="characterBehavior" placeholder="Điềm tĩnh, tự tin, tinh tế, tự nhiên..."></textarea></div>
+<div class="field"><label>06 / Action · Hành động</label><textarea id="characterAction" placeholder="Đi bộ, ngồi, quan sát, chạm vật liệu, tương tác nội thất..."></textarea></div>
+<div class="field"><label>07 / Emotion · Cảm xúc</label><textarea id="characterEmotion" placeholder="Biểu cảm, trạng thái cảm xúc, cường độ..."></textarea></div>
+<div class="field"><label>08 / Spatial Interaction · Tương tác không gian</label><textarea id="characterSpatial" placeholder="Vị trí, khoảng cách, hướng di chuyển, tương tác với đồ nội thất và kiến trúc..."></textarea></div>
+<div class="field"><label>09 / Continuity · Tính liên tục</label><textarea id="characterContinuity" placeholder="Khóa khuôn mặt, tóc, trang phục, phụ kiện, tỷ lệ cơ thể, tuổi, màu sắc và nhận diện qua cả 04 shot..."></textarea></div>
 </div>
-<textarea id="characterOutput" readonly placeholder="HOANGGIA AI sẽ phát triển: ngoại hình · độ tuổi · trang phục · vai trò · hành vi · chuyển động · biểu cảm · tương tác với không gian..."></textarea>
+<div class="field" style="margin-top:10px"><label>Ý TƯỞNG NHÂN VẬT · CHARACTER IDEA</label>
+<textarea id="characterIdea" placeholder="Ví dụ: Một phụ nữ 35 tuổi, kiến trúc sư, Quiet Luxury, suit màu kem, bước chậm vào phòng khách và quan sát vật liệu đá..."></textarea>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+<button class="btn" type="button" id="generateCharacter">TẠO CHARACTER DNA</button>
+<button class="btn ghost" type="button" id="clearCharacter">XÓA DNA</button>
+</div>
+<textarea id="characterOutput" readonly placeholder="Character DNA sẽ được tổng hợp thành một hồ sơ duy nhất và khóa xuyên suốt SHOT 01 → SHOT 04..."></textarea>
+</div>
 </div>
 <div class="field"><label>06 / Hoạt động</label><select class="scene-select" data-field="activity">
 <option value="no activity">Không hoạt động</option><option value="slow walking">Đi bộ chậm</option><option value="entering the space">Bước vào không gian</option><option value="sitting / relaxing">Ngồi / thư giãn</option><option value="conversation">Trò chuyện</option><option value="dining">Dùng bữa</option><option value="cooking">Nấu ăn</option><option value="working">Làm việc</option><option value="reading">Đọc sách</option><option value="interacting with furniture">Tương tác nội thất</option><option value="lifestyle movement">Đời sống / lifestyle</option><option value="wind / curtain movement">Rèm / gió chuyển động</option>
@@ -218,7 +231,7 @@ $('close').onclick=()=>$('modal').classList.remove('show');$('modal').onclick=e=
 function val(id){return $(id).value.trim()}
 function collect(){return{
 purpose:val('purpose'),style:val('style'),brief:val('brief'),duration:val('duration'),ratio:val('ratio'),resolution:val('resolution'),fps:val('fps'),
-scene:selections.scene,time:selections.time,mood:selections.mood,weather:selections.weather,mood:selections.mood,characters:selections.characters,activity:selections.activity,materials:selections.materials,atmosphere:selections.atmosphere,sceneDirection:val('sceneDirection'),characterIdea:val('characterIdea'),characterOutput:val('characterOutput'),
+scene:selections.scene,time:selections.time,mood:selections.mood,weather:selections.weather,mood:selections.mood,characters:selections.characters,activity:selections.activity,materials:selections.materials,atmosphere:selections.atmosphere,sceneDirection:val('sceneDirection'),characterIdea:val('characterIdea'),characterOutput:val('characterOutput'),characterIdentity:val('characterIdentity'),characterAppearance:val('characterAppearance'),characterWardrobe:val('characterWardrobe'),characterRole:val('characterRole'),characterBehavior:val('characterBehavior'),characterAction:val('characterAction'),characterEmotion:val('characterEmotion'),characterSpatial:val('characterSpatial'),characterContinuity:val('characterContinuity'),
 shotType:val('shotType'),lens:val('lens'),height:val('cameraHeight'),angle:val('angle'),motion:val('motion'),speed:val('cameraSpeed'),parallax:val('parallax'),focus:val('focus'),dof:val('depthOfField'),framing:val('framing'),cameraDirection:val('cameraDirection'),light:selections.light,lightDirection:selections.lightDirection,lightQuality:selections.lightQuality,colorTemp:selections.colorTemp,contrast:selections.contrast,intensity:selections.intensity,shadow:selections.shadow,reflection:selections.reflection,practical:selections.practical,lightAtmosphere:selections.lightAtmosphere,lightingDirection:val('lightingDirection'),shotPurpose:selections.shotPurpose,shotAction:selections.shotAction,shotCamera:selections.shotCamera,shotSubject:selections.shotSubject,shotTransition:selections.shotTransition,shotDuration:selections.shotDuration,shotContinuity:selections.shotContinuity,shotRhythm:selections.shotRhythm,sequenceLogic:val('sequenceLogic'),shotDirection:val('shotDirection'),aiTool:selections.aiTool,promptMode:selections.promptMode,promptLanguage:selections.promptLanguage,outputFormat:selections.outputFormat,engineNotes:val('engineNotes'),constraints:val('constraints'),master:!!master
 }}
 const expert=[
@@ -245,7 +258,7 @@ const d=collect();
 const source=d.master?'Use the uploaded ẢNH GỐC · MASTER IMAGE as the single spatial source of truth.':'No master image supplied; infer only from the written brief.';
 const base=d.brief||d.scene;
 return 'Create a '+d.duration+' '+d.ratio+' '+d.resolution+' '+d.fps+' high-end cinematic architectural interior video.\n\n'+
-'SCENE: '+base+'. Design style: '+d.style+'. Time: '+d.time+'. Weather: '+d.weather+'. Mood: '+d.mood+'. Characters: '+d.characters+'. Activity: '+d.activity+'. Character design: '+(d.characterOutput||d.characterIdea||d.characters)+'. Materials: '+d.materials+'. Atmosphere: '+d.atmosphere+'. Creative direction: '+d.sceneDirection+'.\n\n'+
+'SCENE: '+base+'. Design style: '+d.style+'. Time: '+d.time+'. Weather: '+d.weather+'. Mood: '+d.mood+'. Characters: '+d.characters+'. Activity: '+d.activity+'. Character DNA: '+(d.characterOutput||d.characterIdea||d.characters)+'. Materials: '+d.materials+'. Atmosphere: '+d.atmosphere+'. Creative direction: '+d.sceneDirection+'.\n\n'+
 'CREATIVE DIRECTION: Apply one coordinated professional decision across 17 expert disciplines: '+expert.join('; ')+'. Do not output separate agent opinions.\n\n'+
 'CAMERA BRIEF: Shot Type: '+d.shotType+'. Focal Length: '+d.lens+'. Camera Height: '+d.height+'. Camera Angle: '+d.angle+'. Movement: '+d.motion+'. Speed: '+d.speed+'. Parallax: '+d.parallax+'. Focus: '+d.focus+'. Depth of Field: '+d.dof+'. Framing: '+d.framing+'. Direction: '+d.cameraDirection+'. Treat all 10 camera parameters as mandatory constraints. Maintain stable verticals, believable perspective, controlled spatial depth and deliberate architectural composition.\n\n'+
 'LIGHTING BRIEF: Source: '+d.light+'. Direction: '+d.lightDirection+'. Quality: '+d.lightQuality+'. Color Temperature: '+d.colorTemp+'. Contrast: '+d.contrast+'. Intensity: '+d.intensity+'. Shadow: '+d.shadow+'. Reflection: '+d.reflection+'. Practical: '+d.practical+'. Atmosphere: '+d.lightAtmosphere+'. Direction notes: '+d.lightingDirection+'. Preserve realistic exposure, shadow direction, material response, reflections and lighting continuity.\n\n'+
@@ -257,18 +270,21 @@ return 'Create a '+d.duration+' '+d.ratio+' '+d.resolution+' '+d.fps+' high-end 
 }
 function developCharacter(){
 const idea=val('characterIdea');
-const type=selections.characters||val('characters');
-if(!idea){$('characterOutput').value='Hãy mô tả ý tưởng nhân vật trước, ví dụ độ tuổi, giới tính, nghề nghiệp, phong cách hoặc vai trò trong câu chuyện.';return}
-const profile='Develop a production-ready architectural film character from this user direction: '+idea+'. Character count/type: '+type+'. Scene: '+selections.scene+'. Mood: '+selections.mood+'. Activity: '+selections.activity+'. Define age range, appearance, wardrobe, role, body language, natural movement, facial expression, interaction with the architecture/furniture, visual hierarchy and cinematic behavior. Keep the character believable, elegant and subordinate to the architecture unless the user explicitly asks for a hero character. Do not alter the existing architecture, furniture geometry, materials or camera-space relationship.';
-$('characterOutput').value=profile;
+if(!idea){$('characterOutput').value='Hãy nhập ý tưởng nhân vật trước.';return}
+const context='Scene: '+selections.scene+'. Mood: '+selections.mood+'. Activity: '+selections.activity+'. Character type: '+selections.characters+'.';
+const fields={
+characterIdentity:'Create a stable identity: '+idea,
+characterAppearance:'Define recognizable appearance: age range, face, hair, body proportions and unique visual identifiers.',
+characterWardrobe:'Define exact wardrobe, colors, materials, footwear and accessories that remain unchanged unless explicitly requested.',
+characterRole:'Define narrative role and relationship to the architectural space.',
+characterBehavior:'Define personality and natural body language.',
+characterAction:'Define deliberate actions and movement appropriate to the selected activity.',
+characterEmotion:'Define restrained facial expression and emotional state.',
+characterSpatial:'Define position, path, distance, orientation and interaction with architecture/furniture.',
+characterContinuity:'LOCK IDENTITY across SHOT 01, 02, 03 and 04: same face, age, hair, body proportions, wardrobe, accessories, skin tone, role and behavioral language. No identity drift, costume drift, age drift or random replacement.'
+};
+Object.keys(fields).forEach(id=>$(id).value=fields[id]+' '+context);
+const dna='IDENTITY: '+val('characterIdentity')+' | APPEARANCE: '+val('characterAppearance')+' | WARDROBE: '+val('characterWardrobe')+' | ROLE: '+val('characterRole')+' | BEHAVIOR: '+val('characterBehavior')+' | ACTION: '+val('characterAction')+' | EMOTION: '+val('characterEmotion')+' | SPATIAL INTERACTION: '+val('characterSpatial')+' | CONTINUITY: '+val('characterContinuity');
+$('characterOutput').value=dna;
 }
-$('generateCharacter').onclick=developCharacter;
-$('clearCharacter').onclick=()=>{$('characterIdea').value='';$('characterOutput').value=''};
-$('generate').onclick=async()=>{const p=$('progress');p.style.width='20%';await new Promise(r=>setTimeout(r,120));p.style.width='55%';await new Promise(r=>setTimeout(r,120));$('outputText').textContent=buildPrompt();$('outputText').classList.remove('empty');p.style.width='100%';setTimeout(()=>p.style.width='0',700)};
-$('copy').onclick=async()=>{const text=$('outputText').textContent.trim();if(text&&text!=='Prompt sẽ xuất hiện ở đây.')try{await navigator.clipboard.writeText(text);$('copy').textContent='ĐÃ SAO CHÉP';setTimeout(()=>$('copy').textContent='SAO CHÉP',1200)}catch(e){}};
-$('json').onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(collect(),null,2));$('json').textContent='ĐÃ SAO CHÉP';setTimeout(()=>$('json').textContent='JSON',1200)}catch(e){}};
-$('reset').onclick=()=>{document.querySelectorAll('.scene-select,.lighting-select').forEach(s=>s.selectedIndex=0);document.querySelectorAll('#camera select').forEach(s=>s.selectedIndex=0);$('cameraDirection').value='';document.querySelectorAll('.shot-select').forEach(s=>s.selectedIndex=0);document.querySelectorAll('.output-select').forEach(s=>s.selectedIndex=0);master=null;$('ref').value='';$('preview').innerHTML='';$('count').textContent='0 / 1 ẢNH GỐC · MASTER IMAGE';$('sImage').textContent='CHƯA CÓ';$('sImage').style.color='var(--ok)';$('brief').value='';$('characterIdea').value='';$('characterOutput').value='';$('sequenceLogic').value='';$('shotDirection').value='';$('engineNotes').value='';$('constraints').value='Khóa kiến trúc, tường, trần, sàn, cửa, cửa sổ, opening, tỷ lệ không gian, perspective và hình học nội thất hiện hữu. Không thay thế, nhân bản, di chuyển hoặc biến dạng đồ nội thất. Giữ cùng trục camera, scale, vật liệu và logic ánh sáng giữa các shot.';$('outputText').textContent='Prompt sẽ xuất hiện ở đây.';$('outputText').classList.add('empty');document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.chips').forEach(g=>g.querySelector('.chip').classList.add('active'));selections={light:'soft daylight through windows',lightDirection:'side light',lightQuality:'soft diffused light',colorTemp:'neutral daylight 5000K',contrast:'balanced contrast',intensity:'medium intensity',shadow:'soft natural shadows',reflection:'natural controlled reflections',practical:'subtle warm practical fixtures',lightAtmosphere:'clean clear architectural atmosphere',scene:'living room',time:'golden hour',weather:'clear sky',mood:'calm and sophisticated',characters:'no people',activity:'no activity',materials:'natural stone',atmosphere:'clean architectural air',shotType:'architectural establishing wide shot',lens:'35mm',height:'Ngang tầm mắt / Eye-level height',angle:'Ngang tầm mắt / Eye-level angle',motion:'Tiến máy chậm kiểu điện ảnh / Dolly-in',speed:'slow',parallax:'subtle spatial parallax',focus:'deep focus',dof:'deep architectural depth of field',framing:'centered architectural symmetry',shotPurpose:'establish the space and spatial context',shotAction:'camera and environment remain controlled with no subject movement',shotCamera:'use the active 04 / MÁY QUAY · CAMERA Điện ảnhtic Camera Brief exactly',shotSubject:'the complete architectural space',shotTransition:'hard cut with visual continuity',shotDuration:'3 seconds',shotContinuity:'lock architecture, furniture, materials, camera-space relationship and scale',shotRhythm:'calm and spacious pacing',aiTool:'Runway',promptMode:'native prompt optimized for the selected AI video engine',promptLanguage:'English',outputFormat:'single final production prompt'}};
-const installButton=$("installApp");let deferredInstall=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;installButton.hidden=false});installButton.onclick=async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;installButton.hidden=true};window.addEventListener("appinstalled",()=>{installButton.hidden=true});if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
-</script>
-</body>
-</html>
+>
