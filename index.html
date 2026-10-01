@@ -76,6 +76,20 @@ button,input,textarea,select{touch-action:manipulation}
 </div>
 <label class="drop" id="drop"><input id="ref" type="file" accept="image/*" multiple><div><strong>THẢ ẢNH THAM CHIẾU VÀO ĐÂY</strong><small id="uploadHint">1 ảnh: AI phân tích và phát triển · Nhiều ảnh: AI đối chiếu và bám theo toàn bộ reference set</small><div class="actions"><button class="btn" type="button" id="pick">CHỌN ẢNH</button></div></div></label>
 <div class="preview" id="preview"></div><div class="count" id="count">0 / 0 ẢNH THAM CHIẾU</div>
+<div class="spatial-panel" id="spatialPanel">
+  <div class="spatial-head"><strong>SPATIAL INTELLIGENCE · VISION AI</strong><span class="spatial-status" id="spatialStatus">CHƯA KẾT NỐI BACKEND</span></div>
+  <div class="spatial-grid">
+    <input id="backendUrl" type="url" placeholder="Backend URL · ví dụ https://your-worker.workers.dev">
+    <button class="btn ai" id="analyzeSpatial" type="button">PHÂN TÍCH KHÔNG GIAN</button>
+  </div>
+  <div class="note">Ảnh được gửi tới backend đã cấu hình để Vision AI phân tích. API key không nằm trong GitHub Pages.</div>
+  <div class="spatial-actions">
+    <span class="spatial-badge" id="spatialBadge">SPATIAL BLUEPRINT: CHƯA CÓ</span>
+    <button class="btn" id="applyBlueprint" type="button" disabled>ĐƯA BLUEPRINT VÀO PROMPT</button>
+  </div>
+  <div class="spatial-error" id="spatialError"></div>
+  <textarea id="spatialOutput" placeholder="Spatial Blueprint sẽ xuất hiện ở đây sau khi Vision AI phân tích..." readonly></textarea>
+</div>
 </section>
 
 <section class="step" id="scene"><div class="step-head"><strong>03 / CẢNH</strong><small>AI CREATIVE TÓM TẮT DỰ ÁN / SCENE DNA</small></div>
@@ -223,7 +237,44 @@ document.querySelectorAll('#camera select').forEach(s=>s.addEventListener('chang
 
 document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.onclick=()=>{document.querySelectorAll('#cameraPresets .shot').forEach(x=>x.classList.remove('active'));b.classList.add('active');const p=presets[b.dataset.shot];const ids={height:'cameraHeight',speed:'cameraSpeed',dof:'depthOfField'};Object.entries(p).forEach(([field,value])=>{const id=ids[field]||field;const el=$(id);if(el){el.value=value;selections[id]=value}})});
 document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sequence .card').forEach(x=>x.classList.remove('active'));b.closest('.card').classList.add('active')});
-let referenceFiles=[];
+let referenceFiles=[];\nlet spatialBlueprint=null;
+function getBackendUrl(){return (localStorage.getItem('hoanggia_ai_backend_url')||$('backendUrl')?.value||'').trim().replace(/\\/$/,'')}
+function setSpatialStatus(text,ok=false){if($('spatialStatus')){$('spatialStatus').textContent=text;$('spatialStatus').style.color=ok?'var(--ok)':'var(--muted)'}if($('sImage'))$('sImage').textContent=referenceFiles.length?(ok?'VISION AI':'SẴN SÀNG'):'CHƯA CÓ'}
+function showSpatialError(msg){if($('spatialError'))$('spatialError').textContent=msg||''}
+function fileToDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+async function analyzeSpatial(){
+  showSpatialError('');
+  if(!referenceFiles.length){showSpatialError('Hãy thêm ít nhất 1 ảnh tham chiếu trước.');return}
+  const endpoint=getBackendUrl();
+  if(!endpoint){showSpatialError('Chưa có Backend URL. Hãy nhập URL backend Vision AI rồi bấm lại.');return}
+  localStorage.setItem('hoanggiA_ai_backend_url',endpoint);
+  const button=$('analyzeSpatial'); if(button){button.disabled=true;button.textContent='ĐANG PHÂN TÍCH...'}
+  setSpatialStatus('VISION AI ĐANG PHÂN TÍCH');
+  try{
+    const images=await Promise.all(referenceFiles.slice(0,6).map(fileToDataURL));
+    const d=collect();
+    const response=await fetch(endpoint+'/analyze-spatial',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images,instruction:d.brief||'',context:{style:d.style,scene:d.scene,referenceBehavior:d.referenceBehavior}})});
+    const payload=await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(payload.error||('Backend trả về HTTP '+response.status));
+    spatialBlueprint=payload.blueprint||payload.spatial_blueprint||payload;
+    $('spatialOutput').value=JSON.stringify(spatialBlueprint,null,2);
+    $('spatialBadge').textContent='SPATIAL BLUEPRINT: ĐÃ PHÂN TÍCH';
+    $('applyBlueprint').disabled=false;
+    setSpatialStatus('VISION AI CONNECTED',true);
+    $('progress').style.width='65%';
+  }catch(err){setSpatialStatus('BACKEND ERROR');showSpatialError(err&&err.message?err.message:String(err))}
+  finally{if(button){button.disabled=false;button.textContent='PHÂN TÍCH KHÔNG GIAN'}}
+}
+function applySpatialToPrompt(){
+  if(!spatialBlueprint)return;
+  const compact=JSON.stringify(spatialBlueprint);
+  const box=$('brief');
+  const tag='[SPATIAL BLUEPRINT — LOCKED] '+compact;
+  if(box && !box.value.includes('[SPATIAL BLUEPRINT — LOCKED]')) box.value=(box.value?box.value+'\\n\\n':'')+tag;
+  $('applyBlueprint').textContent='BLUEPRINT ĐÃ ĐƯA VÀO PROMPT';
+  $('progress').style.width='75%';
+}
+
 $('pick').onclick=()=>$('ref').click();
 function renderReferences(){
 const mode=referenceFiles.length===1?'single':referenceFiles.length>1?'multi':'';
@@ -338,6 +389,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   if(closeButton) closeButton.addEventListener('click',()=>modal.classList.remove('show'));
   if(modal) modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+  const backendInput=$('backendUrl');if(backendInput){backendInput.value=localStorage.getItem('hoanggia_ai_backend_url')||'';backendInput.addEventListener('change',()=>localStorage.setItem('hoanggia_ai_backend_url',backendInput.value.trim().replace(/\\/$/,'')))}
+  const spatialButton=$('analyzeSpatial');if(spatialButton)spatialButton.addEventListener('click',analyzeSpatial);
+  const applyButton=$('applyBlueprint');if(applyButton)applyButton.addEventListener('click',applySpatialToPrompt);
   const dnaButton=$('generateCharacter');if(dnaButton)dnaButton.addEventListener('click',developCharacter);
 });
 </script>
