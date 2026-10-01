@@ -298,7 +298,6 @@ Object.keys(fields).forEach(id=>$(id).value=fields[id]+' '+context);
 const dna='IDENTITY: '+val('characterIdentity')+' | APPEARANCE: '+val('characterAppearance')+' | WARDROBE: '+val('characterWardrobe')+' | ROLE: '+val('characterRole')+' | BEHAVIOR: '+val('characterBehavior')+' | ACTION: '+val('characterAction')+' | EMOTION: '+val('characterEmotion')+' | SPATIAL INTERACTION: '+val('characterSpatial')+' | CONTINUITY: '+val('characterContinuity');
 $('characterOutput').value=dna;
 }
->
 document.addEventListener('DOMContentLoaded',()=>{
   const generateButton=$('generate'), copyButton=$('copy'), jsonButton=$('json'), resetButton=$('reset');
   const closeButton=$('close'), modal=$('modal');
