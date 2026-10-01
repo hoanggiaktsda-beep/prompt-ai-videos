@@ -239,7 +239,7 @@ document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.onclick=()=>{docu
 document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sequence .card').forEach(x=>x.classList.remove('active'));b.closest('.card').classList.add('active')});
 let referenceFiles=[];
 let spatialBlueprint=null;
-function getBackendUrl(){return (localStorage.getItem('hoanggia_ai_backend_url')||$('backendUrl')?.value||'').trim().replace(/\\/$/,'')}
+function getBackendUrl(){return (localStorage.getItem('hoanggia_ai_backend_url')||$('backendUrl')?.value||'').trim().replace(/\/$/,'')}
 function setSpatialStatus(text,ok=false){if($('spatialStatus')){$('spatialStatus').textContent=text;$('spatialStatus').style.color=ok?'var(--ok)':'var(--muted)'}if($('sImage'))$('sImage').textContent=referenceFiles.length?(ok?'VISION AI':'SẴN SÀNG'):'CHƯA CÓ'}
 function showSpatialError(msg){if($('spatialError'))$('spatialError').textContent=msg||''}
 function fileToDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   if(closeButton) closeButton.addEventListener('click',()=>modal.classList.remove('show'));
   if(modal) modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
-  const backendInput=$('backendUrl');if(backendInput){backendInput.value=localStorage.getItem('hoanggia_ai_backend_url')||'';backendInput.addEventListener('change',()=>localStorage.setItem('hoanggia_ai_backend_url',backendInput.value.trim().replace(/\\/$/,'')))}
+  const backendInput=$('backendUrl');if(backendInput){backendInput.value=localStorage.getItem('hoanggia_ai_backend_url')||'';backendInput.addEventListener('change',()=>localStorage.setItem('hoanggia_ai_backend_url',backendInput.value.trim().replace(/\/$/,'')))}
   const spatialButton=$('analyzeSpatial');if(spatialButton)spatialButton.addEventListener('click',analyzeSpatial);
   const applyButton=$('applyBlueprint');if(applyButton)applyButton.addEventListener('click',applySpatialToPrompt);
   const dnaButton=$('generateCharacter');if(dnaButton)dnaButton.addEventListener('click',developCharacter);
