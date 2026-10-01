@@ -30,9 +30,14 @@ footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#
 @media(max-width:700px){.wrap{padding-bottom:40px}header{gap:12px}.brand small{font-size:7px}.hero{padding:38px 0 26px}.hero h1{font-size:clamp(42px,14vw,64px)}.intelligence{gap:8px}.intel-card{padding:16px;min-height:auto}.intel-title{font-size:24px}.network-grid{grid-template-columns:1fr 1fr}.panel{padding:14px}.grid{grid-template-columns:1fr;gap:4px}.actions{position:relative}.actions button{flex:1 1 auto}.primary{flex:1 0 100%!important}.output{min-height:300px;max-height:55vh;overflow:auto;font-size:10px;line-height:1.7}.title{margin-bottom:12px}.upload{padding:14px 10px}.preview-grid{grid-template-columns:repeat(3,1fr)}footer{display:block;line-height:1.8}}
 @media(max-width:430px){.wrap{padding-left:10px;padding-right:10px}.brand b{font-size:12px}.engineState{font-size:7px}.network-grid{grid-template-columns:1fr}.network-grid span{font-size:8px}.chips{gap:4px}.chip{flex:1 1 calc(50% - 4px);text-align:center;padding:9px 6px}.field label{font-size:7px}input,textarea,select{padding:11px;font-size:12px}.output{min-height:260px}.actions button{padding:10px 8px;font-size:7px}}
 @media(min-width:981px){.panel:first-child{position:sticky;top:12px}.output{max-height:62vh;overflow:auto}}
-</style>
+<style>
+.appbar{position:sticky;top:0;z-index:20;background:rgba(8,9,8,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.command{display:flex;align-items:center;justify-content:space-between;min-height:58px}.command-left,.command-right{display:flex;gap:7px;align-items:center}.command-btn{min-height:34px;padding:7px 10px;font-size:7px}.command-btn.active{color:var(--gold2);border-color:#806b43;background:#15130f}.install-btn{display:none}.dropzone{display:block;transition:.2s}.dropzone.drag{border-color:var(--gold);background:#15130f}.dropzone strong{display:block;color:#d7c08a;font:800 10px Manrope;letter-spacing:.1em}.dropzone span{display:block;color:#6f756e;font-size:9px;margin-top:4px}.preview-grid img{cursor:zoom-in}.viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:100;align-items:center;justify-content:center;padding:24px}.viewer.show{display:flex}.viewer img{max-width:94vw;max-height:88vh;object-fit:contain}.viewer-close{position:absolute;right:18px;top:18px}.mobile-nav{display:none}
+@media(max-width:700px){body{padding-bottom:64px}.appbar{display:none}.mobile-nav{position:fixed;display:flex;z-index:50;bottom:0;left:0;right:0;height:60px;background:rgba(10,11,10,.97);border-top:1px solid var(--line);justify-content:space-around;padding-bottom:env(safe-area-inset-bottom)}.mobile-nav button{border:0;background:none;color:#747a73;min-height:50px;flex:1;font-size:7px}.mobile-nav button.active{color:var(--gold2)}.mobile-nav b{display:block;font-size:8px;margin-bottom:2px}.install-btn{display:inline-flex}.command{display:none}.hero{padding-top:32px}.workspace{grid-template-columns:1fr}.panel{padding:14px}.grid{grid-template-columns:1fr}.actions button{min-height:42px}.primary{flex-basis:100%!important}.output{min-height:280px;max-height:52vh;overflow:auto}.preview-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:701px) and (max-width:1050px){.workspace{grid-template-columns:1fr}.output-panel{order:2}.input-panel{order:1}}
+@media(min-width:1051px){.input-panel{position:sticky;top:70px}.output{max-height:64vh;overflow:auto}}
+</style></style>
 </head>
-<body>
+<body><div class="appbar"><div class="wrap" style="padding-bottom:0"><div class="command"><div class="command-left"><button class="command-btn active" data-nav="input">01 INPUT</button><button class="command-btn" data-nav="output">02 OUTPUT</button></div><div class="command-right"><span class="eyebrow">17 AGENTS / READY</span><button class="command-btn install-btn" id="install">INSTALL APP</button></div></div></div></div>
 <div class="wrap">
 <header><div class="brand"><img src="assets/brand-mark.svg" alt="HOANGGIA AI"><div><b>HOANGGIA AI</b><small>VIDEO PROMPT STUDIO</small></div></div><span class="eyebrow" id="engineState">17 AGENTS / READY</span></header>
 
@@ -48,9 +53,9 @@ footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#
 </section>
 
 <div class="workspace">
-<main class="panel">
+<main class="panel input-panel">
 <div class="title"><b>01 / INPUT</b><span>BRIEF → PROMPT</span></div>
-<label class="upload">+ THÊM ẢNH THAM CHIẾU · 1 HOẶC NHIỀU ẢNH<input id="ref" type="file" accept="image/*" multiple><div id="previewGrid" class="preview-grid"></div><div id="imageCount" class="image-count">0 ẢNH ĐÃ CHỌN</div></label>
+<label class="upload dropzone" id="dropzone"><strong>+ THÊM MASTER IMAGE</strong><span>01 ảnh chính · kéo thả hoặc chạm để chọn</span><input id="ref" type="file" accept="image/*"><div id="previewGrid" class="preview-grid"></div><div id="imageCount" class="image-count">0 ẢNH ĐÃ CHỌN</div></label>
 
 <div class="field"><label>Mô tả cảnh / Brief</label><textarea id="brief" placeholder="Ví dụ: phòng khách Modern Luxury, đá travertine, gỗ walnut, sofa da cao cấp..."></textarea></div>
 <div class="grid">
@@ -78,7 +83,7 @@ footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#
 <div class="actions"><button class="primary" id="make">KÍCH HOẠT 17 AGENTS · TẠO PROMPT</button><button id="copy">COPY</button><button id="clear">XÓA</button></div>
 </main>
 
-<aside class="panel">
+<aside class="panel output-panel">
 <div class="title"><b>02 / OUTPUT</b><span id="modelState">AI MODEL / LOCAL</span></div>
 <div id="output" class="output empty">Prompt sẽ xuất hiện ở đây.</div>
 <div class="meta"><span class="tag" id="words">0 WORDS</span><span class="tag" id="status">17 AGENTS READY</span></div><div id="agentStatus" class="agent-status">Creative Intelligence đang chờ brief.</div>
@@ -88,14 +93,18 @@ footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#
 </aside>
 </div>
 
-<footer><span>HOANGGIA AI — Video Prompt Studio</span><span>Thiết kế bởi KTS. Hoàng Gia</span></footer>
+<footer><span>HOANGGIA AI — Video Prompt Studio</span><span>Thiết kế bởi KTS. Hoàng Gia</span></footer><nav class="mobile-nav"><button class="active" data-nav="input"><b>01</b>INPUT</button><button data-nav="output"><b>02</b>OUTPUT</button><button id="mobileMake"><b>✦</b>GENERATE</button></nav><div class="viewer" id="viewer"><button class="viewer-close" id="viewerClose">CLOSE</button><img id="viewerImg" alt="Reference preview"></div>
 </div>
 <script>
 const $=id=>document.getElementById(id);
-let camera='slow dolly-in',selectedImages=[];
+let camera='slow dolly-in',selectedImages=[],deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('install').style.display='inline-flex'});
+$('install').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null}};
+document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.nav)?.scrollIntoView({behavior:'smooth'}));
+$('mobileMake').onclick=generate;
 document.querySelectorAll('#camera .chip').forEach(b=>b.onclick=()=>{document.querySelectorAll('#camera .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');camera=b.dataset.v});
-$('ref').onchange=e=>{selectedImages=Array.from(e.target.files).filter(f=>f.type.startsWith('image/'));$('previewGrid').innerHTML='';selectedImages.forEach(f=>{const r=new FileReader();r.onload=()=>{const img=document.createElement('img');img.src=r.result;img.alt=f.name;$('previewGrid').appendChild(img)};r.readAsDataURL(f)});$('imageCount').textContent=`${selectedImages.length} ẢNH ĐÃ CHỌN`};
-function v(id){return $(id).value.trim()}
+$('ref').onchange=e=>{selectedImages=Array.from(e.target.files).filter(f=>f.type.startsWith('image/')).slice(0,1);$('previewGrid').innerHTML='';selectedImages.forEach(f=>{const r=new FileReader();r.onload=()=>{const img=document.createElement('img');img.src=r.result;img.alt=f.name;$('previewGrid').appendChild(img)};r.readAsDataURL(f)});$('imageCount').textContent=selectedImages.length?'1 MASTER IMAGE':'0 ẢNH ĐÃ CHỌN'};
+document.addEventListener('click',e=>{if(e.target.matches('#previewGrid img')){$('viewerImg').src=e.target.src;$('viewer').classList.add('show')}});$('viewerClose').onclick=()=>$('viewer').classList.remove('show');$('viewer').onclick=e=>{if(e.target.id==='viewer')$('viewer').classList.remove('show')};$('dropzone').ondragover=e=>{e.preventDefault();$('dropzone').classList.add('drag')};$('dropzone').ondragleave=()=>$('dropzone').classList.remove('drag');$('dropzone').ondrop=e=>{e.preventDefault();$('dropzone').classList.remove('drag');const f=e.dataTransfer.files&&e.dataTransfer.files[0];if(f&&f.type.startsWith('image/')){$('ref').files=e.dataTransfer.files;$('ref').dispatchEvent(new Event('change'))}};function v(id){return $(id).value.trim()}
 function data(){return{brief:v('brief'),purpose:v('purpose'),duration:v('duration'),ratio:v('ratio'),style:v('style'),camera,lens:v('lens'),motion:v('motion'),light:v('light'),mood:v('mood'),material:v('material'),people:v('people'),constraints:v('constraints'),reference:!!selectedImages.length,referenceCount:selectedImages.length}}
 const expertBrain=[
  {role:'Creative Director',reference:'Steven Spielberg',principles:'clear emotional intent, visual storytelling, purposeful escalation'},
