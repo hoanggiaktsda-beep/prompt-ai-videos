@@ -18,7 +18,7 @@ header{height:68px;border-bottom:1px solid var(--line);display:flex;align-items:
 .upload{border:1px dashed #4a402d;padding:15px;text-align:center;color:#858b84;margin-bottom:10px;cursor:pointer}.upload input{display:none}.preview{display:none;max-width:100%;max-height:190px;margin:10px auto 0;object-fit:contain;border:1px solid var(--line)}
 .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}button{border:1px solid #353a35;background:#121512;color:#d5d7d0;padding:10px 13px;border-radius:2px;font:700 8px Manrope;letter-spacing:.1em;cursor:pointer}.primary{background:var(--gold);border-color:var(--gold);color:#0a0a08}.primary:hover{background:var(--gold2)}button:hover{border-color:#806b43}
 .output{min-height:420px;background:#080a08;border:1px solid #353a35;padding:16px;white-space:pre-wrap;color:#d9d7cf;font:11px/1.8 ui-monospace,monospace}.empty{color:#616861}.meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.tag{border:1px solid #403825;color:#bda875;padding:5px 7px;font-size:8px}
-.formula{margin-top:10px;border-left:1px solid #78613b;padding:10px 12px;background:#12110d;color:#8c928b;font-size:9px}.formula b{color:#d7bd82}
+.formula{margin-top:10px;border-left:1px solid #78613b;padding:10px 12px;background:#12110d;color:#8c928b;font-size:9px}.formula b{color:#d7bd82}.advanced{margin-top:10px;border-top:1px solid var(--line);padding-top:10px}.advanced summary{cursor:pointer;color:#8f948e;font:700 8px Manrope;letter-spacing:.12em}.advanced[open] summary{color:var(--gold2)}
 footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#5f665f;font-size:9px;display:flex;justify-content:space-between}
 @media(max-width:850px){.workspace{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.hero{padding-top:45px}.output{min-height:330px}}
 </style>
@@ -59,7 +59,7 @@ footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#
 <div class="field"><label>Người / hoạt động</label><input id="people" placeholder="no people / one person walking slowly"></div>
 </div>
 
-<div class="field"><label>Continuity / Ràng buộc</label><textarea id="constraints">Preserve the exact architecture, walls, ceiling height, openings and existing furniture geometry. Keep straight lines stable. No furniture substitution, no invented openings, no warped proportions, no geometry drift, no excessive camera shake.</textarea></div>
+<details class="advanced"><summary>ADVANCED / CONTINUITY</summary><div class="field"><label>Ràng buộc</label><textarea id="constraints">Preserve the exact architecture, walls, ceiling height, openings and existing furniture geometry. Keep straight lines stable. No furniture substitution, no invented openings, no warped proportions, no geometry drift, no excessive camera shake.</textarea></div></details>
 
 <div class="actions"><button class="primary" id="make">TẠO PROMPT VIDEO</button><button id="copy">COPY</button><button id="clear">XÓA</button></div>
 </main>
@@ -82,17 +82,7 @@ document.querySelectorAll('#camera .chip').forEach(b=>b.onclick=()=>{document.qu
 $('ref').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('preview').src=r.result;$('preview').style.display='block'};r.readAsDataURL(f)};
 function v(id){return $(id).value.trim()}
 function data(){return{brief:v('brief'),purpose:v('purpose'),duration:v('duration'),ratio:v('ratio'),style:v('style'),camera,lens:v('lens'),motion:v('motion'),light:v('light'),mood:v('mood'),material:v('material'),people:v('people'),constraints:v('constraints'),reference:!!$('ref').files[0]}}
-function build(){const d=data();return `Create a ${d.duration} ${d.ratio} high-end cinematic architectural interior video of ${d.brief||'a refined interior space'}.
-Creative intent: ${d.purpose||'showcase the architecture and interior design with a premium cinematic feeling'}.
-Visual style: ${d.style}.
-Camera: ${d.camera}, ${d.lens}. Smooth, deliberate camera movement with natural perspective and stable architectural lines.
-Primary motion: ${d.camera}. Secondary motion: ${d.motion||'subtle environmental movement only'}.
-Lighting: ${d.light}. Atmosphere: ${d.mood}.
-Material focus: ${d.material||'preserve and accurately reproduce the existing materials and finishes'}.
-People / action: ${d.people||'no people'}.
-Continuity and preservation: ${d.constraints}.
-${d.reference?'Use the uploaded image as the visual reference and preserve its spatial composition, furniture identity, proportions, materials and camera relationship.':''}
-Output: photorealistic, physically believable, premium architectural visualization, cinematic depth, realistic materials, controlled highlights, natural shadows, refined color grading. No text, no watermark, no artificial-looking CGI, no geometry drift.`}
+function build(){const d=data();const subject=d.brief||'a refined interior space';const intent=d.purpose||'showcase the architecture and interior design with a premium cinematic feeling';const motion=d.motion||'subtle environmental movement only';const material=d.material||'preserve and accurately reproduce the existing materials and finishes';const people=d.people||'no people';return `Create a ${d.duration} ${d.ratio} high-end cinematic architectural interior video.\nSUBJECT: ${subject}.\nINTENT: ${intent}.\nSTYLE: ${d.style}.\nSHOT: ${d.camera}; ${d.lens}. Slow, deliberate movement, natural perspective, stable architectural lines, no abrupt reframing.\nMOTION: ${d.camera}. ${motion}.\nLIGHT: ${d.light}.\nATMOSPHERE: ${d.mood}.\nMATERIAL: ${material}.\nACTION: ${people}.\nCONTINUITY: ${d.constraints}.\n${d.reference?'REFERENCE IMAGE: Use the uploaded image as the primary visual reference. Preserve its spatial composition, furniture identity, proportions, materials and camera relationship.':''}\nQUALITY: photorealistic, physically believable, premium architectural visualization, cinematic depth, realistic materials, controlled highlights, natural shadows, refined color grading.\nNEGATIVE: no text, no watermark, no artificial-looking CGI, no furniture substitution, no invented openings, no warped proportions, no geometry drift, no excessive camera shake.`}
 function generate(){const p=build();$('output').textContent=p;$('output').classList.remove('empty');$('words').textContent=p.split(/\s+/).length+' WORDS';$('status').textContent='PROMPT READY'}
 async function copy(t){try{await navigator.clipboard.writeText(t);$('status').textContent='COPIED'}catch(e){}}
 $('make').onclick=generate;$('copy').onclick=()=>copy(build());$('english').onclick=()=>{generate();copy(build())};$('json').onclick=()=>copy(JSON.stringify(data(),null,2));
