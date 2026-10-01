@@ -42,6 +42,13 @@ button,input,textarea,select{touch-action:manipulation}
 .hg-footer-contact{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px}.hg-footer-link{display:inline-flex;align-items:center;gap:6px;border:1px solid #30342f;padding:8px 10px;color:#bfc4bd;text-decoration:none;font-size:8px;letter-spacing:.08em}.hg-footer-link:hover{border-color:#8d7650;color:#dfc88e}.hg-footer-link svg{width:13px;height:13px;fill:currentColor}.hg-footer-copy{grid-column:1/-1;border-top:1px solid #20231f;padding-top:12px;color:#5f655e;font-size:7px;letter-spacing:.1em}
 @media(max-width:720px){.hg-final-footer{grid-template-columns:1fr;gap:16px}.hg-footer-contact{justify-content:flex-start}.hg-footer-copy{grid-column:1}}
 </style>
+
+<style id="youtube-music-style">
+.hg-youtube-trigger{position:fixed;right:18px;bottom:18px;z-index:35;width:48px;height:48px;border:1px solid #6f5a36;background:#12130f;color:#d8bd7d;border-radius:50%;display:grid;place-items:center;box-shadow:0 8px 30px rgba(0,0,0,.35);font-size:18px}.hg-youtube-trigger:hover{border-color:#c7aa6b;transform:translateY(-1px)}
+.hg-youtube-overlay{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px}.hg-youtube-overlay.show{display:flex}
+.hg-youtube-modal{width:min(720px,100%);border:1px solid #39362d;background:#0d0f0d;box-shadow:0 24px 80px rgba(0,0,0,.55);padding:16px}.hg-youtube-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.hg-youtube-head strong{font:800 10px Manrope;letter-spacing:.14em}.hg-youtube-head small{display:block;color:#70766f;font-size:7px;margin-top:4px}.hg-youtube-close{border:1px solid #343833;background:#111411;color:#aeb3ac;width:32px;height:32px}.hg-youtube-player{aspect-ratio:16/9;background:#050605;border:1px solid #292d29;overflow:hidden}.hg-youtube-player iframe{width:100%;height:100%;border:0}.hg-youtube-controls{display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:9px}.hg-youtube-controls input{min-width:0}.hg-youtube-controls button{border:1px solid #806b43;background:#c7aa6b;color:#0b0b09;padding:0 14px;font:800 7px Manrope;letter-spacing:.08em}.hg-youtube-note{color:#666d66;font-size:7px;line-height:1.6;margin-top:8px}.hg-youtube-link{display:inline-block;margin-top:7px;color:#c7aa6b;font-size:8px;text-decoration:none}.hg-youtube-link:hover{text-decoration:underline}
+@media(max-width:600px){.hg-youtube-trigger{right:12px;bottom:12px}.hg-youtube-overlay{padding:10px}.hg-youtube-modal{padding:11px}.hg-youtube-controls{grid-template-columns:1fr}.hg-youtube-controls button{min-height:42px}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -397,6 +404,26 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   if(closeButton) closeButton.addEventListener('click',()=>modal.classList.remove('show'));
   if(modal) modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+
+  const youtubeTrigger=$('youtubeTrigger'),youtubeOverlay=$('youtubeOverlay'),youtubeClose=$('youtubeClose'),youtubePlay=$('youtubePlay'),youtubeFrame=$('youtubeFrame'),youtubeUrl=$('youtubeUrl');
+  function youtubeEmbed(url){
+    try{
+      const u=new URL(url);
+      let id=u.searchParams.get('v');
+      if(!id && u.hostname.includes('youtu.be')) id=u.pathname.split('/').filter(Boolean)[0];
+      if(!id && u.pathname.includes('/shorts/')) id=u.pathname.split('/shorts/')[1].split('/')[0];
+      if(!id && u.pathname.includes('/embed/')) id=u.pathname.split('/embed/')[1].split('/')[0];
+      if(!id)return null;
+      return 'https://www.youtube.com/embed/'+encodeURIComponent(id)+'?autoplay=1&rel=0';
+    }catch(e){return null}
+  }
+  function openYoutube(){youtubeOverlay.classList.add('show');youtubeOverlay.setAttribute('aria-hidden','false')}
+  function closeYoutube(){youtubeOverlay.classList.remove('show');youtubeOverlay.setAttribute('aria-hidden','true');}
+  if(youtubeTrigger)youtubeTrigger.addEventListener('click',openYoutube);
+  if(youtubeClose)youtubeClose.addEventListener('click',closeYoutube);
+  if(youtubeOverlay)youtubeOverlay.addEventListener('click',e=>{if(e.target===youtubeOverlay)closeYoutube()});
+  if(youtubePlay)youtubePlay.addEventListener('click',()=>{const src=youtubeEmbed(youtubeUrl.value.trim());if(!src){youtubeUrl.focus();youtubeUrl.setCustomValidity('Hãy dán link YouTube hợp lệ.');youtubeUrl.reportValidity();return}youtubeUrl.setCustomValidity('');youtubeFrame.src=src;openYoutube()});
+
   const backendInput=$('backendUrl');if(backendInput){backendInput.value=localStorage.getItem('hoanggia_ai_backend_url')||'';backendInput.addEventListener('change',()=>localStorage.setItem('hoanggia_ai_backend_url',backendInput.value.trim().replace(/\/$/,'')))}
   const spatialButton=$('analyzeSpatial');if(spatialButton)spatialButton.addEventListener('click',analyzeSpatial);
   const applyButton=$('applyBlueprint');if(applyButton)applyButton.addEventListener('click',applySpatialToPrompt);
@@ -416,5 +443,16 @@ document.addEventListener('DOMContentLoaded',()=>{
   </div>
   <div class="hg-footer-copy">© 2026 HOANGGIA AI · HOÀNG GIA · NỘI THẤT · KIẾN TRÚC · ART DIRECTION · AI</div>
 </footer>
+
+<button class="hg-youtube-trigger" id="youtubeTrigger" type="button" aria-label="Mở YouTube và phát nhạc" title="YouTube / Music">▶</button>
+<div class="hg-youtube-overlay" id="youtubeOverlay" aria-hidden="true">
+  <div class="hg-youtube-modal" role="dialog" aria-modal="true" aria-labelledby="youtubeTitle">
+    <div class="hg-youtube-head"><div><strong id="youtubeTitle">HOANGGIA AI · MUSIC</strong><small>YOUTUBE PLAYER / ÂM NHẠC TRONG WORKSPACE</small></div><button class="hg-youtube-close" id="youtubeClose" type="button" aria-label="Đóng">×</button></div>
+    <div class="hg-youtube-player"><iframe id="youtubeFrame" title="YouTube Music Player" src="https://www.youtube.com/embed?listType=search&list=architecture%20interior%20music" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+    <div class="hg-youtube-controls"><input id="youtubeUrl" type="url" placeholder="Dán link YouTube / YouTube Music để phát..." aria-label="YouTube URL"><button id="youtubePlay" type="button">PHÁT LINK</button></div>
+    <div class="hg-youtube-note">Có thể phát trực tiếp trong popup. Trình duyệt có thể yêu cầu Ốc bấm Play lần đầu vì chính sách autoplay.</div>
+    <a class="hg-youtube-link" href="https://www.youtube.com/@sadvinterior" target="_blank" rel="noopener">MỞ KÊNH YOUTUBE ↗</a>
+  </div>
+</div>
 </body>
 </html>
