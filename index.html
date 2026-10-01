@@ -82,10 +82,10 @@ header{min-height:68px;height:auto;padding:10px 0;border-bottom:1px solid var(--
 
 .brief-select{width:100%;height:38px;background:#101210;border:1px solid #292d29;color:#c5c8c2;padding:0 34px 0 11px;font:700 8px Manrope;letter-spacing:.04em;outline:none;cursor:pointer}.brief-select:focus{border-color:#a2844d;box-shadow:0 0 0 1px #a2844d}.brief-select option{background:#101210;color:#c5c8c2}@media(max-width:760px){.choice-btn{flex-basis:calc(50% - 5px)}}
 
-/* Unified INPUT-style brief layout */
+/* Unified NHẬP LIỆU-style brief layout */
 .brief-section-title{display:flex;justify-content:space-between;align-items:center;margin:14px 0 7px;padding-top:2px;border-top:1px solid #202420}.brief-section-title:first-of-type{margin-top:10px;border-top:0}.brief-section-title b{font:800 8px Manrope;letter-spacing:.1em;color:#aeb2ab}.brief-section-title span{font-size:7px;letter-spacing:.08em;color:#625f54}.brief-control-grid{margin-bottom:2px}.brief-control-grid .field{min-width:0}.brief-control-grid select{width:100%}.brief-builder .brief-preview{margin-top:12px}.brief-builder .field label{display:block}
 
-/* HOANGGIA AI — unified INPUT language across all controls */
+/* HOANGGIA AI — unified NHẬP LIỆU language across all controls */
 .panel{padding:16px}.title{margin-bottom:12px}.visual-section,.shot-selector{margin:10px 0 0;padding:10px 0 0;border-top:1px solid var(--line)}
 .visual-section-head,.brief-section-title,.visual-section .visual-section-head{height:20px;margin:0 0 7px;display:flex;align-items:center;justify-content:space-between}.visual-section-head b{font:700 8px Manrope;letter-spacing:.1em;color:#9da39c}.visual-section-head span{font-size:7px;color:#625f54;letter-spacing:.08em}
 .visual-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;overflow:visible;padding:0}.visual-card{min-height:38px;height:auto;padding:9px 10px;display:flex;align-items:center;gap:8px;border:1px solid #303530;background:#090b09;color:#9da39c;border-radius:2px}.visual-card .thumb{display:none}.visual-card strong{padding:0;display:block;font:700 8px Manrope;letter-spacing:.06em;color:inherit}.visual-card small{display:none}.visual-card:hover,.visual-card.on{border-color:#806b43;background:#15130f;color:var(--gold2)}
@@ -94,7 +94,7 @@ header{min-height:68px;height:auto;padding:10px 0;border-bottom:1px solid var(--
 @media(max-width:760px){.visual-row,.shot-preset-row{grid-template-columns:1fr 1fr}.workspace{grid-template-columns:1fr}.panel{padding:13px}}
 @media(max-width:430px){.visual-row,.shot-preset-row{grid-template-columns:1fr}.grid,.brief-grid,.brief-control-grid{grid-template-columns:1fr}.visual-card,.shot-preset{min-height:40px}}
 </style><style>
-/* HOANGGIA AI — unified INPUT language for SHOT / CAMERA / LIGHTING */
+/* HOANGGIA AI — unified NHẬP LIỆU language for GÓC MÁY / MÁY QUAY / ÁNH SÁNG */
 .visual-section{margin:12px 0 14px;padding:0;border:0;background:transparent}
 .visual-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 6px}
 .visual-section-head b{color:#9da39c;font:700 8px Manrope;letter-spacing:.1em;text-transform:uppercase}
@@ -216,11 +216,11 @@ textarea{min-height:82px!important}
     const steps=left.querySelectorAll('.hg-step');
     const inputStep=steps[0],briefStep=steps[1],shotStep=steps[2],lightStep=steps[3];
     const mk=(title,note)=>{const s=document.createElement('section');s.className='hg-real-step';s.innerHTML='<div class="hg-real-head"><span class="hg-real-title">'+title+'</span><span class="hg-real-note">'+note+'</span></div><div class="hg-real-body"></div>';return s};
-    const input=mk('INPUT','SPACE · PURPOSE · FORMAT');
-    const brief=mk('BRIEF','DESIGN INTENT · MATERIAL · PEOPLE');
-    const shot=mk('05 / SHOT DESIGN','SHOT PRESET · CAMERA & SHOT · LIGHTING DESIGN');
+    const input=mk('NHẬP LIỆU','KHÔNG GIAN · MỤC ĐÍCH · ĐỊNH DẠNG');
+    const brief=mk('MÔ TẢ CẢNH','Ý ĐỒ THIẾT KẾ · VẬT LIỆU CẦN NHẤN · NGƯỜI / HOẠT ĐỘNG');
+    const shot=mk('05 / DÀN DỰNG CẢNH','THIẾT LẬP CẢNH · MÁY QUAY & GÓC MÁY · THIẾT KẾ ÁNH SÁNG');
     const body=old.querySelector('.hg-workspace-shell');
-    left.innerHTML='<h2>01 / CREATIVE WORKSPACE</h2>';
+    left.innerHTML='<h2>01 / KHÔNG GIAN SÁNG TẠO</h2>';
     [input,brief,shot,light].forEach(x=>left.appendChild(x));
     const ib=input.querySelector('.hg-real-body'), bb=brief.querySelector('.hg-real-body'), sb=shot.querySelector('.hg-real-body');
     // Move actual existing fields; JS bindings remain intact because nodes are not cloned.
@@ -231,15 +231,15 @@ textarea{min-height:82px!important}
     // Move existing visual sections into the correct real step, preserving their controls.
     q('.visual-section').forEach(sec=>{
       const h=(sec.querySelector('.visual-section-head')?.textContent||'').toUpperCase();
-      if(h.includes('SHOT PRESET')) sb.appendChild(sec);
+      if(h.includes('THIẾT LẬP CẢNH')) sb.appendChild(sec);
       else if(h.includes('CAMERA')) sb.appendChild(sec);
-      else if(h.includes('LIGHTING')) sb.appendChild(sec);
+      else if(h.includes('ÁNH SÁNG')) sb.appendChild(sec);
     });
     // Hide now-empty legacy wrappers without deleting nodes.
     q('.hg-step').forEach(x=>x.remove());
     q('.input-section,.brief-section').forEach(x=>{if(x.children.length===0)x.style.display='none'});
     // Output panel becomes real fixed/sticky prompt workspace.
-    right.innerHTML='<h2>02 / AI DECISION</h2><div class="hg-output-flow"><span>INPUT</span><b>→</b><span>17 EXPERTS</span><b>→</b><span>CREATIVE DIRECTOR</span></div><div class="hg-real-output"><div class="hg-output-label">03 / OUTPUT · VIDEO PROMPT</div><pre id="hg-live-output">AI OUTPUT WILL APPEAR HERE</pre><button id="hg-output-copy" type="button">COPY PROMPT</button></div>';
+    right.innerHTML='<h2>02 / AI SUY LUẬN</h2><div class="hg-output-flow"><span>NHẬP LIỆU</span><b>→</b><span>17 CHUYÊN GIA</span><b>→</b><span>GIÁM ĐỐC SÁNG TẠO</span></div><div class="hg-real-output"><div class="hg-output-label">03 / KẾT XUẤT · PROMPT VIDEO</div><pre id="hg-live-output">AI KẾT XUẤT WILL APPEAR HERE</pre><button id="hg-output-copy" type="button">SAO CHÉP PROMPT</button></div>';
     const copy=$('#hg-output-copy');
     if(copy)copy.onclick=()=>{const o=$('#hg-live-output'); if(o)navigator.clipboard?.writeText(o.textContent||'')};
     // Mirror the existing output area when present.
@@ -299,40 +299,40 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
 <body><div class="hg-workspace" id="hg-workspace-map">
   <div class="hg-workspace-shell">
     <div class="hg-workspace-panel">
-      <h2>01 / INPUT WORKSPACE</h2>
+      <h2>01 / KHÔNG GIAN NHẬP LIỆU</h2>
       <div class="hg-step">
-        <div class="hg-step-head"><span class="hg-step-num">01</span><span class="hg-step-title">INPUT</span><span class="hg-step-note">BRIEF + SPACE</span></div>
+        <div class="hg-step-head"><span class="hg-step-num">01</span><span class="hg-step-title">NHẬP LIỆU</span><span class="hg-step-note">MÔ TẢ CẢNH + SPACE</span></div>
         <div class="hg-step-grid three"><div id="hg-input-anchor"></div></div>
       </div>
       <div class="hg-step">
-        <div class="hg-step-head"><span class="hg-step-num">02</span><span class="hg-step-title">BRIEF</span><span class="hg-step-note">DESIGN INTENT</span></div>
+        <div class="hg-step-head"><span class="hg-step-num">02</span><span class="hg-step-title">MÔ TẢ CẢNH</span><span class="hg-step-note">Ý ĐỒ THIẾT KẾ</span></div>
         <div class="hg-step-grid"><div id="hg-brief-anchor"></div></div>
       </div>
       <div class="hg-step">
-        <div class="hg-step-head"><span class="hg-step-num">03</span><span class="hg-step-title">SHOT</span><span class="hg-step-note">CAMERA + MOTION</span></div>
+        <div class="hg-step-head"><span class="hg-step-num">03</span><span class="hg-step-title">SHOT</span><span class="hg-step-note">CAMERA + CHUYỂN ĐỘNG</span></div>
         <div class="hg-step-grid"><div id="hg-shot-anchor"></div></div>
       </div>
       <div class="hg-step">
-        <div class="hg-step-head"><span class="hg-step-num">04</span><span class="hg-step-title">LIGHTING</span><span class="hg-step-note">LIGHT + ATMOSPHERE</span></div>
+        <div class="hg-step-head"><span class="hg-step-num">04</span><span class="hg-step-title">ÁNH SÁNG</span><span class="hg-step-note">LIGHT + ATMOSPHERE</span></div>
         <div class="hg-step-grid"><div id="hg-light-anchor"></div></div>
       </div>
     </div>
     <aside class="hg-workspace-panel hg-output">
-      <h2>02 / AI DECISION</h2>
+      <h2>02 / AI SUY LUẬN</h2>
       <div class="hg-output-flow">
-        <span class="hg-flow-node">INPUT</span><span class="hg-flow-arrow">→</span>
-        <span class="hg-flow-node">17 EXPERTS</span><span class="hg-flow-arrow">→</span>
-        <span class="hg-flow-node">CREATIVE DIRECTOR</span>
+        <span class="hg-flow-node">NHẬP LIỆU</span><span class="hg-flow-arrow">→</span>
+        <span class="hg-flow-node">17 CHUYÊN GIA</span><span class="hg-flow-arrow">→</span>
+        <span class="hg-flow-node">GIÁM ĐỐC SÁNG TẠO</span>
       </div>
       <div class="hg-output-placeholder">
-        <strong>03 / OUTPUT</strong>
+        <strong>03 / KẾT XUẤT</strong>
         HOANGGIA AI tổng hợp brief, không gian, vật liệu, ánh sáng, camera và chuyển động thành một quyết định sáng tạo thống nhất trước khi kết xuất prompt.
       </div>
     </aside>
   </div>
-</div><div class="appbar"><div class="wrap" style="padding-bottom:0"><div class="command"><div class="command-left"><button class="command-btn active" data-nav="input">01 INPUT</button><button class="command-btn" data-nav="output">02 OUTPUT</button></div><div class="command-right"><span class="eyebrow">17 AGENTS / READY</span><button class="command-btn install-btn" id="install">INSTALL APP</button></div></div></div></div>
+</div><div class="appbar"><div class="wrap" style="padding-bottom:0"><div class="command"><div class="command-left"><button class="command-btn active" data-nav="input">01 NHẬP LIỆU</button><button class="command-btn" data-nav="output">02 KẾT XUẤT</button></div><div class="command-right"><span class="eyebrow">17 AGENTS / READY</span><button class="command-btn install-btn" id="install">INSTALL APP</button></div></div></div></div>
 <div class="wrap">
-<header><div class="brand"><img src="assets/brand-mark.svg" alt="HOANGGIA AI"><div><b>HOANGGIA AI</b><small>VIDEO PROMPT STUDIO</small></div></div><span class="eyebrow" id="engineState">17 AGENTS / READY</span></header>
+<header><div class="brand"><img src="assets/brand-mark.svg" alt="HOANGGIA AI"><div><b>HOANGGIA AI</b><small>PROMPT VIDEO STUDIO</small></div></div><span class="eyebrow" id="engineState">17 AGENTS / READY</span></header>
 
 <section class="hero">
 <div class="eyebrow">HOANGGIA AI / CREATIVE INTELLIGENCE</div>
@@ -341,24 +341,24 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
 </section>
 
 <section class="intelligence">
-<div class="intel-card"><div class="intel-kicker">HOANGGIA AI / CREATIVE INTELLIGENCE</div><div class="intel-title">ONE CREATIVE DECISION.<br><span>17 PROFESSIONAL PERSPECTIVES.</span></div><p>The prompt engine coordinates creative direction, architecture, cinematography, lighting, storytelling, post-production and production logic into one coherent video brief.</p><div class="intel-flow"><span>BRIEF</span><i>→</i><span>17 ROLES</span><i>→</i><span>CREATIVE DECISION</span><i>→</i><span>FINAL PROMPT</span></div></div>
+<div class="intel-card"><div class="intel-kicker">HOANGGIA AI / CREATIVE INTELLIGENCE</div><div class="intel-title">ONE CREATIVE DECISION.<br><span>17 PROFESSIONAL PERSPECTIVES.</span></div><p>The prompt engine coordinates creative direction, architecture, cinematography, lighting, storytelling, post-production and production logic into one coherent video brief.</p><div class="intel-flow"><span>MÔ TẢ CẢNH</span><i>→</i><span>17 ROLES</span><i>→</i><span>CREATIVE DECISION</span><i>→</i><span>FINAL PROMPT</span></div></div>
 <div class="intel-card network"><div class="intel-kicker">HOANGGIA AI / EXPERT AGENT NETWORK</div><div class="network-grid"><span><b>01</b>Creative Director</span><span><b>02</b>Art Director</span><span><b>03</b>Architect / Interior Designer</span><span><b>04</b>Storyboard Artist</span><span><b>05</b>Director</span><span><b>06</b>Cinematographer / DOP</span><span><b>07</b>3D / Archviz Artist</span><span><b>08</b>AI Artist / AI Director</span><span><b>09</b>Lighting Designer</span><span><b>10</b>Set / Styling / Decor</span><span><b>11</b>Camera Operator</span><span><b>12</b>Editor</span><span><b>13</b>Colorist</span><span><b>14</b>Sound Designer</span><span><b>15</b>Composer / Music Producer</span><span><b>16</b>Voice Artist</span><span><b>17</b>Producer</span></div></div>
 </section>
 
 <div class="workspace">
 <main class="panel input-panel">
-<div class="title"><b>01 / INPUT</b><span>BRIEF → PROMPT</span></div>
+<div class="title"><b>01 / NHẬP LIỆU</b><span>MÔ TẢ CẢNH → PROMPT</span></div>
 <label class="upload dropzone" id="dropzone"><strong>+ THÊM MASTER IMAGE</strong><span>01 ảnh chính · kéo thả hoặc chạm để chọn</span><input id="ref" type="file" accept="image/*"><div id="previewGrid" class="preview-grid"></div><div id="imageCount" class="image-count">0 ẢNH ĐÃ CHỌN</div></label>
 
 <div class="brief-builder">
-<div class="brief-head"><div><label>MÔ TẢ CẢNH / BRIEF</label><span>Thiết lập theo từng thông số · HOANGGIA AI tự tổng hợp thành creative brief</span></div><button type="button" class="mini-btn" id="resetBrief">RESET</button></div>
+<div class="brief-head"><div><label>MÔ TẢ CẢNH / MÔ TẢ CẢNH</label><span>Thiết lập theo từng thông số · HOANGGIA AI tự tổng hợp thành creative brief</span></div><button type="button" class="mini-btn" id="resetBrief">RESET</button></div>
 
 <div class="brief-section-title"><b>01 / KHÔNG GIAN</b><span>CHỌN 1</span></div>
 <div class="grid brief-control-grid"><div class="field"><label>Loại không gian</label><select class="brief-select" id="briefSceneSelect" id="briefSceneSelect"><option value="">— Chọn loại không gian —</option>
-<option>Phòng khách</option><option>Phòng ăn</option><option>Phòng bếp</option><option>Phòng ngủ master</option><option>Phòng ngủ trẻ em</option><option>Phòng thay đồ</option><option>Phòng tắm</option><option>Phòng làm việc</option><option>Thư viện</option><option>Phòng giải trí</option><option>Phòng xem phim</option><option>Phòng gym</option><option>Phòng thờ</option><option>Wine Cellar</option><option>Home Bar</option><option>Showroom</option><option>Flagship Store</option><option>Retail Store</option><option>Gallery</option><option>Studio</option><option>Office</option><option>Meeting Room</option><option>Lobby</option><option>Lounge</option><option>Reception</option><option>Restaurant</option><option>Café</option><option>Hotel Room</option><option>Hotel Suite</option><option>Resort Villa</option><option>Private Villa</option><option>Penthouse</option><option>Apartment</option><option>Townhouse</option><option>Duplex</option><option>Courtyard</option><option>Rooftop</option><option>Balcony</option><option>Terrace</option><option>Garden</option><option>Outdoor Living</option><option>Pool Area</option><option>Landscape</option><option>Commercial Interior</option><option>Residential Interior</option><option>Hospitality Interior</option></select></div></div>
+<option>Phòng khách</option><option>Phòng ăn</option><option>Phòng bếp</option><option>Phòng ngủ master</option><option>Phòng ngủ trẻ em</option><option>Phòng thay đồ</option><option>Phòng tắm</option><option>Phòng làm việc</option><option>Thư viện</option><option>Phòng giải trí</option><option>Phòng xem phim</option><option>Phòng gym</option><option>Phòng thờ</option><option>Wine Cellar</option><option>Home Bar</option><option>Phòng trưng bày</option><option>Flagship Store</option><option>Retail Store</option><option>Không gian triển lãm</option><option>Studio</option><option>Văn phòng</option><option>Meeting Room</option><option>Sảnh</option><option>Phòng chờ</option><option>Lễ tân</option><option>Nhà hàng</option><option>Quán cà phê</option><option>Phòng khách sạn</option><option>Suite khách sạn</option><option>Resort Villa</option><option>Biệt thự riêng</option><option>Căn hộ Penthouse</option><option>Căn hộ</option><option>Nhà phố</option><option>Duplex</option><option>Sân trong</option><option>Sân thượng</option><option>Ban công</option><option>Sân hiên</option><option>Khu vườn</option><option>Không gian ngoài trời</option><option>Pool Area</option><option>Landscape</option><option>Commercial Interior</option><option>Residential Interior</option><option>Hospitality Interior</option></select></div></div>
 
 <div class="brief-section-title"><b>02 / PHONG CÁCH</b><span>CHỌN 1</span></div>
-<div class="grid brief-control-grid"><div class="field"><label>Phong cách kiến trúc / nội thất</label><select class="brief-select" id="briefStyleSelect" id="briefStyleSelect"><option value="">— Chọn phong cách —</option><option value="Modern Luxury">Modern Luxury</option><option value="Minimal Luxury">Minimal Luxury</option><option value="Contemporary">Contemporary</option><option value="Modern Classic">Modern Classic</option><option value="Modernism">Modernism</option><option value="Mid-Century Modern">Mid-Century Modern</option><option value="International Style">International Style</option><option value="Bauhaus">Bauhaus</option><option value="Brutalism">Brutalism</option><option value="Postmodern">Postmodern</option><option value="Deconstructivism">Deconstructivism</option><option value="Neoclassical">Neoclassical</option><option value="Classical">Classical</option><option value="Georgian">Georgian</option><option value="Victorian">Victorian</option><option value="Art Deco">Art Deco</option><option value="Art Nouveau">Art Nouveau</option><option value="Baroque">Baroque</option><option value="Rococo">Rococo</option><option value="Renaissance">Renaissance</option><option value="Mediterranean">Mediterranean</option><option value="French Provincial">French Provincial</option><option value="French Country">French Country</option><option value="English Country">English Country</option><option value="Japandi">Japandi</option><option value="Wabi-Sabi">Wabi-Sabi</option><option value="Scandinavian">Scandinavian</option><option value="Nordic">Nordic</option><option value="Zen">Zen</option><option value="Muji">Muji</option><option value="Organic Modern">Organic Modern</option><option value="Biophilic">Biophilic</option><option value="Rustic">Rustic</option><option value="Farmhouse">Farmhouse</option><option value="Cottage">Cottage</option><option value="Shabby Chic">Shabby Chic</option><option value="Coastal">Coastal</option><option value="Tropical">Tropical</option><option value="Industrial">Industrial</option><option value="Industrial Luxury">Industrial Luxury</option><option value="Loft">Loft</option><option value="Urban Modern">Urban Modern</option><option value="Urban Contemporary">Urban Contemporary</option><option value="Asian Contemporary">Asian Contemporary</option><option value="Asian Modern">Asian Modern</option><option value="Chinese Contemporary">Chinese Contemporary</option><option value="Japanese Traditional">Japanese Traditional</option><option value="Japanese Modern">Japanese Modern</option><option value="Korean Minimal">Korean Minimal</option><option value="Balinese">Balinese</option><option value="Thai Contemporary">Thai Contemporary</option><option value="Indochine">Indochine</option><option value="Vietnamese Contemporary">Vietnamese Contemporary</option><option value="Moroccan">Moroccan</option><option value="Arabian">Arabian</option><option value="Persian">Persian</option><option value="Indian Contemporary">Indian Contemporary</option><option value="Mediterranean Modern">Mediterranean Modern</option><option value="Luxury Classic">Luxury Classic</option><option value="Quiet Luxury">Quiet Luxury</option><option value="Soft Minimalism">Soft Minimalism</option><option value="Warm Minimalism">Warm Minimalism</option><option value="Minimalist">Minimalist</option><option value="Monochromatic">Monochromatic</option><option value="Earthy">Earthy</option><option value="Natural Luxury">Natural Luxury</option><option value="Timeless Luxury">Timeless Luxury</option><option value="Maximalism">Maximalism</option><option value="Eclectic">Eclectic</option><option value="Artisan">Artisan</option><option value="Craftsman">Craftsman</option><option value="Transitional">Transitional</option><option value="Modern Farmhouse">Modern Farmhouse</option><option value="California Modern">California Modern</option><option value="New Traditional">New Traditional</option><option value="Grandmillennial">Grandmillennial</option><option value="Memphis">Memphis</option><option value="Futurism">Futurism</option><option value="High-Tech">High-Tech</option><option value="Parametric">Parametric</option><option value="Neo-Futurism">Neo-Futurism</option><option value="Avant-Garde">Avant-Garde</option></select></div></div>
+<div class="grid brief-control-grid"><div class="field"><label>Phong cách kiến trúc / nội thất</label><select class="brief-select" id="briefStyleSelect" id="briefStyleSelect"><option value="">— Chọn phong cách —</option><option value="Sang trọng hiện đại">Sang trọng hiện đại</option><option value="Sang trọng tối giản">Sang trọng tối giản</option><option value="Đương đại">Đương đại</option><option value="Cổ điển hiện đại">Cổ điển hiện đại</option><option value="Chủ nghĩa hiện đại">Chủ nghĩa hiện đại</option><option value="Hiện đại giữa thế kỷ">Hiện đại giữa thế kỷ</option><option value="International Style">International Style</option><option value="Bauhaus">Bauhaus</option><option value="Brutalism">Brutalism</option><option value="Hậu hiện đại">Hậu hiện đại</option><option value="Giải cấu trúc">Giải cấu trúc</option><option value="Tân cổ điển">Tân cổ điển</option><option value="Cổ điển">Cổ điển</option><option value="Georgian">Georgian</option><option value="Victorian">Victorian</option><option value="Art Deco">Art Deco</option><option value="Art Nouveau">Art Nouveau</option><option value="Baroque">Baroque</option><option value="Rococo">Rococo</option><option value="Renaissance">Renaissance</option><option value="Mediterranean">Mediterranean</option><option value="French Provincial">French Provincial</option><option value="French Country">French Country</option><option value="English Country">English Country</option><option value="Japandi">Japandi</option><option value="Wabi-Sabi">Wabi-Sabi</option><option value="Scandinavian">Scandinavian</option><option value="Nordic">Nordic</option><option value="Zen">Zen</option><option value="Muji">Muji</option><option value="Hiện đại hữu cơ">Hiện đại hữu cơ</option><option value="Sinh thái">Sinh thái</option><option value="Mộc mạc">Mộc mạc</option><option value="Farmhouse">Farmhouse</option><option value="Cottage">Cottage</option><option value="Shabby Chic">Shabby Chic</option><option value="Coastal">Coastal</option><option value="Tropical">Tropical</option><option value="Công nghiệp">Công nghiệp</option><option value="Công nghiệp Luxury">Công nghiệp Luxury</option><option value="Loft">Loft</option><option value="Hiện đại đô thị">Hiện đại đô thị</option><option value="Urban Đương đại">Urban Đương đại</option><option value="Asian Đương đại">Asian Đương đại</option><option value="Asian Modern">Asian Modern</option><option value="Chinese Đương đại">Chinese Đương đại</option><option value="Japanese Traditional">Japanese Traditional</option><option value="Hiện đại Nhật Bản">Hiện đại Nhật Bản</option><option value="Tối giản Hàn Quốc">Tối giản Hàn Quốc</option><option value="Bali">Bali</option><option value="Thai Đương đại">Thai Đương đại</option><option value="Đông Dương">Đông Dương</option><option value="Vietnamese Đương đại">Vietnamese Đương đại</option><option value="Moroccan">Moroccan</option><option value="Arabian">Arabian</option><option value="Persian">Persian</option><option value="Indian Đương đại">Indian Đương đại</option><option value="Mediterranean Modern">Mediterranean Modern</option><option value="Luxury Classic">Luxury Classic</option><option value="Sang trọng thầm lặng">Sang trọng thầm lặng</option><option value="Tối giản mềm mại">Tối giản mềm mại</option><option value="Tối giản ấm áp">Tối giản ấm áp</option><option value="Tối giản">Tối giản</option><option value="Đơn sắc">Đơn sắc</option><option value="Tông đất">Tông đất</option><option value="Sang trọng tự nhiên">Sang trọng tự nhiên</option><option value="Sang trọng vượt thời gian">Sang trọng vượt thời gian</option><option value="Đa tầng tối đa">Đa tầng tối đa</option><option value="Chiết trung">Chiết trung</option><option value="Thủ công nghệ thuật">Thủ công nghệ thuật</option><option value="Craftsman">Craftsman</option><option value="Chuyển tiếp">Chuyển tiếp</option><option value="Nông trại hiện đại">Nông trại hiện đại</option><option value="Hiện đại California">Hiện đại California</option><option value="New Traditional">New Traditional</option><option value="Grandmillennial">Grandmillennial</option><option value="Memphis">Memphis</option><option value="Vị lai">Vị lai</option><option value="Công nghệ cao">Công nghệ cao</option><option value="Tham số">Tham số</option><option value="Neo-Vị lai">Neo-Vị lai</option><option value="Tiên phong">Tiên phong</option></select></div></div>
 
 <div class="brief-section-title"><b>03 / VẬT LIỆU</b><span>CHỌN 1</span></div>
 <div class="grid brief-control-grid"><div class="field"><label>Vật liệu chủ đạo</label><select class="brief-select" id="briefMaterialSelect" id="briefMaterialSelect"><option value="">— Chọn vật liệu chính —</option>
@@ -366,20 +366,20 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
 
 <div class="brief-section-title"><b>04 / ÁNH SÁNG & THỜI ĐIỂM</b><span>CHỌN 1</span></div>
 <div class="grid brief-control-grid"><div class="field"><label>Ánh sáng / thời điểm</label><select class="brief-select" id="briefTimeSelect" id="briefTimeSelect"><option value="">— Chọn ánh sáng / thời điểm —</option>
-<option>Morning — Soft Daylight</option><option>Morning — Crisp Daylight</option><option>Late Morning — Neutral Daylight</option><option>Afternoon — Warm Daylight</option><option>Late Afternoon — Directional Light</option><option>Golden Hour — Warm Low Sun</option><option>Sunset — Dramatic Warm Light</option><option>Blue Hour — Cool Ambient Light</option><option>Dusk — Mixed Natural + Artificial</option><option>Night — Warm Interior Lighting</option><option>Night — Cool Architectural Lighting</option><option>Overcast — Soft Diffused Light</option><option>Rainy Day — Reflected Soft Light</option><option>Stormy — High Contrast Atmosphere</option><option>Moonlight — Cool Cinematic Light</option><option>Candlelight — Intimate Warm Light</option><option>Gallery Lighting — Controlled Neutral</option><option>Luxury Hospitality — Layered Warm Light</option><option>Architectural — Indirect Linear Light</option><option>High Contrast — Chiaroscuro</option></select></div></div>
+<option>Buổi sáng — Ánh sáng tự nhiên dịu</option><option>Morning — Crisp Daylight</option><option>Late Morning — Neutral Daylight</option><option>Buổi chiều — Ánh sáng tự nhiên ấm</option><option>Late Afternoon — Directional Light</option><option>Giờ vàng — Nắng thấp ấm</option><option>Hoàng hôn — Ánh sáng ấm kịch tính</option><option>Giờ xanh — Ánh sáng môi trường lạnh</option><option>Dusk — Mixed Natural + Artificial</option><option>Ban đêm — Ánh sáng nội thất ấm</option><option>Night — Cool Architectural Lighting</option><option>Trời nhiều mây — Ánh sáng khuếch tán dịu</option><option>Ngày mưa — Ánh sáng phản xạ dịu</option><option>Stormy — High Contrast Atmosphere</option><option>Moonlight — Cool Cinematic Light</option><option>Candlelight — Intimate Warm Light</option><option>Không gian triển lãm Lighting — Controlled Neutral</option><option>Luxury Hospitality — Layered Warm Light</option><option>Kiến trúc — Ánh sáng tuyến tính gián tiếp</option><option>High Contrast — Chiaroscuro</option></select></div></div>
 
 <div class="brief-section-title"><b>05 / CHI TIẾT CẢNH</b><span>CHỌN CÁC MỤC</span></div>
 <div class="grid brief-control-grid"><div class="field"><label>05 / Bố cục</label><select id="composition"><option value="">Chọn</option><option>Không gian mở</option><option>Trục đối xứng</option><option>Trục nhìn dài</option><option>Trần cao</option><option>Cửa kính lớn</option><option>View panorama</option></select></div>
-<div class="field"><label>06 / Nội thất chủ đạo</label><select id="furniture"><option value="">Chọn</option><option>Sofa + bàn trà</option><option>Sofa sectional</option><option>Dining table + chairs</option><option>Kitchen island</option><option>Bed + bedside tables</option><option>Bar / Mini bar</option><option>Reception / Display counter</option></select></div>
+<div class="field"><label>06 / Nội thất chủ đạo</label><select id="furniture"><option value="">Chọn</option><option>Sofa + bàn trà</option><option>Sofa sectional</option><option>Dining table + chairs</option><option>Kitchen island</option><option>Bed + bedside tables</option><option>Bar / Mini bar</option><option>Lễ tân / Display counter</option></select></div>
 <div class="field"><label>07 / Điểm nhấn</label><select id="focal"><option value="">Chọn</option><option>Feature wall</option><option>Statement sofa</option><option>Kitchen island</option><option>Artwork</option><option>Decorative lighting</option><option>Natural stone slab</option><option>Staircase</option></select></div>
 <div class="field"><label>08 / Hoạt động</label><select id="activity"><option value="">Chọn</option><option>Không có người</option><option>Một người bước vào</option><option>Một người đi chậm qua không gian</option><option>Gia đình sinh hoạt</option><option>Khách hàng tham quan showroom</option><option>Nhân vật ngồi trên sofa</option></select></div>
 <div class="field"><label>09 / Màu sắc</label><select id="palette"><option value="">Chọn</option><option>Warm neutral</option><option>Beige / Cream</option><option>Earth tones</option><option>Dark brown / Walnut</option><option>Black / Charcoal</option><option>White / Stone</option><option>Grey / Greige</option><option>Deep green</option></select></div>
 <div class="field"><label>10 / Không khí</label><select id="atmosphere"><option value="">Chọn</option><option>Calm & refined</option><option>Warm & inviting</option><option>Luxury & dramatic</option><option>Minimal & serene</option><option>Moody & cinematic</option><option>Editorial & sophisticated</option></select></div></div>
 
-<div class="brief-preview"><span>BRIEF ĐƯỢC TẠO TỰ ĐỘNG</span><b id="briefAuto">Hãy chọn các mục phía trên để HOANGGIA AI tự tạo mô tả cảnh.</b></div>
+<div class="brief-preview"><span>MÔ TẢ CẢNH ĐƯỢC TẠO TỰ ĐỘNG</span><b id="briefAuto">Hãy chọn các mục phía trên để HOANGGIA AI tự tạo mô tả cảnh.</b></div>
 </div>
-<div class="field"><label>BRIEF TỰ DO / Chi tiết riêng của KTS</label><textarea id="brief" placeholder="Ví dụ: giữ nguyên sofa hiện trạng, nhấn vân đá đảo bếp, ánh sáng hắt nhẹ từ bên trái..."></textarea></div>
-<div class="brief-preview"><span>BRIEF ĐƯỢC TẠO TỰ ĐỘNG</span><b id="briefAuto">Hãy chọn các mục phía trên để HOANGGIA AI tự tạo mô tả cảnh.</b></div>
+<div class="field"><label>MÔ TẢ CẢNH TỰ DO / Chi tiết riêng của KTS</label><textarea id="brief" placeholder="Ví dụ: giữ nguyên sofa hiện trạng, nhấn vân đá đảo bếp, ánh sáng hắt nhẹ từ bên trái..."></textarea></div>
+<div class="brief-preview"><span>MÔ TẢ CẢNH ĐƯỢC TẠO TỰ ĐỘNG</span><b id="briefAuto">Hãy chọn các mục phía trên để HOANGGIA AI tự tạo mô tả cảnh.</b></div>
 </div>
 <div class="grid">
 <div class="field"><label>Mục đích video</label><select id="purpose">
@@ -390,7 +390,7 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
 <option>Interior Cinematic</option>
 <option>Real Estate Marketing</option>
 <option>Luxury Brand Film</option>
-<option>Showroom / Retail Presentation</option>
+<option>Phòng trưng bày / Retail Presentation</option>
 <option>Material / Furniture Detail</option>
 <option>Walkthrough / Spatial Tour</option>
 <option>Design Concept Presentation</option>
@@ -413,8 +413,8 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
 <option>Atmospheric Cinematic</option>
 <option>Moody Cinematic</option>
 <option>Warm Luxury</option>
-<option>Quiet Luxury</option>
-<option>Contemporary Luxury</option>
+<option>Sang trọng thầm lặng</option>
+<option>Đương đại Luxury</option>
 <option>Modern Minimalism</option>
 <option>Architectural Visualization</option>
 <option>Photorealistic Archviz</option>
@@ -424,36 +424,36 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
 </div>
 
 <div class="visual-section shot-selector"><div class="shot-presets">
-<div class="visual-section-head"><b>05 / SHOT PRESET</b><span>CHỌN 1 · TỰ CẤU HÌNH CAMERA</span></div>
+<div class="visual-section-head"><b>05 / THIẾT LẬP CẢNH</b><span>CHỌN 1 · TỰ CẤU HÌNH CAMERA</span></div>
 <div class="shot-preset-row" id="shotPresets">
-<button class="shot-preset on" data-preset="hero"><i class="preset-thumb p-hero"></i><strong>ARCHITECTURAL HERO</strong><small>35mm · eye-level · dolly-in</small></button>
-<button class="shot-preset" data-preset="reveal"><i class="preset-thumb p-reveal"></i><strong>LUXURY REVEAL</strong><small>28mm · wide · slow reveal</small></button>
-<button class="shot-preset" data-preset="detail"><i class="preset-thumb p-detail"></i><strong>MATERIAL DETAIL</strong><small>85mm · detail · push-in</small></button>
-<button class="shot-preset" data-preset="walk"><i class="preset-thumb p-walk"></i><strong>CINEMATIC WALKTHROUGH</strong><small>24mm · eye-level · tracking</small></button>
-<button class="shot-preset" data-preset="portrait"><i class="preset-thumb p-portrait"></i><strong>DESIGN PORTRAIT</strong><small>50mm · eye-level · orbit</small></button>
-<button class="shot-preset" data-preset="wide"><i class="preset-thumb p-wide"></i><strong>SPATIAL ESTABLISHING</strong><small>24mm · high · locked</small></button>
+<button class="shot-preset on" data-preset="hero"><i class="preset-thumb p-hero"></i><strong>HERO KIẾN TRÚC</strong><small>35mm · eye-level · dolly-in</small></button>
+<button class="shot-preset" data-preset="reveal"><i class="preset-thumb p-reveal"></i><strong>REVEAL SANG TRỌNG</strong><small>28mm · wide · slow reveal</small></button>
+<button class="shot-preset" data-preset="detail"><i class="preset-thumb p-detail"></i><strong>VẬT LIỆU CẦN NHẤN CẬN CẢNH</strong><small>85mm · detail · push-in</small></button>
+<button class="shot-preset" data-preset="walk"><i class="preset-thumb p-walk"></i><strong>DI CHUYỂN ĐIỆN ẢNH</strong><small>24mm · eye-level · tracking</small></button>
+<button class="shot-preset" data-preset="portrait"><i class="preset-thumb p-portrait"></i><strong>CHÂN DUNG THIẾT KẾ</strong><small>50mm · eye-level · orbit</small></button>
+<button class="shot-preset" data-preset="wide"><i class="preset-thumb p-wide"></i><strong>TOÀN CẢNH KHÔNG GIAN</strong><small>24mm · high · locked</small></button>
 </div>
 </div>
-<div class="visual-section-head"><b>05 / CAMERA & SHOT</b><span>LABEL → SELECT → GRID</span></div>
-<div class="visual-section-head"><b>CAMERA PATH</b><span>CHUYỂN ĐỘNG MÁY</span></div>
+<div class="visual-section-head"><b>05 / MÁY QUAY & GÓC MÁY</b><span>LABEL → SELECT → GRID</span></div>
+<div class="visual-section-head"><b>ĐƯỜNG DI CHUYỂN MÁY</b><span>CHUYỂN ĐỘNG MÁY</span></div>
 <div class="visual-row" data-shot-select="camera">
-<button class="visual-card on" data-value="slow dolly-in"><i class="thumb t-push"></i><strong>DOLLY IN</strong><small>Tiến chậm vào</small></button>
-<button class="visual-card" data-value="slow dolly-out"><i class="thumb t-reveal"></i><strong>DOLLY OUT</strong><small>Lùi chậm ra</small></button>
-<button class="visual-card" data-value="smooth lateral tracking"><i class="thumb t-lateral"></i><strong>TRACKING</strong><small>Trượt ngang</small></button>
-<button class="visual-card" data-value="slow orbit"><i class="thumb t-orbit"></i><strong>ORBIT</strong><small>Quay quanh chủ thể</small></button>
-<button class="visual-card" data-value="locked-off"><i class="thumb t-static"></i><strong>LOCKED</strong><small>Máy đứng yên</small></button>
-<button class="visual-card" data-value="subtle handheld"><i class="thumb t-parallax"></i><strong>HANDHELD</strong><small>Tự nhiên · nhẹ</small></button>
+<button class="visual-card on" data-value="slow dolly-in"><i class="thumb t-push"></i><strong>TIẾN MÁY</strong><small>Tiến chậm vào</small></button>
+<button class="visual-card" data-value="slow dolly-out"><i class="thumb t-reveal"></i><strong>LÙI MÁY</strong><small>Lùi chậm ra</small></button>
+<button class="visual-card" data-value="smooth lateral tracking"><i class="thumb t-lateral"></i><strong>BÁM CHUYỂN ĐỘNG</strong><small>Trượt ngang</small></button>
+<button class="visual-card" data-value="slow orbit"><i class="thumb t-orbit"></i><strong>XOAY QUANH</strong><small>Quay quanh chủ thể</small></button>
+<button class="visual-card" data-value="locked-off"><i class="thumb t-static"></i><strong>CỐ ĐỊNH</strong><small>Máy đứng yên</small></button>
+<button class="visual-card" data-value="subtle handheld"><i class="thumb t-parallax"></i><strong>CẦM TAY</strong><small>Tự nhiên · nhẹ</small></button>
 </div>
-<div class="visual-section-head"><b>SHOT ANGLE</b><span>GÓC NHÌN</span></div>
+<div class="visual-section-head"><b>GÓC MÁY</b><span>GÓC NHÌN</span></div>
 <div class="visual-row" data-shot-select="angle">
-<button class="visual-card on" data-value="wide architectural perspective, eye-level"><i class="thumb t-eye"></i><strong>EYE LEVEL</strong><small>Tự nhiên</small></button>
-<button class="visual-card" data-value="wide architectural perspective, low angle"><i class="thumb t-low"></i><strong>LOW ANGLE</strong><small>Tôn khối</small></button>
-<button class="visual-card" data-value="wide architectural perspective, high angle"><i class="thumb t-high"></i><strong>HIGH ANGLE</strong><small>Nhìn bao quát</small></button>
-<button class="visual-card" data-value="wide establishing shot"><i class="thumb t-wide"></i><strong>WIDE</strong><small>Toàn cảnh</small></button>
-<button class="visual-card" data-value="architectural detail shot"><i class="thumb t-detail"></i><strong>DETAIL</strong><small>Cận chi tiết</small></button>
-<button class="visual-card" data-value="overhead architectural view"><i class="thumb t-overhead"></i><strong>OVERHEAD</strong><small>Từ trên xuống</small></button>
+<button class="visual-card on" data-value="wide architectural perspective, eye-level"><i class="thumb t-eye"></i><strong>TẦM MẮT</strong><small>Tự nhiên</small></button>
+<button class="visual-card" data-value="wide architectural perspective, low angle"><i class="thumb t-low"></i><strong>GÓC THẤP</strong><small>Tôn khối</small></button>
+<button class="visual-card" data-value="wide architectural perspective, high angle"><i class="thumb t-high"></i><strong>GÓC CAO</strong><small>Nhìn bao quát</small></button>
+<button class="visual-card" data-value="wide establishing shot"><i class="thumb t-wide"></i><strong>TOÀN CẢNH</strong><small>Toàn cảnh</small></button>
+<button class="visual-card" data-value="architectural detail shot"><i class="thumb t-detail"></i><strong>CẬN CẢNH</strong><small>Cận chi tiết</small></button>
+<button class="visual-card" data-value="overhead architectural view"><i class="thumb t-overhead"></i><strong>TỪ TRÊN XUỐNG</strong><small>Từ trên xuống</small></button>
 </div>
-<div class="visual-section-head"><b>LENS</b><span>TIÊU CỰ</span></div>
+<div class="visual-section-head"><b>TIÊU CỰ</b><span>TIÊU CỰ</span></div>
 <div class="visual-row" data-shot-select="lens">
 <button class="visual-card" data-value="24mm ultra-wide architectural lens"><i class="thumb t-24"></i><strong>24MM</strong><small>Rộng · dramatic</small></button>
 <button class="visual-card" data-value="28mm wide architectural lens"><i class="thumb t-28"></i><strong>28MM</strong><small>Rộng tự nhiên</small></button>
@@ -461,25 +461,25 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
 <button class="visual-card" data-value="50mm natural perspective lens"><i class="thumb t-50"></i><strong>50MM</strong><small>Tự nhiên · sạch</small></button>
 <button class="visual-card" data-value="85mm compressed detail lens"><i class="thumb t-85"></i><strong>85MM</strong><small>Nén · cận</small></button>
 </div>
-<div class="visual-section-head"><b>MOTION</b><span>NHỊP CHUYỂN ĐỘNG</span></div>
+<div class="visual-section-head"><b>CHUYỂN ĐỘNG</b><span>NHỊP CHUYỂN ĐỘNG</span></div>
 <div class="visual-row" data-shot-select="motion">
-<button class="visual-card on" data-value="subtle cinematic movement"><i class="thumb t-static"></i><strong>STATIC</strong><small>Gần như tĩnh</small></button>
-<button class="visual-card" data-value="slow push-in"><i class="thumb t-push"></i><strong>PUSH IN</strong><small>Tiến vào</small></button>
-<button class="visual-card" data-value="smooth lateral movement"><i class="thumb t-lateral"></i><strong>LATERAL</strong><small>Trượt ngang</small></button>
-<button class="visual-card" data-value="slow orbiting movement"><i class="thumb t-orbit"></i><strong>ORBIT</strong><small>Quay quanh</small></button>
+<button class="visual-card on" data-value="subtle cinematic movement"><i class="thumb t-static"></i><strong>TĨNH</strong><small>Gần như tĩnh</small></button>
+<button class="visual-card" data-value="slow push-in"><i class="thumb t-push"></i><strong>ĐẨY VÀO</strong><small>Tiến vào</small></button>
+<button class="visual-card" data-value="smooth lateral movement"><i class="thumb t-lateral"></i><strong>NGANG</strong><small>Trượt ngang</small></button>
+<button class="visual-card" data-value="slow orbiting movement"><i class="thumb t-orbit"></i><strong>XOAY QUANH</strong><small>Quay quanh</small></button>
 <button class="visual-card" data-value="slow reveal movement"><i class="thumb t-reveal"></i><strong>REVEAL</strong><small>Reveal không gian</small></button>
-<button class="visual-card" data-value="subtle parallax movement"><i class="thumb t-parallax"></i><strong>PARALLAX</strong><small>Chiều sâu lớp</small></button>
+<button class="visual-card" data-value="subtle parallax movement"><i class="thumb t-parallax"></i><strong>THỊ SAI</strong><small>Chiều sâu lớp</small></button>
 </div>
 </div>
 <div class="visual-section">
-<div class="visual-section-head"><b>06 / LIGHTING DESIGN</b><span>LABEL → SELECT → GRID</span></div>
+<div class="visual-section-head"><b>06 / THIẾT KẾ ÁNH SÁNG</b><span>LABEL → SELECT → GRID</span></div>
 <div class="visual-row" data-shot-select="lighting">
-<button class="visual-card on" data-value="soft side light with gentle shadow falloff"><i class="thumb t-side"></i><strong>SIDE LIGHT</strong><small>Ánh sáng bên</small></button>
-<button class="visual-card" data-value="soft backlight with luminous depth"><i class="thumb t-back"></i><strong>BACKLIGHT</strong><small>Ngược sáng</small></button>
-<button class="visual-card" data-value="soft skylight illumination"><i class="thumb t-skylight"></i><strong>SKYLIGHT</strong><small>Ánh sáng mái</small></button>
-<button class="visual-card" data-value="architectural cove lighting with controlled glow"><i class="thumb t-cove"></i><strong>COVE</strong><small>Hắt trần / khe</small></button>
-<button class="visual-card" data-value="warm practical lighting from architectural fixtures"><i class="thumb t-practical"></i><strong>PRACTICAL</strong><small>Đèn thực tế</small></button>
-<button class="visual-card" data-value="mixed natural and practical lighting, balanced exposure"><i class="thumb t-mixed"></i><strong>MIXED</strong><small>Tự nhiên + đèn</small></button>
+<button class="visual-card on" data-value="soft side light with gentle shadow falloff"><i class="thumb t-side"></i><strong>ÁNH SÁNG BÊN</strong><small>Ánh sáng bên</small></button>
+<button class="visual-card" data-value="soft backlight with luminous depth"><i class="thumb t-back"></i><strong>ÁNH SÁNG NGƯỢC</strong><small>Ngược sáng</small></button>
+<button class="visual-card" data-value="soft skylight illumination"><i class="thumb t-skylight"></i><strong>ÁNH SÁNG TRỜI</strong><small>Ánh sáng mái</small></button>
+<button class="visual-card" data-value="architectural cove lighting with controlled glow"><i class="thumb t-cove"></i><strong>ÁNH SÁNG HẮT KHE</strong><small>Hắt trần / khe</small></button>
+<button class="visual-card" data-value="warm practical lighting from architectural fixtures"><i class="thumb t-practical"></i><strong>ÁNH SÁNG THỰC</strong><small>Đèn thực tế</small></button>
+<button class="visual-card" data-value="mixed natural and practical lighting, balanced exposure"><i class="thumb t-mixed"></i><strong>ÁNH SÁNG HỖN HỢP</strong><small>Tự nhiên + đèn</small></button>
 </div>
 </div>
 <div class="grid">
@@ -500,15 +500,15 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
 </main>
 
 <div class="ai-connection" id="aiConnection">
-<div class="ai-connection-head"><b>AI CONNECTION / OPENAI RESPONSES API</b><span class="ai-connection-state" id="aiConnectionState">DISCONNECTED</span></div>
+<div class="ai-connection-head"><b>KẾT NỐI AI / API OPENAI RESPONSES</b><span class="ai-connection-state" id="aiConnectionState">CHƯA KẾT NỐI</span></div>
 <div class="ai-connection-grid">
 <select id="aiModel" aria-label="AI model"><option value="gpt-5.6-luna">GPT-5.6 Luna · FAST</option><option value="gpt-5.6-terra">GPT-5.6 Terra · BALANCED</option><option value="gpt-5.6-sol">GPT-5.6 Sol · FLAGSHIP</option></select>
 <input id="aiKey" type="password" autocomplete="off" placeholder="sk-… · nhập API key của Ốc">
-<button id="aiConnect">CONNECT AI</button>
+<button id="aiConnect">KẾT NỐI AI</button>
 </div>
 <small><b>BYOK / PRIVATE SESSION:</b> key chỉ được giữ trong bộ nhớ của tab hiện tại và không được ghi vào GitHub. Vì trình duyệt gọi API trực tiếp, OpenAI khuyến nghị production phải dùng backend riêng; chế độ này phù hợp để Ốc dùng cá nhân/prototype. Không gửi API key cho Mỡ hoặc commit key vào repo.</small>
 </div><aside class="panel output-panel">
-<div class="title"><b>02 / OUTPUT</b><span id="modelState">AI MODEL / LOCAL</span></div>
+<div class="title"><b>02 / KẾT XUẤT</b><span id="modelState">MÔ HÌNH AI / LOCAL</span></div>
 <div id="output" class="output empty">Prompt sẽ xuất hiện ở đây.</div>
 <div class="meta"><span class="tag" id="words">0 WORDS</span><span class="tag" id="status">17 AGENTS READY</span></div><div id="agentStatus" class="agent-status">Creative Intelligence đang chờ brief.</div>
 <div class="formula"><b>HOANGGIA AI PROMPT STRUCTURE</b><br>Subject → Creative Intent → Camera → Motion → Lighting → Material → Atmosphere → Continuity → Output Quality</div>
@@ -517,7 +517,7 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
 </aside>
 </div>
 
-<footer><span>HOANGGIA AI — Video Prompt Studio</span><span>Thiết kế bởi KTS. Hoàng Gia</span></footer><nav class="mobile-nav"><button class="active" data-nav="input"><b>01</b>INPUT</button><button data-nav="output"><b>02</b>OUTPUT</button><button id="mobileMake"><b>✦</b>GENERATE</button></nav><div class="viewer" id="viewer"><button class="viewer-close" id="viewerClose">CLOSE</button><img id="viewerImg" alt="Reference preview"></div>
+<footer><span>HOANGGIA AI — Video Prompt Studio</span><span>Thiết kế bởi KTS. Hoàng Gia</span></footer><nav class="mobile-nav"><button class="active" data-nav="input"><b>01</b>NHẬP LIỆU</button><button data-nav="output"><b>02</b>KẾT XUẤT</button><button id="mobileMake"><b>✦</b>GENERATE</button></nav><div class="viewer" id="viewer"><button class="viewer-close" id="viewerClose">CLOSE</button><img id="viewerImg" alt="Reference preview"></div>
 </div>
 <script>
 const $=id=>document.getElementById(id);
@@ -528,7 +528,7 @@ document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>document.getEle
 $('mobileMake').onclick=generate;
 const AI_SYSTEM=`You are HOANGGIA AI Creative Intelligence, a professional creative brain for architecture, interior design and cinematic video generation. Apply all 17 expert reference frameworks internally as one coordinated creative decision, never as 17 separate outputs. Never imitate or claim endorsement by any named person; use names only as reference frameworks for principles. Priority: spatial truth > existing object/furniture identity > visual language > camera/light > motion > post-production. If a MASTER IMAGE is supplied, it is the single spatial source of truth: preserve walls, ceiling, floor, openings, proportions, camera relationship and existing furniture/object identity. Develop only requested creative attributes. Never invent openings, duplicate objects, substitute furniture, rearrange the room or drift geometry. Return one production-ready English video prompt only.
 
-17 EXPERT REFERENCE FRAMEWORKS:
+17 EXPERT ẢNH THAM CHIẾU FRAMEWORKS:
 1 Creative Director — Steven Spielberg: emotional intent, visual storytelling, purposeful escalation.
 2 Art Director — Sarah Greenwood: coherent visual language, composition, production-design hierarchy.
 3 Architect / Interior Designer — Tadao Ando + Peter Zumthor: proportion, materiality, spatial experience, light as architecture.
@@ -546,8 +546,8 @@ const AI_SYSTEM=`You are HOANGGIA AI Creative Intelligence, a professional creat
 15 Composer / Music Producer — Hans Zimmer: tempo, tension, emotional arc, synchronization.
 16 Voice Artist — James Earl Jones: authority, clarity, controlled delivery when voice is requested.
 17 Producer — Kathleen Kennedy: brief discipline, format, feasibility, consistency and delivery requirements.`;
-function setAIState(ready){const s=$('aiConnectionState');s.textContent=ready?'AI READY':'DISCONNECTED';s.classList.toggle('ready',ready);$('modelState').textContent=ready?'AI MODEL / CONNECTED':'AI MODEL / LOCAL';}
-$('aiConnect').onclick=()=>{const key=$('aiKey').value.trim();if(!key){setAIState(false);$('modelNote').textContent='Hãy nhập API key để kết nối AI thật.';return}aiKey=key;$('aiKey').value='';setAIState(true);$('modelNote').textContent='AI thật đã kết nối trong phiên này. Key không được lưu vào repo.';$('status').textContent='AI READY'};
+function setAIState(ready){const s=$('aiConnectionState');s.textContent=ready?'AI SẴN SÀNG':'CHƯA KẾT NỐI';s.classList.toggle('ready',ready);$('modelState').textContent=ready?'MÔ HÌNH AI / CONNECTED':'MÔ HÌNH AI / LOCAL';}
+$('aiConnect').onclick=()=>{const key=$('aiKey').value.trim();if(!key){setAIState(false);$('modelNote').textContent='Hãy nhập API key để kết nối AI thật.';return}aiKey=key;$('aiKey').value='';setAIState(true);$('modelNote').textContent='AI thật đã kết nối trong phiên này. Key không được lưu vào repo.';$('status').textContent='AI SẴN SÀNG'};
 
 const shotPresets={
  hero:{camera:'slow dolly-in',lens:'35mm architectural lens',angle:'wide architectural perspective, eye-level',motion:'subtle cinematic movement'},
@@ -611,11 +611,11 @@ function expertDirection(d){
  });
  return selected.map(x=>`${x.role} [reference framework: ${x.reference}]: ${x.principles}`).join('; ');
 }
-function build(){const d=data();const subject=d.brief||'a refined interior space';const intent=d.purpose||'showcase the architecture and interior design with a premium cinematic feeling';const motion=d.motion||'subtle environmental movement only';const material=d.material||'preserve and accurately reproduce the existing materials and finishes';const people=d.people||'no people';const brain=expertDirection(d);return `Create a ${d.duration} ${d.ratio} high-end cinematic architectural interior video.\nSUBJECT: ${subject}.\nINTENT: ${intent}.\nSTYLE: ${d.style}.\nCREATIVE BRAIN: Apply a coordinated 17-role professional reference framework, not 17 separate outputs. ${brain}\nSHOT: ${d.camera}; ${d.lens}. Slow, deliberate movement, natural perspective, stable architectural lines, no abrupt reframing.\nMOTION: ${d.camera}. ${motion}.\nLIGHT: ${d.light}.\nATMOSPHERE: ${d.mood}.\nMATERIAL: ${material}.\nACTION: ${people}.\nCONTINUITY: ${d.constraints}.\n${d.reference?'MASTER IMAGE LOCK: The first uploaded image is the single source of truth. Lock walls, ceiling, floor, openings, proportions, camera relationship and existing furniture/object identity. Develop only requested style, material, lighting, motion or camera attributes. Never invent openings, duplicate objects, substitute furniture, rearrange the room or drift geometry.':''}\nQUALITY: photorealistic, physically believable, premium architectural visualization, cinematic depth, realistic materials, controlled highlights, natural shadows, refined color grading.\nNEGATIVE: no text, no watermark, no artificial-looking CGI, no furniture substitution, no invented openings, no warped proportions, no geometry drift, no excessive camera shake.`}
+function build(){const d=data();const subject=d.brief||'a refined interior space';const intent=d.purpose||'showcase the architecture and interior design with a premium cinematic feeling';const motion=d.motion||'subtle environmental movement only';const material=d.material||'preserve and accurately reproduce the existing materials and finishes';const people=d.people||'no people';const brain=expertDirection(d);return `Create a ${d.duration} ${d.ratio} high-end cinematic architectural interior video.\nSUBJECT: ${subject}.\nINTENT: ${intent}.\nPHONG CÁCH: ${d.style}.\nCREATIVE BRAIN: Apply a coordinated 17-role professional reference framework, not 17 separate outputs. ${brain}\nSHOT: ${d.camera}; ${d.lens}. Slow, deliberate movement, natural perspective, stable architectural lines, no abrupt reframing.\nCHUYỂN ĐỘNG: ${d.camera}. ${motion}.\nLIGHT: ${d.light}.\nATMOSPHERE: ${d.mood}.\nVẬT LIỆU CẦN NHẤN: ${material}.\nACTION: ${people}.\nCONTINUITY: ${d.constraints}.\n${d.reference?'MASTER IMAGE LOCK: The first uploaded image is the single source of truth. Lock walls, ceiling, floor, openings, proportions, camera relationship and existing furniture/object identity. Develop only requested style, material, lighting, motion or camera attributes. Never invent openings, duplicate objects, substitute furniture, rearrange the room or drift geometry.':''}\nQUALITY: photorealistic, physically believable, premium architectural visualization, cinematic depth, realistic materials, controlled highlights, natural shadows, refined color grading.\nNEGATIVE: no text, no watermark, no artificial-looking CGI, no furniture substitution, no invented openings, no warped proportions, no geometry drift, no excessive camera shake.`}
 async function filesAsDataURLs(){return Promise.all(selectedImages.map(f=>new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f)})))}
 async function generate(){
  const d=data(),status=$('agentStatus'),state=$('engineState'),modelState=$('modelState'),note=$('modelNote');
- if(!aiKey){$('status').textContent='AI KEY REQUIRED';state.textContent='AI / DISCONNECTED';modelState.textContent='AI MODEL / OFFLINE';note.textContent='Hãy mở AI CONNECTION, nhập OpenAI API key rồi bấm CONNECT AI.';return}
+ if(!aiKey){$('status').textContent='CẦN API KEY';state.textContent='AI / CHƯA KẾT NỐI';modelState.textContent='MÔ HÌNH AI / OFFLINE';note.textContent='Hãy mở KẾT NỐI AI, nhập OpenAI API key rồi bấm KẾT NỐI AI.';return}
  const model=$('aiModel').value;
  const roles=expertBrain.map(x=>x.role);
  state.textContent='VISION / PROCESSING';$('status').textContent='RUNNING VISION';status.classList.add('active');modelState.textContent='AI PIPELINE / RUNNING';note.textContent='Real AI → Vision + 17 Expert Roles → Creative Director → Final Prompt';
@@ -631,10 +631,10 @@ async function generate(){
    const out=JSON.parse(raw),p=out.output_text||'';
    if(!p) throw new Error('OpenAI returned no text');
    $('output').textContent=p;$('output').classList.remove('empty');$('words').textContent=p.split(/\s+/).length+' WORDS';
-   $('status').textContent='CREATIVE DECISION / READY';state.textContent='VISION → 17 AGENTS → SYNTHESIS';modelState.textContent='AI MODEL / CONNECTED';note.textContent='Real '+model+' synthesis completed directly from GitHub Pages.';
+   $('status').textContent='CREATIVE DECISION / READY';state.textContent='VISION → 17 AGENTS → SYNTHESIS';modelState.textContent='MÔ HÌNH AI / CONNECTED';note.textContent='Real '+model+' synthesis completed directly from GitHub Pages.';
  }catch(e){
-   $('status').textContent='AI ERROR';state.textContent='AI / ERROR';modelState.textContent='AI MODEL / ERROR';note.textContent='Không kết nối được OpenAI: '+e.message;
-   status.textContent='AI ERROR — xem model note';
+   $('status').textContent='LỖI AI';state.textContent='AI / ERROR';modelState.textContent='MÔ HÌNH AI / ERROR';note.textContent='Không kết nối được OpenAI: '+e.message;
+   status.textContent='LỖI AI — xem model note';
  }
  status.classList.remove('active');
 }
