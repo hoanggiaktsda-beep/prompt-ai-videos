@@ -71,11 +71,12 @@ footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#
 </main>
 
 <aside class="panel">
-<div class="title"><b>02 / OUTPUT</b><span>READY TO USE</span></div>
+<div class="title"><b>02 / OUTPUT</b><span id="modelState">AI MODEL / LOCAL</span></div>
 <div id="output" class="output empty">Prompt sẽ xuất hiện ở đây.</div>
 <div class="meta"><span class="tag" id="words">0 WORDS</span><span class="tag" id="status">17 AGENTS READY</span></div><div id="agentStatus" class="agent-status">Creative Intelligence đang chờ brief.</div>
 <div class="formula"><b>HOANGGIA AI PROMPT STRUCTURE</b><br>Subject → Creative Intent → Camera → Motion → Lighting → Material → Atmosphere → Continuity → Output Quality</div>
 <div class="actions"><button id="english">CLEAN ENGLISH</button><button id="json">COPY JSON</button></div>
+<div class="agent-status" id="modelNote">AI brain: browser orchestration. Add the server API to enable real model synthesis.</div>
 </aside>
 </div>
 
@@ -116,12 +117,23 @@ function expertDirection(d){
 }
 function build(){const d=data();const subject=d.brief||'a refined interior space';const intent=d.purpose||'showcase the architecture and interior design with a premium cinematic feeling';const motion=d.motion||'subtle environmental movement only';const material=d.material||'preserve and accurately reproduce the existing materials and finishes';const people=d.people||'no people';const brain=expertDirection(d);return `Create a ${d.duration} ${d.ratio} high-end cinematic architectural interior video.\nSUBJECT: ${subject}.\nINTENT: ${intent}.\nSTYLE: ${d.style}.\nCREATIVE BRAIN: Apply a coordinated 17-role professional reference framework, not 17 separate outputs. ${brain}\nSHOT: ${d.camera}; ${d.lens}. Slow, deliberate movement, natural perspective, stable architectural lines, no abrupt reframing.\nMOTION: ${d.camera}. ${motion}.\nLIGHT: ${d.light}.\nATMOSPHERE: ${d.mood}.\nMATERIAL: ${material}.\nACTION: ${people}.\nCONTINUITY: ${d.constraints}.\n${d.reference?'REFERENCE IMAGE: Use the uploaded image as the primary visual reference. Preserve its spatial composition, furniture identity, proportions, materials and camera relationship.':''}\nQUALITY: photorealistic, physically believable, premium architectural visualization, cinematic depth, realistic materials, controlled highlights, natural shadows, refined color grading.\nNEGATIVE: no text, no watermark, no artificial-looking CGI, no furniture substitution, no invented openings, no warped proportions, no geometry drift, no excessive camera shake.`}
 async function generate(){
- const d=data(),status=$('agentStatus'),state=$('engineState');
+ const d=data(),status=$('agentStatus'),state=$('engineState'),modelState=$('modelState'),note=$('modelNote');
  const roles=expertBrain.map(x=>x.role);
  state.textContent='17 AGENTS / PROCESSING';$('status').textContent='RUNNING 17 AGENTS';status.classList.add('active');
- for(let i=0;i<roles.length;i++){status.textContent=`Activating ${String(i+1).padStart(2,'0')} / 17 — ${roles[i]}`;await new Promise(r=>setTimeout(r,55));}
- const p=build();$('output').textContent=p;$('output').classList.remove('empty');$('words').textContent=p.split(/\s+/).length+' WORDS';
- $('status').textContent='CREATIVE DECISION READY';state.textContent='17 AGENTS / SYNTHESIZED';status.textContent='17 professional perspectives synthesized into one coherent creative direction.';
+ for(let i=0;i<roles.length;i++){status.textContent=`Preparing ${String(i+1).padStart(2,'0')} / 17 — ${roles[i]}`;await new Promise(r=>setTimeout(r,28));}
+ try{
+   const res=await fetch((window.HOANGGIA_AI_API||'/api/creative-intelligence'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:d,roles:expertBrain})});
+   if(!res.ok) throw new Error('AI API '+res.status);
+   const out=await res.json();
+   const p=out.prompt||out.output||'';
+   if(!p) throw new Error('Empty AI output');
+   $('output').textContent=p;$('output').classList.remove('empty');$('words').textContent=p.split(/\s+/).length+' WORDS';
+   $('status').textContent='AI SYNTHESIS READY';state.textContent='17 AGENTS / AI SYNTHESIZED';modelState.textContent='AI MODEL / CONNECTED';note.textContent=out.model?('Real model synthesis: '+out.model):'Real model synthesis completed.';
+ }catch(e){
+   const p=build();$('output').textContent=p;$('output').classList.remove('empty');$('words').textContent=p.split(/\s+/).length+' WORDS';
+   $('status').textContent='LOCAL FALLBACK';state.textContent='17 AGENTS / LOCAL';modelState.textContent='AI MODEL / OFFLINE';note.textContent='API chưa kết nối — đang dùng local synthesis. Deploy API + set OPENAI_API_KEY để bật AI thật.';
+ }
+ status.classList.remove('active');
 }
 async function copy(t){try{await navigator.clipboard.writeText(t);$('status').textContent='COPIED'}catch(e){}}
 $('make').onclick=generate;$('copy').onclick=()=>copy(build());$('english').onclick=()=>{generate();copy(build())};$('json').onclick=()=>copy(JSON.stringify(data(),null,2));
