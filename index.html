@@ -330,7 +330,30 @@ body>*:not(.hg-live-workspace){display:none!important}
 @media(max-width:600px){
  .hg-real-body{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
-</style></head>
+</style><style id="hg-purpose-clean">
+/* Hide controls that duplicate the unified workspace purpose */
+#duration,#ratio,#aiModel,#aiKey,#people,#constraints,
+label[for="duration"],label[for="ratio"],label[for="aiModel"],label[for="aiKey"],label[for="people"],label[for="constraints"]{display:none!important}
+#duration,#ratio,#aiModel,#aiKey,#people,#constraints{display:none!important}
+</style><script id="hg-purpose-prune">
+(function(){
+ const removeIds=['duration','ratio','aiModel','aiKey','people','constraints'];
+ function prune(){
+   removeIds.forEach(id=>{
+     const el=document.getElementById(id);
+     if(el){
+       const field=el.closest('.field');
+       if(field) field.remove(); else el.remove();
+     }
+   });
+   document.querySelectorAll('.hg-real-step').forEach(step=>{
+     if(!step.querySelector('.field,.visual-section')) step.remove();
+   });
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(prune,160));
+ else setTimeout(prune,160);
+})();
+</script></head>
 <body><div class="hg-workspace" id="hg-workspace-map">
   <div class="hg-workspace-shell">
     <div class="hg-workspace-panel">
