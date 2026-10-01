@@ -155,8 +155,66 @@ textarea{min-height:82px!important}
 @media(max-width:620px){
   .brief-fields,.input-grid,.visual-row,.shot-preset-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
+</style><style id="hg-unified-workspace">
+/* <!-- HOANGGIA-WORKSPACE-OVERRIDE --> */
+.hg-workspace{max-width:1180px;margin:0 auto 20px;padding:0 16px}
+.hg-workspace-shell{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
+.hg-workspace-panel{border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.025);padding:14px}
+.hg-workspace-panel h2{font-size:11px;letter-spacing:.16em;margin:0 0 12px;text-transform:uppercase}
+.hg-step{padding:12px 0;border-top:1px solid rgba(255,255,255,.07)}
+.hg-step:first-child{border-top:0;padding-top:0}
+.hg-step-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.hg-step-num{font-size:9px;letter-spacing:.12em;opacity:.55}
+.hg-step-title{font-size:12px;font-weight:600;letter-spacing:.04em}
+.hg-step-note{font-size:10px;opacity:.5;margin-left:auto}
+.hg-step-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.hg-step-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.hg-output{position:sticky;top:14px}
+.hg-output-flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:13px}
+.hg-flow-node{font-size:9px;letter-spacing:.1em;padding:6px 8px;border:1px solid rgba(255,255,255,.09);border-radius:6px;opacity:.8}
+.hg-flow-arrow{opacity:.35}
+.hg-output-placeholder{min-height:230px;border:1px dashed rgba(255,255,255,.12);border-radius:9px;padding:14px;font-size:11px;line-height:1.7;opacity:.65}
+.hg-output-placeholder strong{display:block;font-size:10px;letter-spacing:.12em;margin-bottom:8px;opacity:.9}
+@media(max-width:900px){.hg-workspace-shell{grid-template-columns:1fr}.hg-output{position:relative;top:0}}
+@media(max-width:600px){.hg-step-grid,.hg-step-grid.three{grid-template-columns:1fr}.hg-workspace{padding:0 10px}}
+</style><style id="hg-collapse-legacy-sections">
+.visual-section{margin-top:10px!important}
 </style></head>
-<body><div class="appbar"><div class="wrap" style="padding-bottom:0"><div class="command"><div class="command-left"><button class="command-btn active" data-nav="input">01 INPUT</button><button class="command-btn" data-nav="output">02 OUTPUT</button></div><div class="command-right"><span class="eyebrow">17 AGENTS / READY</span><button class="command-btn install-btn" id="install">INSTALL APP</button></div></div></div></div>
+<body><div class="hg-workspace" id="hg-workspace-map">
+  <div class="hg-workspace-shell">
+    <div class="hg-workspace-panel">
+      <h2>01 / INPUT WORKSPACE</h2>
+      <div class="hg-step">
+        <div class="hg-step-head"><span class="hg-step-num">01</span><span class="hg-step-title">INPUT</span><span class="hg-step-note">BRIEF + SPACE</span></div>
+        <div class="hg-step-grid three"><div id="hg-input-anchor"></div></div>
+      </div>
+      <div class="hg-step">
+        <div class="hg-step-head"><span class="hg-step-num">02</span><span class="hg-step-title">BRIEF</span><span class="hg-step-note">DESIGN INTENT</span></div>
+        <div class="hg-step-grid"><div id="hg-brief-anchor"></div></div>
+      </div>
+      <div class="hg-step">
+        <div class="hg-step-head"><span class="hg-step-num">03</span><span class="hg-step-title">SHOT</span><span class="hg-step-note">CAMERA + MOTION</span></div>
+        <div class="hg-step-grid"><div id="hg-shot-anchor"></div></div>
+      </div>
+      <div class="hg-step">
+        <div class="hg-step-head"><span class="hg-step-num">04</span><span class="hg-step-title">LIGHTING</span><span class="hg-step-note">LIGHT + ATMOSPHERE</span></div>
+        <div class="hg-step-grid"><div id="hg-light-anchor"></div></div>
+      </div>
+    </div>
+    <aside class="hg-workspace-panel hg-output">
+      <h2>02 / AI DECISION</h2>
+      <div class="hg-output-flow">
+        <span class="hg-flow-node">INPUT</span><span class="hg-flow-arrow">→</span>
+        <span class="hg-flow-node">17 EXPERTS</span><span class="hg-flow-arrow">→</span>
+        <span class="hg-flow-node">CREATIVE DIRECTOR</span>
+      </div>
+      <div class="hg-output-placeholder">
+        <strong>03 / OUTPUT</strong>
+        HOANGGIA AI tổng hợp brief, không gian, vật liệu, ánh sáng, camera và chuyển động thành một quyết định sáng tạo thống nhất trước khi kết xuất prompt.
+      </div>
+    </aside>
+  </div>
+</div><div class="appbar"><div class="wrap" style="padding-bottom:0"><div class="command"><div class="command-left"><button class="command-btn active" data-nav="input">01 INPUT</button><button class="command-btn" data-nav="output">02 OUTPUT</button></div><div class="command-right"><span class="eyebrow">17 AGENTS / READY</span><button class="command-btn install-btn" id="install">INSTALL APP</button></div></div></div></div>
 <div class="wrap">
 <header><div class="brand"><img src="assets/brand-mark.svg" alt="HOANGGIA AI"><div><b>HOANGGIA AI</b><small>VIDEO PROMPT STUDIO</small></div></div><span class="eyebrow" id="engineState">17 AGENTS / READY</span></header>
 
