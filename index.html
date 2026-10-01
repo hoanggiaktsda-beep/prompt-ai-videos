@@ -47,6 +47,10 @@ header{min-height:68px;height:auto;padding:10px 0;border-bottom:1px solid var(--
 .t-cove{background:linear-gradient(180deg,#d8c99f 0 15%,#77786d 16% 58%,#252923 59%)}.t-cove:before{left:10%;right:10%;top:16%;height:2px;background:#ead49e;box-shadow:0 12px 18px #d0b879}
 .t-practical{background:linear-gradient(145deg,#282b26,#625640 50%,#141714)}.t-practical:before{left:30%;top:28%;width:12px;height:12px;background:#e0bd70;border-radius:50%;box-shadow:40px 18px 0 #d4aa5f,20px 36px 0 #b98b4b}
 .t-mixed{background:linear-gradient(115deg,#d6c7a5,#a37b50 42%,#3e4a4a 70%,#171a18)}.t-mixed:before{left:15%;right:15%;top:20%;bottom:16%;border:2px solid #dfcfaa}
+.shot-presets{margin:8px 0 12px}.shot-preset-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.shot-preset{padding:0 0 9px;background:#0a0c0a;border:1px solid #292d29;color:#a9ada7;text-align:left;cursor:pointer;overflow:hidden}.shot-preset:hover,.shot-preset.on{border-color:#b08b4d;background:#15140f}.shot-preset.on strong{color:#e1c68c}.shot-preset .preset-thumb{height:92px;display:block;position:relative;overflow:hidden}.preset-thumb:before,.preset-thumb:after{content:"";position:absolute}.p-hero{background:linear-gradient(135deg,#c6b99d,#5b6259 52%,#171a17)}.p-hero:before{left:8%;right:8%;top:22%;bottom:13%;border:2px solid #ded1b4}.p-hero:after{left:48%;top:15%;bottom:15%;width:2px;background:#e3d1a6}.p-reveal{background:linear-gradient(90deg,#191d19,#9e8b6b 48%,#292e29)}.p-reveal:before{left:17%;right:17%;top:20%;bottom:16%;border:2px solid #d8c7a4}.p-reveal:after{right:24%;top:12%;bottom:12%;width:2px;background:#e5d19f;box-shadow:-22px 0 0 rgba(213,190,142,.35)}.p-detail{background:linear-gradient(135deg,#4a3829,#b9966c 48%,#25231f)}.p-detail:before{left:28%;right:28%;top:18%;bottom:18%;border:4px solid #dfc89d}.p-detail:after{left:10%;right:10%;top:50%;height:1px;background:#e0c28e}.p-walk{background:linear-gradient(115deg,#8d958b,#4e554e 50%,#1b1e1b)}.p-walk:before{left:12%;right:12%;top:25%;bottom:15%;border:2px solid #d4c7a8;transform:perspective(90px) rotateY(-7deg)}.p-walk:after{left:48%;bottom:15%;width:3px;height:30%;background:#c6ae7e;box-shadow:8px 6px 0 #7c725d}
+.p-portrait{background:linear-gradient(145deg,#6e604f,#242721 55%,#111310)}.p-portrait:before{left:28%;right:28%;top:12%;bottom:12%;border:2px solid #d5c19a}.p-portrait:after{left:48%;top:22%;bottom:22%;width:3px;background:#cbb58b}
+.p-wide{background:linear-gradient(120deg,#bcb39f,#62675f 52%,#20231f)}.p-wide:before{left:5%;right:5%;top:20%;bottom:12%;border:2px solid #d7ccb1}.p-wide:after{left:18%;right:18%;bottom:22%;height:2px;background:#d7c5a1}
+@media(max-width:850px){.shot-preset-row{grid-template-columns:repeat(4,150px);overflow-x:auto;padding-bottom:2px}.shot-preset .preset-thumb{height:82px}}
 @media(max-width:850px){.visual-row{grid-template-columns:repeat(6,108px);overflow-x:auto}.visual-card .thumb{height:68px}}@media(max-width:430px){.visual-row{grid-template-columns:repeat(6,96px)}.visual-card strong{font-size:6.5px}.visual-card small{font-size:6.5px}.compact-fields{gap:5px}}
 .advanced{margin-top:10px;border-top:1px solid var(--line);padding-top:10px}.advanced summary{cursor:pointer;color:#8f948e;font:700 8px Manrope;letter-spacing:.12em}.advanced[open] summary{color:var(--gold2)}
 .intelligence{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 10px}.intel-card{background:#0d0f0d;border:1px solid var(--line);padding:20px;min-height:220px}.intel-kicker{color:var(--gold);font:700 8px Manrope;letter-spacing:.16em;margin-bottom:18px}.intel-title{font:800 clamp(22px,3vw,34px)/1.02 Manrope;letter-spacing:-.04em}.intel-title span{color:var(--gold2)}.intel-card p{max-width:620px;color:var(--muted);font-size:11px;margin:16px 0 20px}.intel-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.intel-flow span{border:1px solid #353a35;padding:6px 8px;color:#b9bcb6;font:700 7px Manrope;letter-spacing:.1em}.intel-flow i{font-style:normal;color:var(--gold)}.network{min-height:220px}.network-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}.network-grid span{display:flex;gap:7px;align-items:center;border-bottom:1px solid #202420;padding:6px 0;color:#aaaFA8;font-size:9px}.network-grid b{color:#665b45;font:700 7px ui-monospace,monospace}@media(max-width:850px){.intelligence{grid-template-columns:1fr}.network-grid{grid-template-columns:1fr}} 
@@ -108,7 +112,17 @@ footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#
 <div class="field"><label>Phong cách</label><input id="style" value="high-end cinematic architectural film"></div>
 </div>
 
-<div class="visual-section shot-selector">
+<div class="visual-section shot-selector"><div class="shot-presets">
+<div class="visual-section-head"><b>05 / SHOT PRESET</b><span>CHỌN 1 · TỰ CẤU HÌNH CAMERA</span></div>
+<div class="shot-preset-row" id="shotPresets">
+<button class="shot-preset on" data-preset="hero"><i class="preset-thumb p-hero"></i><strong>ARCHITECTURAL HERO</strong><small>35mm · eye-level · dolly-in</small></button>
+<button class="shot-preset" data-preset="reveal"><i class="preset-thumb p-reveal"></i><strong>LUXURY REVEAL</strong><small>28mm · wide · slow reveal</small></button>
+<button class="shot-preset" data-preset="detail"><i class="preset-thumb p-detail"></i><strong>MATERIAL DETAIL</strong><small>85mm · detail · push-in</small></button>
+<button class="shot-preset" data-preset="walk"><i class="preset-thumb p-walk"></i><strong>CINEMATIC WALKTHROUGH</strong><small>24mm · eye-level · tracking</small></button>
+<button class="shot-preset" data-preset="portrait"><i class="preset-thumb p-portrait"></i><strong>DESIGN PORTRAIT</strong><small>50mm · eye-level · orbit</small></button>
+<button class="shot-preset" data-preset="wide"><i class="preset-thumb p-wide"></i><strong>SPATIAL ESTABLISHING</strong><small>24mm · high · locked</small></button>
+</div>
+</div>
 <div class="visual-section-head"><b>05 / CAMERA & SHOT</b><span>CHỌN 1 MỖI NHÓM</span></div>
 <div class="visual-section-head"><b>CAMERA PATH</b><span>CHUYỂN ĐỘNG MÁY</span></div>
 <div class="visual-row" data-shot-select="camera">
@@ -187,6 +201,26 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPro
 $('install').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null}};
 document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.nav)?.scrollIntoView({behavior:'smooth'}));
 $('mobileMake').onclick=generate;
+const shotPresets={
+ hero:{camera:'slow dolly-in',lens:'35mm architectural lens',angle:'wide architectural perspective, eye-level',motion:'subtle cinematic movement'},
+ reveal:{camera:'slow dolly-out',lens:'28mm wide architectural lens',angle:'wide establishing shot',motion:'slow reveal movement'},
+ detail:{camera:'slow dolly-in',lens:'85mm compressed detail lens',angle:'architectural detail shot',motion:'slow push-in'},
+ walk:{camera:'smooth lateral tracking',lens:'24mm ultra-wide architectural lens',angle:'wide architectural perspective, eye-level',motion:'smooth lateral movement'},
+ portrait:{camera:'slow orbit',lens:'50mm natural perspective lens',angle:'wide architectural perspective, eye-level',motion:'slow orbiting movement'},
+ wide:{camera:'locked-off',lens:'24mm ultra-wide architectural lens',angle:'wide architectural perspective, high angle',motion:'subtle cinematic movement'}
+};
+function applyShotPreset(key){
+ const p=shotPresets[key]; if(!p)return;
+ camera=p.camera;$('lens').value=p.lens+', '+p.angle;$('motion').value=p.motion;
+ document.querySelectorAll('#shotPresets .shot-preset').forEach(x=>x.classList.toggle('on',x.dataset.preset===key));
+ document.querySelectorAll('[data-shot-select]').forEach(row=>{
+   const key2=row.dataset.shotSelect;
+   let value=key2==='camera'?p.camera:key2==='lens'?p.lens:key2==='angle'?p.angle:key2==='motion'?p.motion:null;
+   if(!value)return;
+   row.querySelectorAll('.visual-card').forEach(x=>x.classList.toggle('on',x.dataset.value===value));
+ });
+}
+document.querySelectorAll('#shotPresets .shot-preset').forEach(b=>b.onclick=()=>applyShotPreset(b.dataset.preset));
 document.querySelectorAll('[data-shot-select]').forEach(row=>row.querySelectorAll('.visual-card').forEach(btn=>btn.onclick=()=>{
  const key=row.dataset.shotSelect; row.querySelectorAll('.visual-card').forEach(x=>x.classList.remove('on')); btn.classList.add('on');
  if(key==='camera') camera=btn.dataset.value;
@@ -253,7 +287,7 @@ async function generate(){
 async function copy(t){try{await navigator.clipboard.writeText(t);$('status').textContent='COPIED'}catch(e){}}
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 $('make').onclick=generate;$('copy').onclick=()=>copy(build());$('english').onclick=()=>{generate();copy(build())};$('json').onclick=()=>copy(JSON.stringify(data(),null,2));
-$('clear').onclick=()=>{document.querySelectorAll('input,textarea').forEach(e=>{if(e.id!=='constraints')e.value=''});document.querySelectorAll('[data-shot-select] .visual-card').forEach(x=>x.classList.remove('on'));document.querySelector('[data-shot-select="camera"] .visual-card')?.classList.add('on');document.querySelector('[data-shot-select="angle"] .visual-card')?.classList.add('on');document.querySelector('[data-shot-select="lens"] .visual-card[data-value="35mm architectural lens"]')?.classList.add('on');document.querySelector('[data-shot-select="motion"] .visual-card')?.classList.add('on');document.querySelector('[data-shot-select="lighting"] .visual-card')?.classList.add('on');camera='slow dolly-in';$('lens').value='35mm architectural lens, wide architectural perspective, eye-level';$('motion').value='subtle cinematic movement';$('light').value='soft side light with gentle shadow falloff';$('output').textContent='Prompt sẽ xuất hiện ở đây.';$('output').classList.add('empty');$('words').textContent='0 WORDS';$('status').textContent='17 AGENTS READY';$('agentStatus').textContent='Creative Intelligence đang chờ brief.';$('agentStatus').classList.remove('active');$('engineState').textContent='17 AGENTS / READY';$('previewGrid').innerHTML='';$('imageCount').textContent='0 ẢNH ĐÃ CHỌN';$('ref').value=''};
+$('clear').onclick=()=>{document.querySelectorAll('input,textarea').forEach(e=>{if(e.id!=='constraints')e.value=''});document.querySelectorAll('[data-shot-select] .visual-card').forEach(x=>x.classList.remove('on'));document.querySelector('[data-shot-select="camera"] .visual-card')?.classList.add('on');document.querySelector('[data-shot-select="angle"] .visual-card')?.classList.add('on');document.querySelector('[data-shot-select="lens"] .visual-card[data-value="35mm architectural lens"]')?.classList.add('on');document.querySelector('[data-shot-select="motion"] .visual-card')?.classList.add('on');document.querySelector('[data-shot-select="lighting"] .visual-card')?.classList.add('on');camera='slow dolly-in';$('lens').value='35mm architectural lens, wide architectural perspective, eye-level';$('motion').value='subtle cinematic movement';$('light').value='soft side light with gentle shadow falloff';applyShotPreset('hero');$('output').textContent='Prompt sẽ xuất hiện ở đây.';$('output').classList.add('empty');$('words').textContent='0 WORDS';$('status').textContent='17 AGENTS READY';$('agentStatus').textContent='Creative Intelligence đang chờ brief.';$('agentStatus').classList.remove('active');$('engineState').textContent='17 AGENTS / READY';$('previewGrid').innerHTML='';$('imageCount').textContent='0 ẢNH ĐÃ CHỌN';$('ref').value=''};
 </script>
 </body>
 </html>
