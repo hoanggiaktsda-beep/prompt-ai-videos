@@ -298,7 +298,7 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
 </style><style id="hg-final-minimal-ui">
 /* FINAL UI CLEANUP — remove redundant chrome, keep one working canvas */
 html,body{background:#0a0c0b!important}
-body>*:not(.hg-live-workspace){display:none!important}
+body>.hg-live-workspace~*{display:none!important}
 .hg-live-workspace{display:block!important;position:relative!important;width:100%!important;max-width:1220px!important;height:100vh!important;min-height:0!important;margin:0 auto!important;padding:12px 14px!important;box-sizing:border-box!important}
 .hg-live-workspace .hg-workspace-shell{height:calc(100vh - 24px)!important;grid-template-columns:minmax(0,1fr) 360px!important;gap:10px!important}
 .hg-live-workspace .hg-workspace-panel{background:#101311!important;border:1px solid rgba(255,255,255,.065)!important;border-radius:8px!important;padding:12px!important;box-shadow:none!important}
@@ -353,7 +353,11 @@ label[for="duration"],label[for="ratio"],label[for="aiModel"],label[for="aiKey"]
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(prune,160));
  else setTimeout(prune,160);
 })();
-</script></head>
+</script><style id="hg-recovery">
+/* GitHub Pages recovery: keep the actual document visible and stable */
+html,body{display:block!important;visibility:visible!important;opacity:1!important}
+body{min-height:100vh!important}
+</style></head>
 <body><div class="hg-workspace" id="hg-workspace-map">
   <div class="hg-workspace-shell">
     <div class="hg-workspace-panel">
