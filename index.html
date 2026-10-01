@@ -3,14 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HOANGGIA AI — Video Prompt Studio</title>
+<title>HOANGGIA AI — Studio Viết Prompt Video</title>
+<link rel="icon" type="image/svg+xml" href="assets/brand-mark.svg">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/hoanggiaktsda-beep/hoanggiainterior/main/HOANGGIA-AI/apple-touch-icon.png">
 <meta name="description" content="HOANGGIA AI Video Prompt Studio — viết prompt video AI chuyên sâu cho kiến trúc và nội thất.">
 <meta name="theme-color" content="#070807">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
 :root{--bg:#070807;--panel:#0d100e;--panel2:#111411;--line:#252a25;--line2:#343a34;--text:#f2efe7;--muted:#858d85;--soft:#c9cbc3;--gold:#c5a76a;--gold2:#e1c68d;--danger:#8b675c}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(900px 600px at 80% -10%,rgba(197,167,106,.10),transparent 62%),radial-gradient(800px 700px at -10% 40%,rgba(255,255,255,.025),transparent 65%),var(--bg);color:var(--text);font:13px/1.6 'DM Sans',system-ui,sans-serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.025;background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(to bottom,black,transparent 80%)}
-.wrap{max-width:1420px;margin:auto;padding:18px 28px 70px;position:relative;z-index:1}.nav{height:58px;border-bottom:1px solid #20241f;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:12px}.mark{width:38px;height:38px;border:1px solid #77623b;border-radius:2px;display:grid;place-items:center;color:var(--gold2);font:800 11px Manrope;background:linear-gradient(145deg,#17150f,#090a09)}.brand b{font:800 15px Manrope;letter-spacing:.16em}.brand small{display:block;color:#697069;font-size:8px;letter-spacing:.18em;margin-top:3px}.status{color:#bda875;border:1px solid #453a28;padding:6px 9px;font:700 8px Manrope;letter-spacing:.13em}
+.wrap{max-width:1420px;margin:auto;padding:18px 28px 70px;position:relative;z-index:1}.nav{height:58px;border-bottom:1px solid #20241f;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:12px}.mark{width:42px;height:42px;border:1px solid #77623b;border-radius:2px;display:grid;place-items:center;background:#070807;overflow:hidden}.mark img{width:100%;height:100%;display:block}.brand b{font:800 15px Manrope;letter-spacing:.16em}.brand small{display:block;color:#697069;font-size:8px;letter-spacing:.18em;margin-top:3px}.status{color:#bda875;border:1px solid #453a28;padding:6px 9px;font:700 8px Manrope;letter-spacing:.13em}
 .hero{padding:70px 0 48px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:65px;align-items:end}.eyebrow{color:#a88b56;font:700 9px Manrope;letter-spacing:.19em;margin-bottom:15px}.hero h1{font:800 clamp(48px,7vw,98px)/.9 Manrope;letter-spacing:-.07em;margin:0}.hero h1 em{color:var(--gold2);font-style:normal}.hero p{border-left:1px solid #625132;padding-left:18px;color:#929990;max-width:430px;font-size:12px;line-height:1.9;margin:0}.hero p strong{display:block;color:#d8c18e;font:700 8px Manrope;letter-spacing:.16em;margin-bottom:10px}
 .navtabs{position:sticky;top:0;z-index:20;background:rgba(7,8,7,.88);backdrop-filter:blur(16px);border:1px solid #292d28;padding:6px;display:flex;gap:3px;box-shadow:0 12px 35px #0006}.navtabs button{background:transparent;color:#747c74;border:1px solid transparent;padding:9px 12px;border-radius:2px;font:700 8px Manrope;letter-spacing:.12em;cursor:pointer}.navtabs button:hover,.navtabs button.active{color:#dec58f;border-color:#4b402c;background:#14120e}
 .rail{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:#20241f;border:1px solid #20241f;margin-top:12px}.rail div{background:#0a0c0a;padding:14px 16px}.rail b{display:block;color:#d5bc85;font:700 8px Manrope;letter-spacing:.13em}.rail span{color:#646c64;font-size:9px}
@@ -28,7 +30,7 @@ footer{padding:40px 0 0;border-top:1px solid #20241f;margin-top:40px;color:#5d65
 <body>
 <div class="wrap">
 <header class="nav">
-  <div class="brand"><div class="mark">HG</div><div><b>HOANGGIA AI</b><small>STUDIO VIẾT PROMPT VIDEO</small></div></div>
+  <div class="brand"><div class="mark"><img src="assets/brand-mark.svg" alt="HOANGGIA AI" /></div><div><b>HOANGGIA AI</b><small>STUDIO VIẾT PROMPT VIDEO</small></div></div>
   <div class="status">KIẾN TRÚC / NỘI THẤT / VIDEO AI</div>
 </header>
 
@@ -155,7 +157,7 @@ footer{padding:40px 0 0;border-top:1px solid #20241f;margin-top:40px;color:#5d65
 </aside>
 </div>
 
-<footer><div>HOANGGIA AI / STUDIO VIẾT PROMPT VIDEO</div><div><span class="gold">KTS. HOÀNG GIA</span> · Architecture / Interior / AI</div></footer>
+<footer><div><img src="assets/brand-mark.svg" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:7px">HOANGGIA AI / STUDIO VIẾT PROMPT VIDEO</div><div><span class="gold">KTS. HOÀNG GIA</span> · Architecture / Interior / AI</div></footer>
 </div>
 <script>
 const state={camera:'locked-off static camera',shot:'arrival'};
