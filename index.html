@@ -82,7 +82,33 @@ document.querySelectorAll('#camera .chip').forEach(b=>b.onclick=()=>{document.qu
 $('ref').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('preview').src=r.result;$('preview').style.display='block'};r.readAsDataURL(f)};
 function v(id){return $(id).value.trim()}
 function data(){return{brief:v('brief'),purpose:v('purpose'),duration:v('duration'),ratio:v('ratio'),style:v('style'),camera,lens:v('lens'),motion:v('motion'),light:v('light'),mood:v('mood'),material:v('material'),people:v('people'),constraints:v('constraints'),reference:!!$('ref').files[0]}}
-function build(){const d=data();const subject=d.brief||'a refined interior space';const intent=d.purpose||'showcase the architecture and interior design with a premium cinematic feeling';const motion=d.motion||'subtle environmental movement only';const material=d.material||'preserve and accurately reproduce the existing materials and finishes';const people=d.people||'no people';return `Create a ${d.duration} ${d.ratio} high-end cinematic architectural interior video.\nSUBJECT: ${subject}.\nINTENT: ${intent}.\nSTYLE: ${d.style}.\nSHOT: ${d.camera}; ${d.lens}. Slow, deliberate movement, natural perspective, stable architectural lines, no abrupt reframing.\nMOTION: ${d.camera}. ${motion}.\nLIGHT: ${d.light}.\nATMOSPHERE: ${d.mood}.\nMATERIAL: ${material}.\nACTION: ${people}.\nCONTINUITY: ${d.constraints}.\n${d.reference?'REFERENCE IMAGE: Use the uploaded image as the primary visual reference. Preserve its spatial composition, furniture identity, proportions, materials and camera relationship.':''}\nQUALITY: photorealistic, physically believable, premium architectural visualization, cinematic depth, realistic materials, controlled highlights, natural shadows, refined color grading.\nNEGATIVE: no text, no watermark, no artificial-looking CGI, no furniture substitution, no invented openings, no warped proportions, no geometry drift, no excessive camera shake.`}
+const expertBrain=[
+ {role:'Creative Director',reference:'Steven Spielberg',principles:'clear emotional intent, visual storytelling, purposeful escalation'},
+ {role:'Art Director',reference:'Sarah Greenwood',principles:'coherent visual language, composition, production design hierarchy'},
+ {role:'Architect / Interior Designer',reference:'Tadao Ando + Peter Zumthor',principles:'proportion, materiality, spatial experience, light as architecture'},
+ {role:'Storyboard Artist',reference:'Robert Valley',principles:'readable visual beats, silhouette, sequential clarity'},
+ {role:'Director',reference:'Steven Spielberg + Christopher Nolan',principles:'motivated action, controlled pacing, cinematic narrative logic'},
+ {role:'Cinematographer / DOP',reference:'Roger Deakins',principles:'motivated light, restrained composition, naturalistic exposure'},
+ {role:'3D / Archviz Artist',reference:'Alex Roman + Peter Guthrie',principles:'accurate perspective, believable scale, material realism'},
+ {role:'AI Artist / AI Director',reference:'Refik Anadol',principles:'translate creative intent into precise generative language without losing visual identity'},
+ {role:'Lighting Designer',reference:'James Turrell',principles:'light hierarchy, perception, atmosphere, controlled contrast'},
+ {role:'Set / Styling / Decor',reference:'Es Devlin',principles:'object hierarchy, spatial storytelling, intentional styling'},
+ {role:'Camera Operator',reference:'Emmanuel Lubezki',principles:'fluid camera path, motivated movement, immersive spatial relationship'},
+ {role:'Editor',reference:'Thelma Schoonmaker',principles:'rhythm, continuity, purposeful timing'},
+ {role:'Colorist',reference:'Stefan Sonnenfeld',principles:'coherent palette, tonal separation, controlled highlights'},
+ {role:'Sound Designer',reference:'Walter Murch',principles:'environmental realism, spatial cues, emotional sound hierarchy'},
+ {role:'Composer / Music Producer',reference:'Hans Zimmer',principles:'tempo, tension, emotional arc, synchronization'},
+ {role:'Voice Artist',reference:'James Earl Jones',principles:'authority, clarity, controlled delivery'},
+ {role:'Producer',reference:'Kathleen Kennedy',principles:'brief discipline, format, feasibility, consistency and delivery requirements'}
+];
+function expertDirection(d){
+ const selected=expertBrain.filter(x=>{
+   const s=(x.role+' '+x.principles).toLowerCase();
+   return ['architect','interior','material','camera','light','cinematic','story','sound','music','voice','style','furniture','showcase','advert','luxury','archviz'].some(k=>(d.brief+' '+d.purpose+' '+d.style+' '+d.material+' '+d.camera).toLowerCase().includes(k)) || ['Creative Director','Producer','AI Artist / AI Director','Cinematographer / DOP','3D / Archviz Artist'].includes(x.role);
+ });
+ return selected.map(x=>`${x.role} [reference framework: ${x.reference}]: ${x.principles}`).join('; ');
+}
+function build(){const d=data();const subject=d.brief||'a refined interior space';const intent=d.purpose||'showcase the architecture and interior design with a premium cinematic feeling';const motion=d.motion||'subtle environmental movement only';const material=d.material||'preserve and accurately reproduce the existing materials and finishes';const people=d.people||'no people';const brain=expertDirection(d);return `Create a ${d.duration} ${d.ratio} high-end cinematic architectural interior video.\nSUBJECT: ${subject}.\nINTENT: ${intent}.\nSTYLE: ${d.style}.\nCREATIVE BRAIN: Apply a coordinated 17-role professional reference framework, not 17 separate outputs. ${brain}\nSHOT: ${d.camera}; ${d.lens}. Slow, deliberate movement, natural perspective, stable architectural lines, no abrupt reframing.\nMOTION: ${d.camera}. ${motion}.\nLIGHT: ${d.light}.\nATMOSPHERE: ${d.mood}.\nMATERIAL: ${material}.\nACTION: ${people}.\nCONTINUITY: ${d.constraints}.\n${d.reference?'REFERENCE IMAGE: Use the uploaded image as the primary visual reference. Preserve its spatial composition, furniture identity, proportions, materials and camera relationship.':''}\nQUALITY: photorealistic, physically believable, premium architectural visualization, cinematic depth, realistic materials, controlled highlights, natural shadows, refined color grading.\nNEGATIVE: no text, no watermark, no artificial-looking CGI, no furniture substitution, no invented openings, no warped proportions, no geometry drift, no excessive camera shake.`}
 function generate(){const p=build();$('output').textContent=p;$('output').classList.remove('empty');$('words').textContent=p.split(/\s+/).length+' WORDS';$('status').textContent='PROMPT READY'}
 async function copy(t){try{await navigator.clipboard.writeText(t);$('status').textContent='COPIED'}catch(e){}}
 $('make').onclick=generate;$('copy').onclick=()=>copy(build());$('english').onclick=()=>{generate();copy(build())};$('json').onclick=()=>copy(JSON.stringify(data(),null,2));
