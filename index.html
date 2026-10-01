@@ -247,7 +247,7 @@ async function analyzeSpatial(){
   if(!referenceFiles.length){showSpatialError('Hãy thêm ít nhất 1 ảnh tham chiếu trước.');return}
   const endpoint=getBackendUrl();
   if(!endpoint){showSpatialError('Chưa có Backend URL. Hãy nhập URL backend Vision AI rồi bấm lại.');return}
-  localStorage.setItem('hoanggiA_ai_backend_url',endpoint);
+  localStorage.setItem('hoanggia_ai_backend_url',endpoint);
   const button=$('analyzeSpatial'); if(button){button.disabled=true;button.textContent='ĐANG PHÂN TÍCH...'}
   setSpatialStatus('VISION AI ĐANG PHÂN TÍCH');
   try{
