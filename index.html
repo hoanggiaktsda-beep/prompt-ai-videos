@@ -25,6 +25,14 @@
 .notice{border-left:1px solid #735f3b;background:#12110d;padding:11px;color:#8d948c;font-size:9px;line-height:1.7}.notice strong{color:#d5bb82}
 footer{padding:40px 0 0;border-top:1px solid #20241f;margin-top:40px;color:#5d655e;font-size:9px;display:flex;justify-content:space-between;gap:20px}.gold{color:#bda474}
 @media(max-width:1100px){.director-grid,.expert-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:900px){.hero{grid-template-columns:1fr;gap:30px}.workspace{grid-template-columns:1fr}.rail{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}.side{display:block}.director-grid,.expert-grid{grid-template-columns:repeat(2,1fr)}.director-head{align-items:flex-start;flex-direction:column}}@media(max-width:600px){.wrap{padding:14px 12px 50px}.status{display:none}.hero{padding:55px 0 35px}.hero h1{font-size:52px}.navtabs{overflow:auto}.navtabs button{white-space:nowrap}.grid2{grid-template-columns:1fr}.rail{grid-template-columns:1fr}.section{padding:18px}.timeline{grid-template-columns:1fr}.output{min-height:460px}}
+
+.agent-lab{margin-top:12px;border:1px solid #292d28;background:#090b09;padding:22px;position:relative}.agent-lab:before{content:"";position:absolute;top:0;left:0;width:44px;height:1px;background:#c5a76a}
+.agent-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:16px}.agent-head h2{font:800 25px/1.05 Manrope;letter-spacing:-.035em;margin:0;max-width:760px}.agent-head h2 em{font-style:normal;color:#dec58f}.agent-sub{color:#777f77;font-size:9px;line-height:1.7;max-width:820px;margin:8px 0 0}.agent-count{border:1px solid #4b402c;color:#bda474;padding:7px 9px;font:700 8px Manrope;letter-spacing:.12em;white-space:nowrap}
+.agent-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin:15px 0}.agent-toolbar button{border:1px solid #343a34;background:#0e110f;color:#aeb4ac;padding:8px 10px;font-size:8px}.agent-toolbar button.active,.agent-toolbar button:hover{border-color:#75613d;color:#dec58f;background:#14120e}
+.agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.agent-card{border:1px solid #252a25;background:#0d100e;padding:12px;cursor:pointer;transition:.2s}.agent-card:hover,.agent-card.active{border-color:#695638;background:#12120f}.agent-card .agent-top{display:flex;justify-content:space-between;gap:8px}.agent-card b{color:#d3b97e;font:800 8px Manrope;letter-spacing:.08em}.agent-card .agent-ref{color:#656d65;font-size:8px;margin-top:3px}.agent-card .agent-role{color:#8b938b;font-size:8.5px;line-height:1.45;margin-top:7px}.agent-card .agent-dot{width:6px;height:6px;border:1px solid #7d6841;border-radius:50%;margin-top:2px;flex:0 0 auto}
+.agent-detail{margin-top:8px;border-top:1px solid #20241f;padding-top:15px;display:grid;grid-template-columns:1.1fr .95fr .95fr;gap:7px}.agent-panel{border:1px solid #252a25;background:#0b0e0c;padding:12px}.agent-panel h3{margin:0 0 8px;color:#d5bc85;font:800 8px Manrope;letter-spacing:.12em}.agent-panel p,.agent-panel li{color:#808880;font-size:8.8px;line-height:1.55}.agent-panel ul{padding-left:15px;margin:0}.agent-panel .critique{color:#b9b0a0}.synthesis{margin-top:10px;border:1px solid #4b402c;background:#12110d;padding:14px}.synthesis h3{margin:0 0 7px;color:#dec58f;font:800 9px Manrope;letter-spacing:.12em}.synthesis p{margin:0;color:#aaa99f;font-size:9px;line-height:1.7}.decision-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.decision{border:1px solid #3a3324;padding:6px 8px;color:#b9a878;font-size:8px}.decision strong{color:#e0c991}
+@media(max-width:1100px){.agent-grid{grid-template-columns:repeat(2,1fr)}.agent-detail{grid-template-columns:1fr}}
+@media(max-width:600px){.agent-grid{grid-template-columns:1fr}.agent-head{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -65,6 +73,22 @@ footer{padding:40px 0 0;border-top:1px solid #20241f;margin-top:40px;color:#5d65
  </div>
  <div class="director-flow">
   <span>BRIEF</span><i>→</i><span>CONCEPT</span><i>→</i><span>ART DIRECTION</span><i>→</i><span>SPATIAL TRUTH</span><i>→</i><span>STORYBOARD</span><i>→</i><span>CAMERA</span><i>→</i><span>LIGHT</span><i>→</i><span>MOTION</span><i>→</i><span>AI GENERATION</span><i>→</i><span>EDIT / COLOR / SOUND</span>
+ </div>
+</section>
+
+<section class="agent-lab" id="agentLab">
+ <div class="agent-head">
+  <div><div class="eyebrow">HOANGGIA AI / EXPERT AGENT NETWORK</div><h2>17 CHUYÊN GIA AI. <em>01 CREATIVE DIRECTOR.</em></h2>
+  <p class="agent-sub">Mỗi vai trò không còn là một cái tên trong danh sách. Mỗi Agent có bộ nguyên tắc, checklist, câu hỏi kiểm tra và cơ chế phản biện riêng. Creative Director AI đứng trên cùng để giải quyết xung đột và biến các ý kiến thành một quyết định sáng tạo thống nhất.</p></div>
+  <span class="agent-count">17 AGENTS / 4 LỚP TƯ DUY</span>
+ </div>
+ <div class="agent-toolbar" id="agentFilters"></div>
+ <div class="agent-grid" id="agentGrid"></div>
+ <div class="agent-detail" id="agentDetail"></div>
+ <div class="synthesis" id="synthesisBox">
+  <h3>CREATIVE DIRECTOR AI / DECISION ENGINE</h3>
+  <p>Nhập brief ở bên dưới rồi chạy “AI CREATIVE REVIEW” để hệ thống cho từng Agent phản biện độc lập, sau đó Creative Director AI tổng hợp thành: ý đồ, ưu tiên, trade-off, shot strategy và các điều không được phép thay đổi.</p>
+  <div class="decision-row"><span class="decision"><strong>INPUT</strong> BRIEF + REFERENCES</span><span class="decision"><strong>DEBATE</strong> 17 AGENTS</span><span class="decision"><strong>RESOLVE</strong> CONFLICTS</span><span class="decision"><strong>OUTPUT</strong> CREATIVE DECISION</span></div>
  </div>
 </section>
 
@@ -146,7 +170,7 @@ footer{padding:40px 0 0;border-top:1px solid #20241f;margin-top:40px;color:#5d65
  <div class="sectionTitle"><b>05 / KẾT QUẢ PROMPT</b><span id="wordCount">0 WORDS</span></div>
  <div id="outputBox" class="output empty">Prompt sẽ xuất hiện ở đây. Hãy nhập phần mô tả rồi nhấn “TẠO PROMPT VIDEO”.</div>
  <div class="actions">
-   <button class="primary" onclick="generate()">TẠO PROMPT VIDEO</button>
+   <button class="primary" onclick="generate()">TẠO PROMPT VIDEO</button><button class="secondary" onclick="runCreativeReview()">AI CREATIVE REVIEW</button>
    <button class="secondary" onclick="copyPrompt()">SAO CHÉP PROMPT</button>
    <button class="ghost" onclick="generateEnglish()">TIẾNG ANH / TINH GỌN</button>
    <button class="ghost" onclick="resetAll()">ĐẶT LẠI</button>
@@ -193,6 +217,80 @@ footer{padding:40px 0 0;border-top:1px solid #20241f;margin-top:40px;color:#5d65
 <footer><div><img src="assets/brand-mark.svg" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:7px">HOANGGIA AI / STUDIO VIẾT PROMPT VIDEO</div><div><span class="gold">KTS. HOÀNG GIA</span> · Architecture / Interior / AI</div></footer>
 </div>
 <script>
+
+const expertAgents=[
+{id:'creative',name:'CREATIVE DIRECTOR',ref:'Steven Spielberg',layer:'VISION',role:'Ý tưởng, cảm xúc, mục tiêu cuối cùng',principles:['Một ý đồ trung tâm cho mỗi video','Cảm xúc phải phục vụ không gian, không lấn át kiến trúc','Mọi quyết định hình ảnh phải phục vụ câu chuyện'],check:['Có một câu nói được mục tiêu của video?','Người xem cần cảm thấy gì?','Chi tiết nào thực sự cần xuất hiện?'],questions:['Video này muốn người xem nhớ điều gì?','Nếu bỏ 50% chi tiết, ý tưởng có còn rõ không?'],critique:'Loại bỏ các hiệu ứng đẹp nhưng không phục vụ ý đồ; buộc mọi Agent quay về một creative intent.'},
+{id:'art',name:'ART DIRECTOR',ref:'Sarah Greenwood',layer:'VISION',role:'Ngôn ngữ hình ảnh, vật liệu, màu sắc, décor',principles:['Xây dựng visual language nhất quán','Màu và vật liệu tạo hierarchy','Không décor ngẫu nhiên'],check:['Palette có logic?','Material hierarchy đã rõ?','Decor có kể cùng một câu chuyện?'],questions:['Vật liệu nào là hero?','Điểm nhấn thị giác nằm ở đâu?'],critique:'Phản biện palette rời rạc, décor thừa và vật liệu không có thứ bậc.'},
+{id:'architect',name:'ARCHITECT / INTERIOR',ref:'Peter Zumthor · Tadao Ando',layer:'SPACE',role:'Không gian, công năng, tỷ lệ, geometry',principles:['Spatial truth trước visual effect','Tỷ lệ và circulation phải hợp lý','Không hy sinh kiến trúc để lấy cinematic shot'],check:['Tường, trần, opening có bị đổi?','Furniture có đúng tỷ lệ?','Circulation có hợp lý?'],questions:['Điểm nhìn này có đúng với không gian thật?','Có geometry nào AI dễ bẻ cong?'],critique:'Có quyền phủ quyết mọi thay đổi làm sai hình học, tỷ lệ hoặc logic kiến trúc.'},
+{id:'storyboard',name:'STORYBOARD ARTIST',ref:'Robert Valley',layer:'STORY',role:'Ý tưởng thành sequence và shot',principles:['Mỗi shot có nhiệm vụ','Sequence phải có mở đầu, phát hiện, kết'],check:['Shot này reveal gì?','Có lặp thông tin?','Transition có logic?'],questions:['Shot trước dẫn vào shot này thế nào?','Nếu bỏ shot này câu chuyện có mất gì?'],critique:'Cắt shot đẹp nhưng không có narrative function.'},
+{id:'director',name:'DIRECTOR',ref:'Steven Spielberg · Christopher Nolan',layer:'STORY',role:'Nhịp kể, staging, quyết định cảnh',principles:['Blocking rõ','Rhythm có chủ đích','Performance tiết chế trong architecture film'],check:['Ai/cái gì đang dẫn cảnh?','Nhịp có phù hợp mood?','Camera có đang kể thay vì phô diễn?'],questions:['Cảnh này cần diễn biến gì?','Khi nào người xem nên phát hiện điểm chính?'],critique:'Phản biện camera/motion phô diễn làm mất trọng tâm.'},
+{id:'dop',name:'CINEMATOGRAPHER / DOP',ref:'Roger Deakins',layer:'IMAGE',role:'Framing, lens, exposure, camera movement',principles:['Một camera move chính','Framing phục vụ geometry','Movement có motivation'],check:['Lens có phù hợp tỷ lệ?','Verticals có thẳng?','Move có quá phức tạp?'],questions:['Tại sao camera phải di chuyển?','Lens này đang làm không gian rộng/sâu thế nào?'],critique:'Giảm movement, tránh wide distortion và camera drift.'},
+{id:'archviz',name:'3D / ARCHVIZ ARTIST',ref:'Alex Roman · Peter Guthrie',layer:'IMAGE',role:'Geometry, material, light, realism',principles:['Material response phải vật lý','Scale và edge logic','Realism đến từ ánh sáng + imperfection'],check:['Scale vật liệu?','Reflection/roughness hợp lý?','Edge và geometry sạch?'],questions:['Bề mặt này phản xạ ánh sáng thế nào?','Chi tiết nào cần giữ nguyên từ render?'],critique:'Phản biện vật liệu giả, scale sai, geometry bị AI làm mềm.'},
+{id:'ai',name:'AI ARTIST / AI DIRECTOR',ref:'Refik Anadol',layer:'AI',role:'Chuyển ý đồ thành instruction cho model',principles:['Prompt là instruction có thứ tự','Reference > adjective','Constraint phải rõ'],check:['Reference nào là source of truth?','Có constraint?','Có negative failure modes?'],questions:['Model được phép thay đổi gì?','Cái gì tuyệt đối không được thay đổi?'],critique:'Loại prompt mơ hồ, tag soup và yêu cầu mâu thuẫn.'},
+{id:'lighting',name:'LIGHTING DESIGNER',ref:'James Turrell',layer:'IMAGE',role:'Ánh sáng kiến trúc và cinematic lighting',principles:['Light định hình volume','Contrast có hierarchy','Nguồn sáng phải có logic'],check:['Direction?','Color temperature?','Shadow logic?'],questions:['Ánh sáng đến từ đâu?','Nó đang nhấn vật liệu nào?'],critique:'Phản biện ánh sáng không có nguồn, quá phẳng hoặc phá mood.'},
+{id:'styling',name:'SET / STYLING / DECOR',ref:'Es Devlin',layer:'SPACE',role:'Furniture, plants, art, décor, composition',principles:['Mỗi object có vai trò','Negative space quan trọng','Styling không phá circulation'],check:['Object hierarchy?','Khoảng thở?','Đồng bộ phong cách?'],questions:['Object này kể gì?','Có thể bỏ nó mà cảnh tốt hơn không?'],critique:'Cắt clutter và bảo vệ identity của furniture gốc.'},
+{id:'camera',name:'CAMERA OPERATOR',ref:'Emmanuel Lubezki',layer:'IMAGE',role:'Thực thi chuyển động camera',principles:['Movement có trọng lượng','Không rung vô cớ','Path phải khả thi'],check:['Start/end frame?','Speed?','Parallax?'],questions:['Camera đang ở đâu và đi đâu?','Chuyển động này có thể thực hiện thật?'],critique:'Phản biện path phi vật lý, tốc độ không tự nhiên và shake.'},
+{id:'editor',name:'EDITOR',ref:'Thelma Schoonmaker',layer:'POST',role:'Rhythm, continuity, sequence',principles:['Cắt theo ý nghĩa','Rhythm thay đổi có chủ đích','Continuity trước spectacle'],check:['Shot length?','Match?','Emotional rhythm?'],questions:['Điểm cắt nằm ở đâu?','Shot này cần dài bao lâu?'],critique:'Loại bỏ đoạn dư và continuity lỗi.'},
+{id:'color',name:'COLORIST',ref:'Stefan Sonnenfeld',layer:'POST',role:'Color, contrast, cinematic mood',principles:['Grade phục vụ story','Skin/material neutrality khi cần','Consistent color space'],check:['Contrast?','Highlight rolloff?','Material color fidelity?'],questions:['Màu nào là emotional anchor?','Grade có làm sai vật liệu?'],critique:'Phản biện grading quá nặng làm sai màu vật liệu và kiến trúc.'},
+{id:'sound',name:'SOUND DESIGNER',ref:'Walter Murch',layer:'POST',role:'Ambience, foley, spatial sound',principles:['Âm thanh tạo không gian','Silence là một lựa chọn','Sound cue có timing'],check:['Room tone?','Footsteps/cloth/air?','Spatial perspective?'],questions:['Không gian này nghe như thế nào?','Âm thanh nào làm người xem cảm nhận scale?'],critique:'Cắt sound effect dư, giữ ambience có chiều sâu.'},
+{id:'music',name:'COMPOSER / MUSIC PRODUCER',ref:'Hans Zimmer',layer:'POST',role:'Score, tempo, emotional arc',principles:['Music không tranh vai với architecture','Tempo khớp camera','Motif nhất quán'],check:['BPM?','Dynamic arc?','Entry/exit?'],questions:['Nhạc bắt đầu khi nào?','Có cần nhạc hay chỉ ambience?'],critique:'Phản biện music quá kịch tính hoặc lệch nhịp hình.'},
+{id:'voice',name:'VOICE ARTIST',ref:'James Earl Jones',layer:'POST',role:'Voice-over và narration',principles:['Voice phục vụ hình','Pacing rõ','Không mô tả thứ hình đã nói'],check:['Tone?','Pace?','Script economy?'],questions:['Có thực sự cần voice?','Một câu nào đủ để định nghĩa ý tưởng?'],critique:'Loại narration thừa và giọng không phù hợp thương hiệu.'},
+{id:'producer',name:'PRODUCER',ref:'Kathleen Kennedy',layer:'PRODUCTION',role:'Scope, resources, schedule, risk',principles:['Ý tưởng phải thực thi được','Ưu tiên shot quan trọng','Kiểm soát scope'],check:['Time?','Tool/model?','Risk?'],questions:['Cảnh nào tốn chi phí/rủi ro nhất?','Có phương án đơn giản hơn?'],critique:'Phản biện complexity không tạo thêm giá trị tương xứng.'}
+];
+
+let activeAgent='creative',activeFilter='ALL';
+function renderAgentFilters(){
+ const fs=['ALL','VISION','SPACE','STORY','IMAGE','AI','POST','PRODUCTION'];
+ document.getElementById('agentFilters').innerHTML=fs.map(x=>'<button class="'+(x===activeFilter?'active':'')+'" onclick="filterAgents(\''+x+'\')">'+x+'</button>').join('');
+}
+function filterAgents(f){activeFilter=f;renderAgentFilters();renderAgents();}
+function renderAgents(){
+ const list=activeFilter==='ALL'?expertAgents:expertAgents.filter(a=>a.layer===activeFilter);
+ document.getElementById('agentGrid').innerHTML=list.map(a=>'<div class="agent-card '+(a.id===activeAgent?'active':'')+'" onclick="selectAgent(\''+a.id+'\')"><div class="agent-top"><b>'+a.name+'</b><i class="agent-dot"></i></div><div class="agent-ref">REFERENCE / '+a.ref+'</div><div class="agent-role">'+a.role+'</div></div>').join('');
+ renderAgentDetail();
+}
+function selectAgent(id){activeAgent=id;renderAgents();}
+function renderAgentDetail(){
+ const a=expertAgents.find(x=>x.id===activeAgent)||expertAgents[0];
+ document.getElementById('agentDetail').innerHTML='<div class="agent-panel"><h3>PRINCIPLES / NGUYÊN TẮC</h3><ul>'+a.principles.map(x=>'<li>'+x+'</li>').join('')+'</ul></div><div class="agent-panel"><h3>CHECKLIST / CÂU HỎI</h3><ul>'+a.check.map(x=>'<li>'+x+'</li>').join('')+'</ul><p style="margin-top:8px"><b style="color:#c9b078">QUESTIONS</b></p><ul>'+a.questions.map(x=>'<li>'+x+'</li>').join('')+'</ul></div><div class="agent-panel"><h3>CRITIQUE / PHẢN BIỆN</h3><p class="critique">'+a.critique+'</p><p><b style="color:#c9b078">REFERENCE:</b> '+a.ref+'</p></div>';
+}
+function analyzeBrief(){
+ const brief=(val('briefText')||'').toLowerCase();
+ const space=val('space'),purpose=val('purpose'),lock=val('lock'),energy=val('energy');
+ const risk=[];
+ if(lock.includes('Cao'))risk.push('Geometry Guard: khóa tường, trần, openings và furniture geometry.');
+ if(!val('material'))risk.push('Material hierarchy: cần xác định vật liệu hero.');
+ if(state.camera.includes('arc')||state.camera.includes('orbit'))risk.push('Camera risk: orbit dễ gây geometry drift; giới hạn biên độ.');
+ if(val('life').includes('People'))risk.push('Human motion: giữ tỷ lệ người và không cho AI thay đổi furniture.');
+ if(!brief)risk.push('Brief còn trống: Creative Director phải đặt ý đồ tối thiểu trước khi render.');
+ const intent=purpose+' — '+space+' — '+energy;
+ return {intent,risk};
+}
+function runCreativeReview(){
+ const a=analyzeBrief();
+ const top=expertAgents.map(x=>{
+   let score=0,reason='';
+   if(x.layer==='SPACE' && val('lock').includes('Cao')){score+=3;reason='geometry fidelity';}
+   if(x.layer==='IMAGE' && state.camera!=='locked-off static camera'){score+=2;reason='camera/light discipline';}
+   if(x.layer==='AI' && val('briefText')){score+=2;reason='instruction hierarchy';}
+   if(x.layer==='POST' && val('purpose').includes('Mạng')){score+=2;reason='rhythm and finish';}
+   return {x,score,reason};
+ }).sort((p,q)=>q.score-p.score);
+ const lead=top.slice(0,5).map(z=>z.x.name).join(' · ');
+ const decisions=[
+  'Creative intent: '+a.intent,
+  'Lead voices: '+lead,
+  'Primary camera: '+state.camera,
+  'Spatial rule: '+val('lock'),
+  'Material focus: '+(val('material')||'chưa khóa — Agent Art Director yêu cầu bổ sung'),
+  'Motion rule: một chuyển động máy quay chính; secondary motion chỉ ở mức phục vụ scale và life.',
+  'Conflict rule: Spatial Truth > visual spectacle; furniture identity > stylistic invention; continuity > effect.'
+ ];
+ document.getElementById('synthesisBox').innerHTML='<h3>CREATIVE DIRECTOR AI / DECISION ENGINE — REVIEW COMPLETE</h3><p>Creative Director AI đã tổng hợp phản biện theo hierarchy: ý đồ → không gian → hình ảnh → AI instruction → hậu kỳ → tính khả thi.</p><div class="decision-row">'+decisions.map(x=>'<span class="decision">'+x+'</span>').join('')+'</div><div class="notice" style="margin-top:10px"><strong>CRITICAL RISKS:</strong> '+a.risk.join(' · ')+'</div>';
+ toast('17 AGENTS → CREATIVE DECISION');
+}
+renderAgentFilters();renderAgents();
+
 const state={camera:'locked-off static camera',shot:'arrival'};
 document.querySelectorAll('#cameraChips .chip').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#cameraChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');state.camera=b.dataset.v;}));
 function val(id){return document.getElementById(id).value.trim();}
@@ -201,7 +299,7 @@ function buildPrompt(clean=false){
  const materials=val('material')||'natural stone, warm timber, refined metal and premium upholstery';
  const lock=val('lock');
  const duration=val('duration');
- const creativeIntent = val('purpose') + '; creative direction led by a Creative Director, Art Director and Architect/Interior Designer; translate the brief into a coherent visual story rather than a collection of keywords.';
+ const creativeIntent = val('purpose') + '; Creative Director AI synthesis: establish one central intent, then reconcile the Expert Agents in hierarchy: spatial truth and furniture identity first, visual language second, camera/light third, AI generation constraints fourth, post-production last. Translate the brief into a coherent visual story rather than a collection of keywords.';
  const prompt=[
   'Create a '+duration+' architectural interior film of '+brief+'.',
   'Creative direction: '+creativeIntent+'.',
