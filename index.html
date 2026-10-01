@@ -54,7 +54,7 @@ header{min-height:68px;height:auto;padding:10px 0;border-bottom:1px solid var(--
 @media(max-width:850px){.visual-row{grid-template-columns:repeat(6,108px);overflow-x:auto}.visual-card .thumb{height:68px}}@media(max-width:430px){.visual-row{grid-template-columns:repeat(6,96px)}.visual-card strong{font-size:6.5px}.visual-card small{font-size:6.5px}.compact-fields{gap:5px}}
 .advanced{margin-top:10px;border-top:1px solid var(--line);padding-top:10px}.advanced summary{cursor:pointer;color:#8f948e;font:700 8px Manrope;letter-spacing:.12em}.advanced[open] summary{color:var(--gold2)}
 .intelligence{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 10px}.intel-card{background:#0d0f0d;border:1px solid var(--line);padding:20px;min-height:220px}.intel-kicker{color:var(--gold);font:700 8px Manrope;letter-spacing:.16em;margin-bottom:18px}.intel-title{font:800 clamp(22px,3vw,34px)/1.02 Manrope;letter-spacing:-.04em}.intel-title span{color:var(--gold2)}.intel-card p{max-width:620px;color:var(--muted);font-size:11px;margin:16px 0 20px}.intel-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.intel-flow span{border:1px solid #353a35;padding:6px 8px;color:#b9bcb6;font:700 7px Manrope;letter-spacing:.1em}.intel-flow i{font-style:normal;color:var(--gold)}.network{min-height:220px}.network-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}.network-grid span{display:flex;gap:7px;align-items:center;border-bottom:1px solid #202420;padding:6px 0;color:#aaaFA8;font-size:9px}.network-grid b{color:#665b45;font:700 7px ui-monospace,monospace}@media(max-width:850px){.intelligence{grid-template-columns:1fr}.network-grid{grid-template-columns:1fr}} 
-footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#5f665f;font-size:9px;display:flex;justify-content:space-between}
+.ai-connection{margin:0 0 10px;background:#0d0f0d;border:1px solid var(--line);padding:12px}.ai-connection-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}.ai-connection-head b{font:800 8px Manrope;letter-spacing:.13em}.ai-connection-state{font:700 7px Manrope;letter-spacing:.08em;color:#777d76}.ai-connection-state.ready{color:#c7aa6b}.ai-connection-grid{display:grid;grid-template-columns:1fr 1.4fr auto;gap:6px}.ai-connection input{padding:9px 10px}.ai-connection small{display:block;color:#666d66;font-size:7px;line-height:1.5;margin-top:7px}.ai-connection small b{color:#9d9278}@media(max-width:700px){.ai-connection-grid{grid-template-columns:1fr}.ai-connection-grid button{width:100%}}footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#5f665f;font-size:9px;display:flex;justify-content:space-between}
 @media(max-width:980px){.workspace{grid-template-columns:1fr}.output{min-height:280px}.hero{padding-top:48px}}
 @media(max-width:700px){.wrap{padding-bottom:40px}header{gap:12px}.brand small{font-size:7px}.hero{padding:38px 0 26px}.hero h1{font-size:clamp(42px,14vw,64px)}.intelligence{gap:8px}.intel-card{padding:16px;min-height:auto}.intel-title{font-size:24px}.network-grid{grid-template-columns:1fr 1fr}.panel{padding:14px}.grid{grid-template-columns:1fr;gap:4px}.actions{position:relative}.actions button{flex:1 1 auto}.primary{flex:1 0 100%!important}.output{min-height:300px;max-height:55vh;overflow:auto;font-size:10px;line-height:1.7}.title{margin-bottom:12px}.upload{padding:14px 10px}.preview-grid{grid-template-columns:repeat(3,1fr)}footer{display:block;line-height:1.8}}
 @media(max-width:430px){.wrap{padding-left:10px;padding-right:10px}.brand b{font-size:12px}.engineState{font-size:7px}.network-grid{grid-template-columns:1fr}.network-grid span{font-size:8px}.chips{gap:4px}.chip{flex:1 1 calc(50% - 4px);text-align:center;padding:9px 6px}.field label{font-size:7px}input,textarea,select{padding:11px;font-size:12px}.output{min-height:260px}.actions button{padding:10px 8px;font-size:7px}}
@@ -182,13 +182,21 @@ footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#
 <div class="actions"><button class="primary" id="make">KÍCH HOẠT 17 AGENTS · TẠO PROMPT</button><button id="copy">COPY</button><button id="clear">XÓA</button></div>
 </main>
 
-<aside class="panel output-panel">
+<div class="ai-connection" id="aiConnection">
+<div class="ai-connection-head"><b>AI CONNECTION / OPENAI RESPONSES API</b><span class="ai-connection-state" id="aiConnectionState">DISCONNECTED</span></div>
+<div class="ai-connection-grid">
+<select id="aiModel" aria-label="AI model"><option value="gpt-5.6-luna">GPT-5.6 Luna · FAST</option><option value="gpt-5.6-terra">GPT-5.6 Terra · BALANCED</option><option value="gpt-5.6-sol">GPT-5.6 Sol · FLAGSHIP</option></select>
+<input id="aiKey" type="password" autocomplete="off" placeholder="sk-… · nhập API key của Ốc">
+<button id="aiConnect">CONNECT AI</button>
+</div>
+<small><b>BYOK / PRIVATE SESSION:</b> key chỉ được giữ trong bộ nhớ của tab hiện tại và không được ghi vào GitHub. Vì trình duyệt gọi API trực tiếp, OpenAI khuyến nghị production phải dùng backend riêng; chế độ này phù hợp để Ốc dùng cá nhân/prototype. Không gửi API key cho Mỡ hoặc commit key vào repo.</small>
+</div><aside class="panel output-panel">
 <div class="title"><b>02 / OUTPUT</b><span id="modelState">AI MODEL / LOCAL</span></div>
 <div id="output" class="output empty">Prompt sẽ xuất hiện ở đây.</div>
 <div class="meta"><span class="tag" id="words">0 WORDS</span><span class="tag" id="status">17 AGENTS READY</span></div><div id="agentStatus" class="agent-status">Creative Intelligence đang chờ brief.</div>
 <div class="formula"><b>HOANGGIA AI PROMPT STRUCTURE</b><br>Subject → Creative Intent → Camera → Motion → Lighting → Material → Atmosphere → Continuity → Output Quality</div>
 <div class="actions"><button id="english">CLEAN ENGLISH</button><button id="json">COPY JSON</button></div>
-<div class="agent-status" id="modelNote">AI brain: browser orchestration. Add the server API to enable real model synthesis.</div>
+<div class="agent-status" id="modelNote">AI brain: GitHub Pages → OpenAI Responses API. 17-role synthesis runs directly in this session.</div>
 </aside>
 </div>
 
@@ -196,11 +204,34 @@ footer{border-top:1px solid var(--line);margin-top:35px;padding-top:18px;color:#
 </div>
 <script>
 const $=id=>document.getElementById(id);
-let camera='slow dolly-in',selectedImages=[],deferredPrompt=null;
+let camera='slow dolly-in',selectedImages=[],deferredPrompt=null,aiKey='';
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('install').style.display='inline-flex'});
 $('install').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null}};
 document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.nav)?.scrollIntoView({behavior:'smooth'}));
 $('mobileMake').onclick=generate;
+const AI_SYSTEM=`You are HOANGGIA AI Creative Intelligence, a professional creative brain for architecture, interior design and cinematic video generation. Apply all 17 expert reference frameworks internally as one coordinated creative decision, never as 17 separate outputs. Never imitate or claim endorsement by any named person; use names only as reference frameworks for principles. Priority: spatial truth > existing object/furniture identity > visual language > camera/light > motion > post-production. If a MASTER IMAGE is supplied, it is the single spatial source of truth: preserve walls, ceiling, floor, openings, proportions, camera relationship and existing furniture/object identity. Develop only requested creative attributes. Never invent openings, duplicate objects, substitute furniture, rearrange the room or drift geometry. Return one production-ready English video prompt only.
+
+17 EXPERT REFERENCE FRAMEWORKS:
+1 Creative Director — Steven Spielberg: emotional intent, visual storytelling, purposeful escalation.
+2 Art Director — Sarah Greenwood: coherent visual language, composition, production-design hierarchy.
+3 Architect / Interior Designer — Tadao Ando + Peter Zumthor: proportion, materiality, spatial experience, light as architecture.
+4 Storyboard Artist — Robert Valley: readable visual beats, silhouette, sequential clarity.
+5 Director — Steven Spielberg + Christopher Nolan: motivated action, controlled pacing, cinematic narrative logic.
+6 Cinematographer / DOP — Roger Deakins: motivated light, restrained composition, naturalistic exposure.
+7 3D / Archviz Artist — Alex Roman + Peter Guthrie: accurate perspective, believable scale, material realism.
+8 AI Artist / AI Director — Refik Anadol: precise generative language without losing visual identity.
+9 Lighting Designer — James Turrell: light hierarchy, perception, atmosphere, controlled contrast.
+10 Set / Styling / Decor — Es Devlin: object hierarchy, spatial storytelling, intentional styling.
+11 Camera Operator — Emmanuel Lubezki: fluid camera path, motivated movement, immersive spatial relationship.
+12 Editor — Thelma Schoonmaker: rhythm, continuity, purposeful timing.
+13 Colorist — Stefan Sonnenfeld: coherent palette, tonal separation, controlled highlights.
+14 Sound Designer — Walter Murch: environmental realism, spatial cues, emotional sound hierarchy.
+15 Composer / Music Producer — Hans Zimmer: tempo, tension, emotional arc, synchronization.
+16 Voice Artist — James Earl Jones: authority, clarity, controlled delivery when voice is requested.
+17 Producer — Kathleen Kennedy: brief discipline, format, feasibility, consistency and delivery requirements.`;
+function setAIState(ready){const s=$('aiConnectionState');s.textContent=ready?'AI READY':'DISCONNECTED';s.classList.toggle('ready',ready);$('modelState').textContent=ready?'AI MODEL / CONNECTED':'AI MODEL / LOCAL';}
+$('aiConnect').onclick=()=>{const key=$('aiKey').value.trim();if(!key){setAIState(false);$('modelNote').textContent='Hãy nhập API key để kết nối AI thật.';return}aiKey=key;$('aiKey').value='';setAIState(true);$('modelNote').textContent='AI thật đã kết nối trong phiên này. Key không được lưu vào repo.';$('status').textContent='AI READY'};
+
 const shotPresets={
  hero:{camera:'slow dolly-in',lens:'35mm architectural lens',angle:'wide architectural perspective, eye-level',motion:'subtle cinematic movement'},
  reveal:{camera:'slow dolly-out',lens:'28mm wide architectural lens',angle:'wide establishing shot',motion:'slow reveal movement'},
@@ -267,26 +298,32 @@ function build(){const d=data();const subject=d.brief||'a refined interior space
 async function filesAsDataURLs(){return Promise.all(selectedImages.map(f=>new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(f)})))}
 async function generate(){
  const d=data(),status=$('agentStatus'),state=$('engineState'),modelState=$('modelState'),note=$('modelNote');
+ if(!aiKey){$('status').textContent='AI KEY REQUIRED';state.textContent='AI / DISCONNECTED';modelState.textContent='AI MODEL / OFFLINE';note.textContent='Hãy mở AI CONNECTION, nhập OpenAI API key rồi bấm CONNECT AI.';return}
+ const model=$('aiModel').value;
  const roles=expertBrain.map(x=>x.role);
- state.textContent='VISION / PROCESSING';$('status').textContent='RUNNING VISION';status.classList.add('active');modelState.textContent='AI PIPELINE / RUNNING';note.textContent='Vision → 17 Expert Agents → Creative Director → Synthesis';
+ state.textContent='VISION / PROCESSING';$('status').textContent='RUNNING VISION';status.classList.add('active');modelState.textContent='AI PIPELINE / RUNNING';note.textContent='Real AI → Vision + 17 Expert Roles → Creative Director → Final Prompt';
  for(let i=0;i<roles.length;i++){status.textContent=`Expert ${String(i+1).padStart(2,'0')} / 17 — ${roles[i]}`;await new Promise(r=>setTimeout(r,18));}
  try{
-   const res=await fetch((window.HOANGGIA_AI_API||'/api/creative-intelligence'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:d,roles:expertBrain,images:await filesAsDataURLs()})});
-   if(!res.ok) throw new Error('AI API '+res.status);
-   const out=await res.json();
-   const p=out.prompt||out.output||'';
-   if(!p) throw new Error('Empty AI output');
+   const images=await filesAsDataURLs();
+   const userText='Create the final production-ready video prompt from this HOANGGIA AI brief. Analyze the MASTER IMAGE if supplied, lock its spatial truth and object identity, then synthesize one coherent cinematic decision using all 17 expert frameworks. Do not output analysis, agent opinions, or explanations. Return only the final English prompt.\n\nPROJECT DATA:\n'+JSON.stringify(d);
+   const content=[{type:'input_text',text:userText}];
+   if(images.length){content.push({type:'input_text',text:'MASTER IMAGE RULE: The first and only uploaded image is the MASTER IMAGE and the single source of truth. Protect its architecture, openings, proportions, camera relationship and existing furniture/object identity. Develop only explicitly requested style, material, lighting, mood, camera or motion attributes.'});content.push({type:'input_image',image_url:images[0],detail:'high'});}
+   const res=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+aiKey},body:JSON.stringify({model,input:[{role:'system',content:[{type:'input_text',text:AI_SYSTEM}]},{role:'user',content}],max_output_tokens:2600})});
+   const raw=await res.text();
+   if(!res.ok) throw new Error('OpenAI '+res.status+' '+raw.slice(0,300));
+   const out=JSON.parse(raw),p=out.output_text||'';
+   if(!p) throw new Error('OpenAI returned no text');
    $('output').textContent=p;$('output').classList.remove('empty');$('words').textContent=p.split(/\s+/).length+' WORDS';
-   $('status').textContent='CREATIVE DECISION / READY';state.textContent='VISION → 17 AGENTS → SYNTHESIS';modelState.textContent='AI MODEL / CONNECTED';note.textContent=out.model?('Real model synthesis: '+out.model):'Real model synthesis completed.';
+   $('status').textContent='CREATIVE DECISION / READY';state.textContent='VISION → 17 AGENTS → SYNTHESIS';modelState.textContent='AI MODEL / CONNECTED';note.textContent='Real '+model+' synthesis completed directly from GitHub Pages.';
  }catch(e){
-   const p=build();$('output').textContent=p;$('output').classList.remove('empty');$('words').textContent=p.split(/\s+/).length+' WORDS';
-   $('status').textContent='LOCAL FALLBACK';state.textContent='LOCAL / PIPELINE OFFLINE';modelState.textContent='AI MODEL / OFFLINE';note.textContent='API chưa kết nối — đang dùng local synthesis. Deploy API + set OPENAI_API_KEY để bật AI thật.';
+   $('status').textContent='AI ERROR';state.textContent='AI / ERROR';modelState.textContent='AI MODEL / ERROR';note.textContent='Không kết nối được OpenAI: '+e.message;
+   status.textContent='AI ERROR — xem model note';
  }
  status.classList.remove('active');
 }
 async function copy(t){try{await navigator.clipboard.writeText(t);$('status').textContent='COPIED'}catch(e){}}
 if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-$('make').onclick=generate;$('copy').onclick=()=>copy(build());$('english').onclick=async()=>{if(!$('output').textContent.trim()||$('output').classList.contains('empty')) await generate(); await copy($('output').textContent)};$('json').onclick=()=>copy(JSON.stringify(data(),null,2));
+$('make').onclick=generate;$('copy').onclick=()=>copy($('output').textContent.trim()||build());$('english').onclick=async()=>{if(!$('output').textContent.trim()||$('output').classList.contains('empty')) await generate(); await copy($('output').textContent)};$('json').onclick=()=>copy(JSON.stringify(data(),null,2));
 $('clear').onclick=()=>{document.querySelectorAll('input,textarea').forEach(e=>{if(e.id!=='constraints')e.value=''});document.querySelectorAll('[data-shot-select] .visual-card').forEach(x=>x.classList.remove('on'));document.querySelector('[data-shot-select="camera"] .visual-card')?.classList.add('on');document.querySelector('[data-shot-select="angle"] .visual-card')?.classList.add('on');document.querySelector('[data-shot-select="lens"] .visual-card[data-value="35mm architectural lens"]')?.classList.add('on');document.querySelector('[data-shot-select="motion"] .visual-card')?.classList.add('on');document.querySelector('[data-shot-select="lighting"] .visual-card')?.classList.add('on');camera='slow dolly-in';$('lens').value='35mm architectural lens, wide architectural perspective, eye-level';$('motion').value='subtle cinematic movement';$('light').value='soft side light with gentle shadow falloff';applyShotPreset('hero');$('output').textContent='Prompt sẽ xuất hiện ở đây.';$('output').classList.add('empty');$('words').textContent='0 WORDS';$('status').textContent='17 AGENTS READY';$('agentStatus').textContent='Creative Intelligence đang chờ brief.';$('agentStatus').classList.remove('active');$('engineState').textContent='17 AGENTS / READY';$('previewGrid').innerHTML='';$('imageCount').textContent='0 ẢNH ĐÃ CHỌN';$('ref').value=''};
 </script>
 </body>
