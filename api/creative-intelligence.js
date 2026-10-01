@@ -45,7 +45,7 @@ function cleanBody(req) {
   return {
     data:b.data||{},
     roles:b.roles||[],
-    image:b.image||b.reference_image||null
+    images:Array.isArray(b.images)?b.images.filter(x=>typeof x==='string'&&x.startsWith('data:image/')).slice(0,8):(b.image?[b.image]:b.reference_image?[b.reference_image]:[])
   };
 }
 
@@ -68,17 +68,17 @@ export default async function handler(req,res){
   const apiKey=process.env.OPENAI_API_KEY;
   if(!apiKey) return res.status(503).json({error:'OPENAI_API_KEY is not configured'});
   try{
-    const {data,roles,image}=cleanBody(req);
+    const {data,roles,images}=cleanBody(req);
     const model=process.env.HOANGGIA_MODEL||'gpt-5.6-luna';
 
     // 1) VISION — multimodal when a reference image is actually provided.
     let visionBlueprint='';
-    if(image && typeof image==='string' && image.startsWith('data:image/')){
+    if(images.length){
       visionBlueprint=await callModel(apiKey,model,[
-        {role:'system',content:CORE+' '+VISION+' Return a concise structured visual blueprint.'},
+        {role:'system',content:CORE+' '+VISION+' Return a concise structured visual blueprint across all supplied reference images. Distinguish the primary spatial reference from secondary style/material/object references when possible.'},
         {role:'user',content:[
-          {type:'input_text',text:'Analyze this architecture/interior reference image for HOANGGIA AI. '+JSON.stringify(data)},
-          {type:'input_image',image_url:image,detail:'high'}
+          {type:'input_text',text:'Analyze all architecture/interior reference images for HOANGGIA AI. Treat them as a coordinated reference set. Preserve spatial truth from the relevant architectural image(s), and use other images for compatible style, material, furniture, color or lighting cues. Do not merge incompatible geometry. '+JSON.stringify(data)},
+          ...images.map(image=>({type:'input_image',image_url:image,detail:'high'}))
         ]}
       ]);
     } else {
