@@ -119,19 +119,19 @@ function build(){const d=data();const subject=d.brief||'a refined interior space
 async function generate(){
  const d=data(),status=$('agentStatus'),state=$('engineState'),modelState=$('modelState'),note=$('modelNote');
  const roles=expertBrain.map(x=>x.role);
- state.textContent='17 AGENTS / PROCESSING';$('status').textContent='RUNNING 17 AGENTS';status.classList.add('active');
- for(let i=0;i<roles.length;i++){status.textContent=`Preparing ${String(i+1).padStart(2,'0')} / 17 — ${roles[i]}`;await new Promise(r=>setTimeout(r,28));}
+ state.textContent='VISION / PROCESSING';$('status').textContent='RUNNING VISION';status.classList.add('active');modelState.textContent='AI PIPELINE / RUNNING';note.textContent='Vision → 17 Expert Agents → Creative Director → Synthesis';
+ for(let i=0;i<roles.length;i++){status.textContent=`Expert ${String(i+1).padStart(2,'0')} / 17 — ${roles[i]}`;await new Promise(r=>setTimeout(r,18));}
  try{
-   const res=await fetch((window.HOANGGIA_AI_API||'/api/creative-intelligence'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:d,roles:expertBrain})});
+   const res=await fetch((window.HOANGGIA_AI_API||'/api/creative-intelligence'),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({data:d,roles:expertBrain,image:($('preview').src||null)})});
    if(!res.ok) throw new Error('AI API '+res.status);
    const out=await res.json();
    const p=out.prompt||out.output||'';
    if(!p) throw new Error('Empty AI output');
    $('output').textContent=p;$('output').classList.remove('empty');$('words').textContent=p.split(/\s+/).length+' WORDS';
-   $('status').textContent='AI SYNTHESIS READY';state.textContent='17 AGENTS / AI SYNTHESIZED';modelState.textContent='AI MODEL / CONNECTED';note.textContent=out.model?('Real model synthesis: '+out.model):'Real model synthesis completed.';
+   $('status').textContent='CREATIVE DECISION / READY';state.textContent='VISION → 17 AGENTS → SYNTHESIS';modelState.textContent='AI MODEL / CONNECTED';note.textContent=out.model?('Real model synthesis: '+out.model):'Real model synthesis completed.';
  }catch(e){
    const p=build();$('output').textContent=p;$('output').classList.remove('empty');$('words').textContent=p.split(/\s+/).length+' WORDS';
-   $('status').textContent='LOCAL FALLBACK';state.textContent='17 AGENTS / LOCAL';modelState.textContent='AI MODEL / OFFLINE';note.textContent='API chưa kết nối — đang dùng local synthesis. Deploy API + set OPENAI_API_KEY để bật AI thật.';
+   $('status').textContent='LOCAL FALLBACK';state.textContent='LOCAL / PIPELINE OFFLINE';modelState.textContent='AI MODEL / OFFLINE';note.textContent='API chưa kết nối — đang dùng local synthesis. Deploy API + set OPENAI_API_KEY để bật AI thật.';
  }
  status.classList.remove('active');
 }
