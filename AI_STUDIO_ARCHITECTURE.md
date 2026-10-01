@@ -9,8 +9,11 @@ VISION
 → 17 MULTIMODAL EXPERT AGENTS
 → CREATIVE DIRECTOR AI
 → CREATIVE DECISION
+→ GENERATION ADAPTER
 → IMAGE / VIDEO MODEL
+→ OUTPUT
 → GEOMETRY VERIFICATION
+→ REPAIR / REGENERATE
 
 ### 1. Vision Engine
 `/api/vision` reads a render/photo and returns a Spatial Blueprint containing visible geometry, openings, ceiling/floor, furniture regions, materials, lighting, spatial relationships, preservation constraints and uncertainty.
@@ -46,8 +49,16 @@ This repository includes Vercel-compatible `/api` functions. Deploy the reposito
 
 Then point the front-end API base to the deployed backend if the static site and API are hosted separately.
 
+## 5. Generation Adapter
+`/api/generate` converts the Creative Director decision into model-specific execution instructions. The current adapters are:
+
+- Image: OpenAI image-generation tool, with source image passed as an input reference and `edit` / `generate` modes.
+- Video: OpenAI Videos API with Sora 2 / Sora 2 Pro and optional source-image reference. Video jobs are asynchronous and are polled through `/api/generate-status`.
+
+The frontend supports a repair loop: Geometry Verification returns repair instructions, which are appended to the Creative Decision and sent back through the Generation Adapter for another iteration.
+
 ## Important
 
-The current generation stage produces a production-ready Creative Decision / AI instruction. It does not pretend that an image/video provider has rendered the final asset. The next adapter layer can connect approved image/video providers without changing the Expert Agent architecture.
+Generation is now a real execution stage rather than a prompt-only placeholder. The final acceptance gate remains Geometry Verification; a generated asset is not considered accepted merely because it looks visually attractive.
 
 The Expert Council names are reference-based craft influences, not direct endorsements or personal consultation.
