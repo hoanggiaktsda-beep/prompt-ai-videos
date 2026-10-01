@@ -69,9 +69,13 @@ button,input,textarea,select{touch-action:manipulation}
 </div>
 <div class="grid2"><div class="field"><label>Độ phân giải</label><select id="resolution"><option value="">— Bỏ trống / Không chỉ định —</option><option>8K UHD — 7680×4320</option><option>8K DCI — 8192×4320</option><option>7K — 7168×3584</option><option>6K — 6144×3160</option><option>6K DCI — 6144×3240</option><option>5K — 5120×2880</option><option>4K UHD — 3840×2160</option><option>4K DCI — 4096×2160</option><option>4K Dọc — 2160×3840</option><option>2.5K / WQHD — 2560×1440</option><option>2K DCI — 2048×1080</option><option>2K QHD — 2560×1440</option><option>Full HD — 1920×1080</option><option>Full HD Dọc — 1080×1920</option><option>HD — 1280×720</option><option>HD Dọc — 720×1280</option><option>DCI 4K Scope — 4096×1716</option><option>Social 1080×1350 — 4:5</option><option>Social 1080×1080 — 1:1</option><option>Tùy chỉnh / Bản gốc</option></select></div><div class="field"><label>Tốc độ khung hình (FPS)</label><select id="fps"><option value="">— Bỏ trống / Không chỉ định —</option><option>23.976 fps</option><option>24 fps</option><option>25 fps</option><option>29.97 fps</option><option>30 fps</option><option>47.952 fps</option><option>48 fps</option><option>50 fps</option><option>59.94 fps</option><option>60 fps</option><option>90 fps</option><option>100 fps</option><option>119.88 fps</option><option>120 fps</option><option>144 fps</option><option>240 fps</option></select></div></div></section>
 
-<section class="step" id="image"><div class="step-head"><strong>02 / ẢNH GỐC · MASTER IMAGE</strong><small>NGUỒN THAM CHIẾU KHÔNG GIAN GỐC</small></div>
-<label class="drop" id="drop"><input id="ref" type="file" accept="image/*"><div><strong>THẢ ẢNH GỐC VÀO ĐÂY</strong><small>1 ảnh duy nhất · kiến trúc và nội thất được khóa làm nguồn tham chiếu</small><div class="actions"><button class="btn" type="button" id="pick">CHỌN ẢNH</button></div></div></label>
-<div class="preview" id="preview"></div><div class="count" id="count">0 / 1 ẢNH GỐC · MASTER IMAGE</div>
+<section class="step" id="image"><div class="step-head"><strong>02 / ẢNH GỐC · MASTER IMAGE</strong><small>REFERENCE IMAGE SYSTEM · NGUỒN THAM CHIẾU</small></div>
+<div class="grid2">
+<div class="field"><label>01 / Chế độ tham chiếu</label><select id="referenceMode"><option value="">— Bỏ trống / Không chỉ định —</option><option value="single">Thêm 1 ảnh · AI tự tìm hiểu và phát triển</option><option value="multi">Thêm nhiều ảnh · AI bám theo hình ảnh cung cấp</option></select></div>
+<div class="field"><label>02 / Quy tắc phát triển</label><select id="referenceBehavior"><option value="">— Bỏ trống / Không chỉ định —</option><option value="interpret">Tự phân tích và phát triển ý tưởng từ ảnh</option><option value="faithful">Bám sát hình ảnh tham chiếu, chỉ phát triển phần được yêu cầu</option></select></div>
+</div>
+<label class="drop" id="drop"><input id="ref" type="file" accept="image/*" multiple><div><strong>THẢ ẢNH THAM CHIẾU VÀO ĐÂY</strong><small id="uploadHint">1 ảnh: AI phân tích và phát triển · Nhiều ảnh: AI đối chiếu và bám theo toàn bộ reference set</small><div class="actions"><button class="btn" type="button" id="pick">CHỌN ẢNH</button></div></div></label>
+<div class="preview" id="preview"></div><div class="count" id="count">0 / 0 ẢNH THAM CHIẾU</div>
 </section>
 
 <section class="step" id="scene"><div class="step-head"><strong>03 / CẢNH</strong><small>AI CREATIVE TÓM TẮT DỰ ÁN / SCENE DNA</small></div>
@@ -221,18 +225,27 @@ document.querySelectorAll('#camera select').forEach(s=>s.addEventListener('chang
 
 document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.onclick=()=>{document.querySelectorAll('#cameraPresets .shot').forEach(x=>x.classList.remove('active'));b.classList.add('active');const p=presets[b.dataset.shot];Object.entries(p).forEach(([field,value])=>{const group=document.querySelector('.chips[data-field="'+field+'"]');if(group){group.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x.dataset.value===value));selections[field]=value}})});
 document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sequence .card').forEach(x=>x.classList.remove('active'));b.closest('.card').classList.add('active')});
+let referenceFiles=[];
 $('pick').onclick=()=>$('ref').click();
-function setImage(file){if(!file||!file.type.startsWith('image/'))return;master=file;const url=URL.createObjectURL(file);$('preview').innerHTML='<img src="'+url+'" alt="Master image">';$('count').textContent='1 / 1 ẢNH GỐC · MASTER IMAGE';$('sImage').textContent='SẴN SÀNG';$('sImage').style.color='var(--ok)';$('preview').querySelector('img').onclick=()=>{$('modalImg').src=url;$('modal').classList.add('show')}}
-$('ref').onchange=e=>setImage(e.target.files[0]);
+function renderReferences(){
+const mode=referenceFiles.length===1?'single':referenceFiles.length>1?'multi':'';
+if(mode && !$('referenceMode').value)$('referenceMode').value=mode;
+$('preview').innerHTML='';
+referenceFiles.forEach((file,index)=>{const url=URL.createObjectURL(file);const img=document.createElement('img');img.src=url;img.alt='Reference '+(index+1);img.onclick=()=>{$('modalImg').src=url;$('modal').classList.add('show')};$('preview').appendChild(img)});
+$('count').textContent=referenceFiles.length+' / 12 ẢNH THAM CHIẾU';
+$('sImage').textContent=referenceFiles.length?'SẴN SÀNG':'CHƯA CÓ';
+$('sImage').style.color=referenceFiles.length?'var(--ok)':'var(--muted)';
+}
+function setReferences(files){referenceFiles=Array.from(files||[]).filter(f=>f.type.startsWith('image/')).slice(0,12);renderReferences()}
+$('ref').onchange=e=>setReferences(e.target.files);
 $('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('drag')};
-$('drop').ondragleave=()=>$('drop').classList.remove('drag');
-$('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('drag');setImage(e.dataTransfer.files[0])};
-$('close').onclick=()=>$('modal').classList.remove('show');$('modal').onclick=e=>{if(e.target.id==='modal')$('modal').classList.remove('show')};
+$('drop').ondragleave=e=>$('drop').classList.remove('drag');
+$('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('drag');setReferences(e.dataTransfer.files)};
 function val(id){return $(id).value.trim()}
 function collect(){return{
 purpose:val('purpose'),style:val('style'),brief:val('brief'),duration:val('duration'),ratio:val('ratio'),resolution:val('resolution'),fps:val('fps'),
 scene:selections.scene,time:selections.time,mood:selections.mood,weather:selections.weather,mood:selections.mood,characters:selections.characters,activity:selections.activity,materials:selections.materials,atmosphere:selections.atmosphere,sceneDirection:val('sceneDirection'),characterIdea:val('characterIdea'),characterOutput:val('characterOutput'),characterIdentity:val('characterIdentity'),characterAppearance:val('characterAppearance'),characterWardrobe:val('characterWardrobe'),characterRole:val('characterRole'),characterBehavior:val('characterBehavior'),characterAction:val('characterAction'),characterEmotion:val('characterEmotion'),characterSpatial:val('characterSpatial'),characterContinuity:val('characterContinuity'),
-shotType:val('shotType'),lens:val('lens'),height:val('cameraHeight'),angle:val('angle'),motion:val('motion'),speed:val('cameraSpeed'),parallax:val('parallax'),focus:val('focus'),dof:val('depthOfField'),framing:val('framing'),cameraDirection:val('cameraDirection'),light:selections.light,lightDirection:selections.lightDirection,lightQuality:selections.lightQuality,colorTemp:selections.colorTemp,contrast:selections.contrast,intensity:selections.intensity,shadow:selections.shadow,reflection:selections.reflection,practical:selections.practical,lightAtmosphere:selections.lightAtmosphere,lightingDirection:val('lightingDirection'),shotPurpose:selections.shotPurpose,shotAction:selections.shotAction,shotCamera:selections.shotCamera,shotSubject:selections.shotSubject,shotTransition:selections.shotTransition,shotDuration:selections.shotDuration,shotContinuity:selections.shotContinuity,shotRhythm:selections.shotRhythm,sequenceLogic:val('sequenceLogic'),shotDirection:val('shotDirection'),aiTool:selections.aiTool,promptMode:selections.promptMode,promptLanguage:selections.promptLanguage,outputFormat:selections.outputFormat,engineNotes:val('engineNotes'),constraints:val('constraints'),master:!!master
+shotType:val('shotType'),lens:val('lens'),height:val('cameraHeight'),angle:val('angle'),motion:val('motion'),speed:val('cameraSpeed'),parallax:val('parallax'),focus:val('focus'),dof:val('depthOfField'),framing:val('framing'),cameraDirection:val('cameraDirection'),light:selections.light,lightDirection:selections.lightDirection,lightQuality:selections.lightQuality,colorTemp:selections.colorTemp,contrast:selections.contrast,intensity:selections.intensity,shadow:selections.shadow,reflection:selections.reflection,practical:selections.practical,lightAtmosphere:selections.lightAtmosphere,lightingDirection:val('lightingDirection'),shotPurpose:selections.shotPurpose,shotAction:selections.shotAction,shotCamera:selections.shotCamera,shotSubject:selections.shotSubject,shotTransition:selections.shotTransition,shotDuration:selections.shotDuration,shotContinuity:selections.shotContinuity,shotRhythm:selections.shotRhythm,sequenceLogic:val('sequenceLogic'),shotDirection:val('shotDirection'),aiTool:selections.aiTool,promptMode:selections.promptMode,promptLanguage:selections.promptLanguage,outputFormat:selections.outputFormat,engineNotes:val('engineNotes'),constraints:val('constraints'),master:referenceFiles.length>0,referenceMode:val('referenceMode'),referenceBehavior:val('referenceBehavior'),referenceCount:referenceFiles.length
 }}
 const expert=[
 'Creative Director: emotional intent and visual storytelling',
@@ -255,7 +268,7 @@ const expert=[
 ];
 function buildPrompt(){
 const d=collect();
-const source=d.master?'Use the uploaded ẢNH GỐC · MASTER IMAGE as the single spatial source of truth.':'No master image supplied; do not invent spatial details from an absent master image.';
+const source=d.master?(d.referenceMode==='multi'?'Use ALL uploaded reference images as a coordinated reference set. Cross-check architecture, furniture, materials, proportions, details and visual language across the entire set; stay faithful to the supplied images.':'Use the single uploaded reference image as the primary spatial source. Analyze it deeply, then develop only the requested creative attributes.'):'No reference image supplied; do not invent spatial details from an absent master image.';
 const base=d.brief||d.scene;
 return 'Create a '+d.duration+' '+d.ratio+' '+d.resolution+' '+d.fps+' high-end cinematic architectural interior video.\n\n'+
 'SCENE: '+base+'. Design style: '+d.style+'. Time: '+d.time+'. Weather: '+d.weather+'. Mood: '+d.mood+'. Characters: '+d.characters+'. Activity: '+d.activity+'. Character DNA: '+(d.characterOutput||d.characterIdea||d.characters)+'. Materials: '+d.materials+'. Atmosphere: '+d.atmosphere+'. Creative direction: '+d.sceneDirection+'.\n\n'+
