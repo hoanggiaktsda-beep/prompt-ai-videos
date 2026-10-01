@@ -28,97 +28,97 @@ footer{padding:40px 0 0;border-top:1px solid #20241f;margin-top:40px;color:#5d65
 <body>
 <div class="wrap">
 <header class="nav">
-  <div class="brand"><div class="mark">HG</div><div><b>HOANGGIA AI</b><small>VIDEO PROMPT STUDIO</small></div></div>
-  <div class="status">ARCHITECTURE / INTERIOR / AI VIDEO</div>
+  <div class="brand"><div class="mark">HG</div><div><b>HOANGGIA AI</b><small>STUDIO VIẾT PROMPT VIDEO</small></div></div>
+  <div class="status">KIẾN TRÚC / NỘI THẤT / VIDEO AI</div>
 </header>
 
 <section class="hero">
-  <div><div class="eyebrow">02 / MOTION PROMPT ENGINE</div><h1>DESIGN<br><em>IN MOTION.</em></h1></div>
-  <p><strong>VIDEO PROMPT STUDIO</strong>Biến render, ảnh tham chiếu và brief nội thất thành prompt video có cấu trúc: chủ thể → chuyển động → camera → ánh sáng → không khí → nhịp độ → continuity.</p>
+  <div><div class="eyebrow">02 / BỘ MÁY PROMPT CHUYỂN ĐỘNG</div><h1>THIẾT KẾ<br><em>TRONG CHUYỂN ĐỘNG.</em></h1></div>
+  <p><strong>STUDIO VIẾT PROMPT VIDEO</strong>Biến render, ảnh tham chiếu và brief nội thất thành prompt video có cấu trúc: chủ thể → chuyển động → camera → ánh sáng → không khí → nhịp độ → continuity.</p>
 </section>
 
 <nav class="navtabs">
-  <button class="active" onclick="jump('brief',this)">01 BRIEF</button>
-  <button onclick="jump('camera',this)">02 CAMERA</button>
-  <button onclick="jump('motion',this)">03 MOTION</button>
-  <button onclick="jump('look',this)">04 LOOK</button>
-  <button onclick="jump('output',this)">05 OUTPUT</button>
+  <button class="active" onclick="jump('brief',this)">01 TỔNG QUAN</button>
+  <button onclick="jump('camera',this)">02 MÁY QUAY</button>
+  <button onclick="jump('motion',this)">03 CHUYỂN ĐỘNG</button>
+  <button onclick="jump('look',this)">04 HÌNH ẢNH</button>
+  <button onclick="jump('output',this)">05 KẾT XUẤT</button>
 </nav>
 
 <div class="rail">
-  <div><b>01 / SUBJECT</b><span>Khóa không gian</span></div>
-  <div><b>02 / CAMERA</b><span>Chọn một chuyển động</span></div>
-  <div><b>03 / ACTION</b><span>Chỉ định điều xảy ra</span></div>
-  <div><b>04 / LIGHT</b><span>Ánh sáng & thời gian</span></div>
-  <div><b>05 / FINISH</b><span>Look & continuity</span></div>
+  <div><b>01 / CHỦ THỂ</b><span>Khóa không gian</span></div>
+  <div><b>02 / MÁY QUAY</b><span>Chọn một chuyển động</span></div>
+  <div><b>03 / HÀNH ĐỘNG</b><span>Chỉ định điều xảy ra</span></div>
+  <div><b>04 / ÁNH SÁNG</b><span>Ánh sáng & thời gian</span></div>
+  <div><b>05 / HOÀN THIỆN</b><span>Phong cách & liên tục</span></div>
 </div>
 
 <div class="workspace">
 <main class="main">
 <section class="section" id="brief">
- <div class="sectionTitle"><b>01 / PROJECT BRIEF</b><span>SPACE LOCK</span></div>
+ <div class="sectionTitle"><b>01 / TỔNG QUAN DỰ ÁN</b><span>KHÓA KHÔNG GIAN</span></div>
  <div class="grid2">
-  <div class="field"><label>Loại không gian</label><select id="space"><option>Phòng khách</option><option>Phòng ngủ</option><option>Bếp / Dining</option><option>Showroom</option><option>Lobby / Hotel</option><option>Văn phòng</option><option>Mặt tiền nhà ở</option><option>Kiến trúc thương mại</option></select></div>
-  <div class="field"><label>Mục đích video</label><select id="purpose"><option>Portfolio kiến trúc</option><option>Presentation cho khách hàng</option><option>Social / Reels / TikTok</option><option>Marketing showroom</option><option>Concept film</option><option>Before / After</option></select></div>
+  <div class="field"><label>Loại không gian</label><select id="space"><option>Phòng khách</option><option>Phòng ngủ</option><option>Bếp / Ăn</option><option>Showroom</option><option>Sảnh / Khách sạn</option><option>Văn phòng</option><option>Mặt tiền nhà ở</option><option>Kiến trúc thương mại</option></select></div>
+  <div class="field"><label>Mục đích video</label><select id="purpose"><option>Portfolio kiến trúc</option><option>Trình bày cho khách hàng</option><option>Mạng xã hội / Reels / TikTok</option><option>Marketing showroom</option><option>Phim concept</option><option>Trước / Sau</option></select></div>
  </div>
  <div class="field" style="margin-top:10px"><label>Mô tả không gian / brief</label><textarea id="briefText" placeholder="Ví dụ: phòng khách Modern Luxury, sofa da nâu, đá travertine, gỗ veneer óc chó, cửa kính lớn nhìn ra sân vườn..."></textarea></div>
  <div class="grid3" style="margin-top:10px">
-  <div class="field"><label>Giữ nguyên kiến trúc</label><select id="lock"><option>Cao — không đổi geometry</option><option>Trung bình — cho phép biến đổi nhẹ</option><option>Creative — cho phép diễn giải</option></select></div>
-  <div class="field"><label>Độ chuyển động</label><select id="energy"><option>Rất chậm / Luxury</option><option>Chậm / Cinematic</option><option>Trung bình / Editorial</option><option>Nhanh / Social</option></select></div>
+  <div class="field"><label>Giữ nguyên kiến trúc</label><select id="lock"><option>Cao — không đổi hình học</option><option>Trung bình — cho phép biến đổi nhẹ</option><option>Sáng tạo — cho phép diễn giải</option></select></div>
+  <div class="field"><label>Độ chuyển động</label><select id="energy"><option>Rất chậm / Sang trọng</option><option>Chậm / Điện ảnh</option><option>Trung bình / Biên tập</option><option>Nhanh / Mạng xã hội</option></select></div>
   <div class="field"><label>Thời lượng</label><select id="duration"><option>5 giây</option><option>6 giây</option><option>8 giây</option><option>10 giây</option></select></div>
  </div>
 </section>
 
 <section class="section" id="camera">
- <div class="sectionTitle"><b>02 / CAMERA DIRECTION</b><span>ONE MOVE RULE</span></div>
+ <div class="sectionTitle"><b>02 / MÁY QUAY DIRECTION</b><span>NGUYÊN TẮC MỘT CHUYỂN ĐỘNG</span></div>
  <div class="chips" id="cameraChips">
-  <button class="chip on" data-v="locked-off static camera">LOCKED / STATIC</button>
-  <button class="chip" data-v="slow dolly-in toward the space">DOLLY IN</button>
-  <button class="chip" data-v="slow dolly-out revealing the whole composition">DOLLY OUT</button>
-  <button class="chip" data-v="slow lateral tracking move">TRACKING</button>
-  <button class="chip" data-v="slow pan across the composition">PAN</button>
-  <button class="chip" data-v="slow tilt revealing the ceiling and vertical volume">TILT</button>
-  <button class="chip" data-v="slow crane-up reveal">CRANE</button>
+  <button class="chip on" data-v="locked-off static camera">CỐ ĐỊNH / TĨNH</button>
+  <button class="chip" data-v="slow dolly-in toward the space">DOLLY VÀO</button>
+  <button class="chip" data-v="slow dolly-out revealing the whole composition">DOLLY RA</button>
+  <button class="chip" data-v="slow lateral tracking move">TRƯỢT NGANG</button>
+  <button class="chip" data-v="slow pan across the composition">PAN / QUÉT</button>
+  <button class="chip" data-v="slow tilt revealing the ceiling and vertical volume">TILT / NGHIÊNG</button>
+  <button class="chip" data-v="slow crane-up reveal">CRANE / CẨU</button>
   <button class="chip" data-v="slow controlled arc around the main furniture group">ARC / ORBIT</button>
  </div>
  <div class="grid3" style="margin-top:12px">
-  <div class="field"><label>Góc máy</label><select id="angle"><option>Eye-level architectural view</option><option>Low-angle monumental view</option><option>High-angle spatial view</option><option>Wide establishing view</option><option>Detail close-up</option></select></div>
-  <div class="field"><label>Ống kính</label><select id="lens"><option>28mm wide-angle</option><option>35mm architectural lens</option><option>50mm natural perspective</option><option>24mm ultra-wide</option><option>Tilt-shift architectural lens</option></select></div>
-  <div class="field"><label>Verticals</label><select id="verticals"><option>Keep vertical lines perfectly straight</option><option>Natural perspective</option><option>Subtle cinematic perspective</option></select></div>
+  <div class="field"><label>Góc máy</label><select id="angle"><option>Góc nhìn kiến trúc ngang tầm mắt</option><option>Góc thấp tôn khối</option><option>Góc cao bao quát không gian</option><option>Góc rộng thiết lập không gian</option><option>Cận cảnh chi tiết</option></select></div>
+  <div class="field"><label>Ống kính</label><select id="lens"><option>Góc rộng 28mm</option><option>Ống kính kiến trúc 35mm</option><option>Phối cảnh tự nhiên 50mm</option><option>Siêu rộng 24mm</option><option>Ống kính tilt-shift kiến trúc</option></select></div>
+  <div class="field"><label>Đường đứng</label><select id="verticals"><option>Giữ đường đứng hoàn toàn thẳng</option><option>Phối cảnh tự nhiên</option><option>Phối cảnh điện ảnh nhẹ</option></select></div>
  </div>
 </section>
 
 <section class="section" id="motion">
- <div class="sectionTitle"><b>03 / MOTION & LIFE</b><span>CONTROLLED ACTION</span></div>
+ <div class="sectionTitle"><b>03 / CHUYỂN ĐỘNG & SỰ SỐNG</b><span>HÀNH ĐỘNG KIỂM SOÁT</span></div>
  <div class="grid2">
   <div class="field"><label>Chuyển động trong không gian</label><select id="life"><option>Subtle curtains and plants move gently</option><option>Soft daylight shifts across surfaces</option><option>People walk naturally through the space</option><option>Furniture remains completely still</option><option>Decorative objects move subtly with airflow</option><option>No secondary motion</option></select></div>
-  <div class="field"><label>Nhân vật / scale</label><select id="people"><option>No people</option><option>One person moving slowly</option><option>Couple walking naturally</option><option>Architect / designer observing the space</option><option>Small group, understated presence</option></select></div>
+  <div class="field"><label>Nhân vật / tỷ lệ</label><select id="people"><option>Không có người</option><option>Một người di chuyển chậm</option><option>Một cặp đôi đi tự nhiên</option><option>Kiến trúc sư / nhà thiết kế quan sát không gian</option><option>Nhóm nhỏ, hiện diện tiết chế</option></select></div>
  </div>
- <div class="field" style="margin-top:10px"><label>Beat / hành động chính</label><input id="action" placeholder="Ví dụ: camera tiến chậm tới bàn đảo, ánh nắng trượt trên mặt đá, rèm lay nhẹ..."></div>
- <div class="hint">Nguyên tắc: một shot nên có một chuyển động camera chính. Đừng bắt AI vừa orbit + crane + dolly trong cùng một nhịp.</div>
+ <div class="field" style="margin-top:10px"><label>Nhịp / hành động chính</label><input id="action" placeholder="Ví dụ: camera tiến chậm tới bàn đảo, ánh nắng trượt trên mặt đá, rèm lay nhẹ..."></div>
+ <div class="hint">Nguyên tắc: mỗi cảnh chỉ nên có một chuyển động máy quay chính. Không nên yêu cầu AI vừa orbit + crane + dolly trong cùng một nhịp.</div>
 </section>
 
 <section class="section" id="look">
- <div class="sectionTitle"><b>04 / LIGHT / ATMOSPHERE / LOOK</b><span>ART DIRECTION</span></div>
+ <div class="sectionTitle"><b>04 / ÁNH SÁNG / ATMOSPHERE / LOOK</b><span>ĐỊNH HƯỚNG NGHỆ THUẬT</span></div>
  <div class="grid3">
-  <div class="field"><label>Thời điểm</label><select id="time"><option>Soft morning daylight</option><option>Late afternoon golden hour</option><option>Overcast daylight</option><option>Dusk transitioning to blue hour</option><option>Night with warm interior lights</option></select></div>
-  <div class="field"><label>Ánh sáng</label><select id="light"><option>Soft natural daylight with realistic shadows</option><option>Warm architectural lighting</option><option>Directional sunlight with long shadows</option><option>Soft diffused editorial lighting</option><option>Low-key cinematic lighting</option></select></div>
-  <div class="field"><label>Atmosphere</label><select id="atmosphere"><option>Calm, refined and quiet</option><option>Warm and lived-in</option><option>Luxury hospitality atmosphere</option><option>Moody architectural film</option><option>Clean editorial atmosphere</option></select></div>
+  <div class="field"><label>Thời điểm</label><select id="time"><option>Ánh sáng ban mai dịu</option><option>Hoàng hôn cuối chiều</option><option>Ánh sáng trời nhiều mây</option><option>Chạng vạng chuyển sang blue hour</option><option>Ban đêm với ánh sáng nội thất ấm</option></select></div>
+  <div class="field"><label>Ánh sáng</label><select id="light"><option>Ánh sáng tự nhiên dịu với bóng đổ chân thực</option><option>Ánh sáng kiến trúc ấm</option><option>Nắng định hướng với bóng đổ dài</option><option>Ánh sáng biên tập khuếch tán dịu</option><option>Ánh sáng điện ảnh low-key</option></select></div>
+  <div class="field"><label>Không khí</label><select id="atmosphere"><option>Điềm tĩnh, tinh tế và yên tĩnh</option><option>Ấm áp và có hơi thở sống</option><option>Không khí hospitality sang trọng</option><option>Phim kiến trúc giàu mood</option><option>Không khí biên tập sạch</option></select></div>
  </div>
  <div class="grid2" style="margin-top:10px">
-  <div class="field"><label>Material / texture priority</label><input id="material" placeholder="travertine, walnut veneer, brushed brass, leather, linen..."></div>
-  <div class="field"><label>Visual finish</label><select id="finish"><option>Photorealistic architectural visualization</option><option>High-end editorial film</option><option>Luxury real-estate film</option><option>Minimal cinematic film grain</option><option>Clean commercial visualization</option></select></div>
+  <div class="field"><label>Ưu tiên vật liệu / bề mặt</label><input id="material" placeholder="travertine, walnut veneer, brushed brass, leather, linen..."></div>
+  <div class="field"><label>Hoàn thiện hình ảnh</label><select id="finish"><option>Diễn họa kiến trúc chân thực</option><option>Phim biên tập cao cấp</option><option>Phim bất động sản cao cấp</option><option>Hạt phim điện ảnh tối giản</option><option>Diễn họa thương mại sạch</option></select></div>
  </div>
 </section>
 
 <section class="section" id="output">
- <div class="sectionTitle"><b>05 / PROMPT OUTPUT</b><span id="wordCount">0 WORDS</span></div>
- <div id="outputBox" class="output empty">Prompt sẽ xuất hiện ở đây. Hãy nhập brief rồi nhấn “GENERATE VIDEO PROMPT”.</div>
+ <div class="sectionTitle"><b>05 / KẾT QUẢ PROMPT</b><span id="wordCount">0 WORDS</span></div>
+ <div id="outputBox" class="output empty">Prompt sẽ xuất hiện ở đây. Hãy nhập phần mô tả rồi nhấn “TẠO PROMPT VIDEO”.</div>
  <div class="actions">
-   <button class="primary" onclick="generate()">GENERATE VIDEO PROMPT</button>
-   <button class="secondary" onclick="copyPrompt()">COPY PROMPT</button>
-   <button class="ghost" onclick="generateEnglish()">ENGLISH / CLEAN</button>
-   <button class="ghost" onclick="resetAll()">RESET</button>
+   <button class="primary" onclick="generate()">TẠO PROMPT VIDEO</button>
+   <button class="secondary" onclick="copyPrompt()">SAO CHÉP PROMPT</button>
+   <button class="ghost" onclick="generateEnglish()">TIẾNG ANH / TINH GỌN</button>
+   <button class="ghost" onclick="resetAll()">ĐẶT LẠI</button>
  </div>
  <div class="counter">HOANGGIA AI ưu tiên prompt dạng creative brief tự nhiên, cụ thể và dễ kiểm soát thay vì tag soup.</div>
 </section>
@@ -126,11 +126,11 @@ footer{padding:40px 0 0;border-top:1px solid #20241f;margin-top:40px;color:#5d65
 
 <aside class="side">
 <section class="section">
- <div class="sideTitle">PROMPT ARCHITECTURE</div>
+ <div class="sideTitle">CẤU TRÚC PROMPT</div>
  <div class="formula"><strong>SUBJECT</strong> → <strong>ACTION</strong> → <strong>CAMERA</strong> → <strong>LIGHT</strong> → <strong>ATMOSPHERE</strong> → <strong>LOOK</strong> → <strong>CONSTRAINTS</strong></div>
 </section>
 <section class="section">
- <div class="sideTitle">ARCHITECTURE CHECK</div>
+ <div class="sideTitle">KIỂM TRA KIẾN TRÚC</div>
  <div class="checklist">
   <div class="check">✓ <b>Geometry:</b> giữ nguyên tỷ lệ, tường, trần, cửa</div>
   <div class="check">✓ <b>Camera:</b> chỉ một chuyển động chính</div>
@@ -140,22 +140,22 @@ footer{padding:40px 0 0;border-top:1px solid #20241f;margin-top:40px;color:#5d65
  </div>
 </section>
 <section class="section">
- <div class="sideTitle">QUICK PRESETS</div>
+ <div class="sideTitle">QUICK PĐẶT LẠIS</div>
  <div class="mini">
-  <div onclick="preset('arrival')"><b>ARRIVAL</b><span>Slow dolly-in</span></div>
-  <div onclick="preset('reveal')"><b>REVEAL</b><span>Dolly-out</span></div>
-  <div onclick="preset('material')"><b>MATERIAL</b><span>Detail / texture</span></div>
-  <div onclick="preset('walkthrough')"><b>WALKTHROUGH</b><span>Tracking</span></div>
+  <div onclick="preset('arrival')"><b>TIẾP CẬN</b><span>Dolly vào chậm</span></div>
+  <div onclick="preset('reveal')"><b>MỞ KHÔNG GIAN</b><span>Dolly ra</span></div>
+  <div onclick="preset('material')"><b>VẬT LIỆU</b><span>Chi tiết / bề mặt</span></div>
+  <div onclick="preset('walkthrough')"><b>WALKTHROUGH</b><span>Trượt máy</span></div>
  </div>
 </section>
 <section class="section">
- <div class="sideTitle">SOURCE IMAGE</div>
+ <div class="sideTitle">ẢNH NGUỒN</div>
  <div class="notice"><strong>Workflow gợi ý:</strong> đưa render đã duyệt vào công cụ image-to-video, sau đó dùng prompt này để điều khiển camera, motion, light và continuity. AI video là lớp diễn đạt chuyển động; geometry gốc vẫn nên được kiểm tra từ model/render.</div>
 </section>
 </aside>
 </div>
 
-<footer><div>HOANGGIA AI / VIDEO PROMPT STUDIO</div><div><span class="gold">KTS. HOÀNG GIA</span> · Architecture / Interior / AI</div></footer>
+<footer><div>HOANGGIA AI / STUDIO VIẾT PROMPT VIDEO</div><div><span class="gold">KTS. HOÀNG GIA</span> · Architecture / Interior / AI</div></footer>
 </div>
 <script>
 const state={camera:'locked-off static camera',shot:'arrival'};
@@ -173,9 +173,9 @@ function buildPrompt(clean=false){
   'Action: '+(val('action')||'the camera moves with a deliberate, restrained rhythm while the space remains visually stable')+'.',
   'Secondary motion: '+val('life')+'. '+val('people')+'.',
   'Lighting: '+val('time')+', '+val('light')+'.',
-  'Atmosphere: '+val('atmosphere')+'.',
+  'Không khí: '+val('atmosphere')+'.',
   'Material focus: '+materials+'.',
-  'Visual finish: '+val('finish')+'.',
+  'Hoàn thiện hình ảnh: '+val('finish')+'.',
   'Energy: '+val('energy')+'.',
   'Continuity constraints: maintain the same spatial identity throughout the clip, consistent furniture placement, material appearance, window proportions, architectural lines and lighting direction; avoid geometry drift, warped straight lines, changing furniture, invented openings or excessive camera shake.',
   'The result should feel like a high-end architecture and interior design film: controlled, believable, elegant and spatially legible.'
@@ -186,12 +186,12 @@ function buildPrompt(clean=false){
 function generate(){const o=document.getElementById('outputBox');const p=buildPrompt();o.textContent=p;o.classList.remove('empty');document.getElementById('wordCount').textContent=p.split(/\s+/).length+' WORDS';o.scrollIntoView({behavior:'smooth',block:'center'});}
 async function copyPrompt(){const p=buildPrompt();if(!p)return;try{await navigator.clipboard.writeText(p);toast('PROMPT COPIED');}catch(e){const a=document.createElement('textarea');a.value=p;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();toast('PROMPT COPIED');}}
 function generateEnglish(){generate();toast('ENGLISH CLEAN PROMPT READY');}
-function resetAll(){document.querySelectorAll('input,textarea').forEach(e=>e.value='');document.getElementById('outputBox').textContent='Prompt sẽ xuất hiện ở đây. Hãy nhập brief rồi nhấn “GENERATE VIDEO PROMPT”.';document.getElementById('outputBox').classList.add('empty');document.getElementById('wordCount').textContent='0 WORDS';}
+function resetAll(){document.querySelectorAll('input,textarea').forEach(e=>e.value='');document.getElementById('outputBox').textContent='Prompt sẽ xuất hiện ở đây. Hãy nhập brief rồi nhấn “TẠO PROMPT VIDEO”.';document.getElementById('outputBox').classList.add('empty');document.getElementById('wordCount').textContent='0 WORDS';}
 function jump(id,btn){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.navtabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 function toast(t){let x=document.getElementById('toast');if(!x){x=document.createElement('div');x.id='toast';x.style='position:fixed;right:20px;bottom:20px;z-index:99;background:#c5a76a;color:#0a0a08;padding:11px 14px;border-radius:2px;font:800 9px Manrope;letter-spacing:.1em;box-shadow:0 12px 35px #0008';document.body.appendChild(x)}x.textContent=t;x.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.display='none',1800)}
 function preset(type){
- const map={arrival:['slow dolly-in toward the space','Late afternoon golden hour'],reveal:['slow dolly-out revealing the whole composition','Soft morning daylight'],material:['locked-off static camera','Soft diffused editorial lighting'],walkthrough:['slow lateral tracking move','Warm architectural lighting']};
- const [cam,light]=map[type];state.camera=cam;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x.dataset.v===cam));document.getElementById('light').value=light;toast(type.toUpperCase()+' PRESET');}
+ const map={arrival:['slow dolly-in toward the space','Hoàng hôn cuối chiều'],reveal:['slow dolly-out revealing the whole composition','Ánh sáng ban mai dịu'],material:['locked-off static camera','Ánh sáng biên tập khuếch tán dịu'],walkthrough:['slow lateral tracking move','Ánh sáng kiến trúc ấm']};
+ const [cam,light]=map[type];state.camera=cam;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x.dataset.v===cam));document.getElementById('light').value=light;toast(type.toUpperCase()+' PĐẶT LẠI');}
 </script>
 </body>
 </html>
