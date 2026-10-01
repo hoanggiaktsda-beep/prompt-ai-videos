@@ -1,0 +1,12 @@
+{
+  "name":"HOANGGIA AI — Video Prompt Studio",
+  "short_name":"HOANGGIA AI",
+  "description":"AI video prompt studio for architecture and interior design.",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "orientation":"any",
+  "background_color":"#080908",
+  "theme_color":"#080908",
+  "icons":[{"src":"assets/brand-mark.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
