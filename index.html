@@ -125,7 +125,37 @@ header{min-height:68px;height:auto;padding:10px 0;border-bottom:1px solid var(--
  .visual-card,.shot-preset{min-height:44px}
 }
 </style>
-</head>
+<style id="compact-studio-layout">
+/* HOANGGIA AI — compact editorial studio layout */
+:root{--hg-gap:14px;--hg-radius:10px}
+body{overflow-x:hidden}
+main,.app-main,.studio-main{max-width:1180px!important;margin:0 auto!important}
+section,.panel,.card,.visual-section,.input-section{margin-bottom:16px!important}
+.section-head,.visual-section-head{margin-bottom:8px!important}
+.field{margin-bottom:8px!important}
+.field label{display:block;margin-bottom:5px!important;font-size:10px!important;letter-spacing:.12em!important}
+input,select,textarea{min-height:38px!important;padding:9px 11px!important;border-radius:8px!important}
+textarea{min-height:82px!important}
+.input-grid,.brief-grid,.form-grid{gap:10px!important}
+.visual-row{gap:8px!important;margin-bottom:8px!important}
+.visual-card{min-height:38px!important;padding:9px 10px!important;border-radius:8px!important}
+.shot-preset-row{gap:8px!important}
+.shot-preset{min-height:38px!important;padding:9px 10px!important;border-radius:8px!important}
+.visual-section{padding:12px!important}
+.visual-section-head{font-size:10px!important;letter-spacing:.14em!important}
+#brief{min-height:96px!important}
+#constraints{min-height:64px!important}
+@media(min-width:900px){
+  .brief-fields,.input-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .brief-fields .field:first-child,.brief-fields .field:nth-child(2){min-width:0}
+}
+@media(max-width:899px){
+  main,.app-main,.studio-main{padding-left:14px!important;padding-right:14px!important}
+}
+@media(max-width:620px){
+  .brief-fields,.input-grid,.visual-row,.shot-preset-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+</style></head>
 <body><div class="appbar"><div class="wrap" style="padding-bottom:0"><div class="command"><div class="command-left"><button class="command-btn active" data-nav="input">01 INPUT</button><button class="command-btn" data-nav="output">02 OUTPUT</button></div><div class="command-right"><span class="eyebrow">17 AGENTS / READY</span><button class="command-btn install-btn" id="install">INSTALL APP</button></div></div></div></div>
 <div class="wrap">
 <header><div class="brand"><img src="assets/brand-mark.svg" alt="HOANGGIA AI"><div><b>HOANGGIA AI</b><small>VIDEO PROMPT STUDIO</small></div></div><span class="eyebrow" id="engineState">17 AGENTS / READY</span></header>
