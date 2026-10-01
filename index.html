@@ -254,7 +254,48 @@ textarea{min-height:82px!important}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(build,80));
   else setTimeout(build,80);
 })();
-</script></head>
+</script><style id="hg-clean-final">
+/* HOANGGIA AI — clean compact studio */
+:root{--hg-bg:#0b0d0c;--hg-panel:#111412;--hg-line:rgba(255,255,255,.075);--hg-muted:rgba(255,255,255,.48)}
+html,body{margin:0!important;background:var(--hg-bg)}
+body{overflow-x:hidden}
+header,.topbar,.hero,.intro,.landing-hero{display:none!important}
+.hg-live-workspace{box-sizing:border-box!important;width:100%!important;max-width:1240px!important;height:calc(100vh - 18px)!important;min-height:640px!important;margin:0 auto!important;padding:12px 16px!important}
+.hg-live-workspace .hg-workspace-shell{height:100%!important;grid-template-columns:minmax(0,1fr) 390px!important;gap:12px!important}
+.hg-live-workspace .hg-workspace-panel{box-sizing:border-box!important;background:var(--hg-panel)!important;border:1px solid var(--hg-line)!important;border-radius:10px!important;padding:14px!important}
+.hg-live-workspace .hg-workspace-panel:first-child{overflow-y:auto!important;overflow-x:hidden!important}
+.hg-live-workspace .hg-workspace-panel:first-child>h2{font-size:10px!important;letter-spacing:.16em!important;margin:0 0 10px!important;color:rgba(255,255,255,.72)}
+.hg-real-step{padding:10px 0!important;border-top:1px solid var(--hg-line)!important}
+.hg-real-step:first-of-type{padding-top:0!important;border-top:0!important}
+.hg-real-head{height:20px!important;margin-bottom:7px!important}
+.hg-real-title{font-size:10px!important;letter-spacing:.13em!important}
+.hg-real-note{font-size:8px!important;color:var(--hg-muted)!important}
+.hg-real-body{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}
+.hg-real-body>.field{margin:0!important}
+.hg-real-body label{font-size:8px!important;letter-spacing:.08em!important;margin-bottom:4px!important;opacity:.6}
+.hg-real-body input,.hg-real-body select,.hg-real-body textarea{box-sizing:border-box!important;width:100%!important;min-height:34px!important;padding:7px 9px!important;border-radius:6px!important}
+.hg-real-body textarea{min-height:58px!important}
+.hg-real-body .visual-section{margin:5px 0 0!important;padding:8px!important;border:1px solid var(--hg-line)!important;border-radius:7px!important}
+.hg-real-body .visual-section-head{font-size:8px!important;margin-bottom:6px!important}
+.hg-real-body .visual-row,.hg-real-body .shot-preset-row{gap:6px!important}
+.hg-real-body .visual-card,.hg-real-body .shot-preset{min-height:32px!important;padding:7px 8px!important;font-size:8px!important}
+.hg-live-workspace .hg-output{position:relative!important;top:auto!important;height:100%!important;overflow:hidden!important}
+.hg-output-flow{display:none!important}
+.hg-real-output{border:0!important;padding:0!important}
+.hg-output-label{font-size:9px!important;letter-spacing:.14em!important;margin-bottom:8px!important}
+#hg-live-output{background:rgba(0,0,0,.16)!important;border:1px solid var(--hg-line)!important;border-radius:7px!important;padding:11px!important;font-size:10px!important;line-height:1.55!important}
+#hg-output-copy{min-height:34px!important;font-size:9px!important;letter-spacing:.1em!important}
+#brief,#constraints{grid-column:1/-1!important}
+@media(max-width:980px){
+ .hg-live-workspace{height:auto!important}
+ .hg-live-workspace .hg-workspace-shell{grid-template-columns:1fr!important}
+ .hg-live-workspace .hg-output{height:420px!important}
+}
+@media(max-width:620px){
+ .hg-live-workspace{padding:8px!important}
+ .hg-real-body{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+</style></head>
 <body><div class="hg-workspace" id="hg-workspace-map">
   <div class="hg-workspace-shell">
     <div class="hg-workspace-panel">
