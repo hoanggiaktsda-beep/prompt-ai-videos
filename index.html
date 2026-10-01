@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HOANGGIA AI — Video Prompt Studio</title>
+<meta name="description" content="HOANGGIA AI Video Prompt Studio — viết prompt video AI chuyên sâu cho kiến trúc và nội thất.">
+<meta name="theme-color" content="#070807">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+:root{--bg:#070807;--panel:#0d100e;--panel2:#111411;--line:#252a25;--line2:#343a34;--text:#f2efe7;--muted:#858d85;--soft:#c9cbc3;--gold:#c5a76a;--gold2:#e1c68d;--danger:#8b675c}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(900px 600px at 80% -10%,rgba(197,167,106,.10),transparent 62%),radial-gradient(800px 700px at -10% 40%,rgba(255,255,255,.025),transparent 65%),var(--bg);color:var(--text);font:13px/1.6 'DM Sans',system-ui,sans-serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.025;background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(to bottom,black,transparent 80%)}
+.wrap{max-width:1420px;margin:auto;padding:18px 28px 70px;position:relative;z-index:1}.nav{height:58px;border-bottom:1px solid #20241f;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:12px}.mark{width:38px;height:38px;border:1px solid #77623b;border-radius:2px;display:grid;place-items:center;color:var(--gold2);font:800 11px Manrope;background:linear-gradient(145deg,#17150f,#090a09)}.brand b{font:800 15px Manrope;letter-spacing:.16em}.brand small{display:block;color:#697069;font-size:8px;letter-spacing:.18em;margin-top:3px}.status{color:#bda875;border:1px solid #453a28;padding:6px 9px;font:700 8px Manrope;letter-spacing:.13em}
+.hero{padding:70px 0 48px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:65px;align-items:end}.eyebrow{color:#a88b56;font:700 9px Manrope;letter-spacing:.19em;margin-bottom:15px}.hero h1{font:800 clamp(48px,7vw,98px)/.9 Manrope;letter-spacing:-.07em;margin:0}.hero h1 em{color:var(--gold2);font-style:normal}.hero p{border-left:1px solid #625132;padding-left:18px;color:#929990;max-width:430px;font-size:12px;line-height:1.9;margin:0}.hero p strong{display:block;color:#d8c18e;font:700 8px Manrope;letter-spacing:.16em;margin-bottom:10px}
+.navtabs{position:sticky;top:0;z-index:20;background:rgba(7,8,7,.88);backdrop-filter:blur(16px);border:1px solid #292d28;padding:6px;display:flex;gap:3px;box-shadow:0 12px 35px #0006}.navtabs button{background:transparent;color:#747c74;border:1px solid transparent;padding:9px 12px;border-radius:2px;font:700 8px Manrope;letter-spacing:.12em;cursor:pointer}.navtabs button:hover,.navtabs button.active{color:#dec58f;border-color:#4b402c;background:#14120e}
+.rail{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:#20241f;border:1px solid #20241f;margin-top:12px}.rail div{background:#0a0c0a;padding:14px 16px}.rail b{display:block;color:#d5bc85;font:700 8px Manrope;letter-spacing:.13em}.rail span{color:#646c64;font-size:9px}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:1px;background:#20241f;border:1px solid #20241f;margin-top:1px}.main,.side{background:#0b0d0c}.section{padding:23px;border-bottom:1px solid #20241f;position:relative}.section:before{content:"";position:absolute;top:0;left:0;width:22px;height:1px;background:#715d38}.sectionTitle{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:14px}.sectionTitle b{font:800 10px Manrope;letter-spacing:.13em}.sectionTitle span{color:#626a62;font:700 8px Manrope;letter-spacing:.12em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.field label{display:block;color:#9da39c;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin:0 0 6px}.hint{color:#5f675f;font-size:9px;margin-top:5px}input,textarea,select{width:100%;border:1px solid #2b302b;background:#080a09;color:var(--text);border-radius:2px;padding:11px 12px;font:inherit;outline:none}input:focus,textarea:focus,select:focus{border-color:#836d43;box-shadow:0 0 0 2px #c5a76a12}textarea{min-height:120px;resize:vertical}select{cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:5px}.chip{border:1px solid #2a302a;background:#0d100e;color:#8f978f;padding:8px 10px;border-radius:2px;font:700 8px Manrope;letter-spacing:.08em;cursor:pointer}.chip:hover,.chip.on{border-color:#75613d;color:#dec58f;background:#14120e}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}button{cursor:pointer;font:700 9px Manrope;letter-spacing:.1em;border-radius:2px;padding:11px 14px}.primary{border:1px solid #a98d57;background:#c5a76a;color:#0b0b09}.primary:hover{background:#e0c48a}.secondary{border:1px solid #363b35;background:#111411;color:#d0d3cb}.ghost{border:1px solid #292e29;background:transparent;color:#777f77}
+.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.shot{border:1px solid #292e29;background:#0d100e;padding:10px;cursor:pointer}.shot.on{border-color:#806a42;background:#15130e}.shot b{font:800 8px Manrope;color:#d4bb83;letter-spacing:.1em}.shot span{display:block;color:#747b74;font-size:9px;margin-top:5px}.shot small{display:block;color:#555d55;font-size:8px;margin-top:7px}
+.output{background:#070908;border:1px solid #343934;min-height:390px;padding:16px;white-space:pre-wrap;font:11px/1.75 ui-monospace,SFMono-Regular,Menlo,monospace;color:#d7d6cf;overflow:auto}.output.empty{color:#5e655e}.counter{color:#626a62;font-size:9px;margin-top:7px}.side .section{padding:19px}.sideTitle{font:800 9px Manrope;letter-spacing:.13em;color:#d8c18d;margin-bottom:10px}.formula{border:1px solid #292e29;background:#090b0a;padding:12px;color:#9da39c;font-size:10px;line-height:1.75}.formula strong{color:#dec58f}.checklist{display:grid;gap:6px}.check{border:1px solid #252a25;padding:9px;color:#858d85;font-size:9px}.check b{color:#c7cbc4}.mini{display:grid;grid-template-columns:1fr 1fr;gap:6px}.mini div{border:1px solid #272c27;background:#0b0e0c;padding:9px}.mini b{display:block;color:#c9b078;font:700 8px Manrope;letter-spacing:.1em}.mini span{display:block;color:#697169;font-size:9px;margin-top:4px}
+.notice{border-left:1px solid #735f3b;background:#12110d;padding:11px;color:#8d948c;font-size:9px;line-height:1.7}.notice strong{color:#d5bb82}
+footer{padding:40px 0 0;border-top:1px solid #20241f;margin-top:40px;color:#5d655e;font-size:9px;display:flex;justify-content:space-between;gap:20px}.gold{color:#bda474}
+@media(max-width:900px){.hero{grid-template-columns:1fr;gap:30px}.workspace{grid-template-columns:1fr}.rail{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}.side{display:block}}@media(max-width:600px){.wrap{padding:14px 12px 50px}.status{display:none}.hero{padding:55px 0 35px}.hero h1{font-size:52px}.navtabs{overflow:auto}.navtabs button{white-space:nowrap}.grid2{grid-template-columns:1fr}.rail{grid-template-columns:1fr}.section{padding:18px}.timeline{grid-template-columns:1fr}.output{min-height:460px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="nav">
+  <div class="brand"><div class="mark">HG</div><div><b>HOANGGIA AI</b><small>VIDEO PROMPT STUDIO</small></div></div>
+  <div class="status">ARCHITECTURE / INTERIOR / AI VIDEO</div>
+</header>
+
+<section class="hero">
+  <div><div class="eyebrow">02 / MOTION PROMPT ENGINE</div><h1>DESIGN<br><em>IN MOTION.</em></h1></div>
+  <p><strong>VIDEO PROMPT STUDIO</strong>Biến render, ảnh tham chiếu và brief nội thất thành prompt video có cấu trúc: chủ thể → chuyển động → camera → ánh sáng → không khí → nhịp độ → continuity.</p>
+</section>
+
+<nav class="navtabs">
+  <button class="active" onclick="jump('brief',this)">01 BRIEF</button>
+  <button onclick="jump('camera',this)">02 CAMERA</button>
+  <button onclick="jump('motion',this)">03 MOTION</button>
+  <button onclick="jump('look',this)">04 LOOK</button>
+  <button onclick="jump('output',this)">05 OUTPUT</button>
+</nav>
+
+<div class="rail">
+  <div><b>01 / SUBJECT</b><span>Khóa không gian</span></div>
+  <div><b>02 / CAMERA</b><span>Chọn một chuyển động</span></div>
+  <div><b>03 / ACTION</b><span>Chỉ định điều xảy ra</span></div>
+  <div><b>04 / LIGHT</b><span>Ánh sáng & thời gian</span></div>
+  <div><b>05 / FINISH</b><span>Look & continuity</span></div>
+</div>
+
+<div class="workspace">
+<main class="main">
+<section class="section" id="brief">
+ <div class="sectionTitle"><b>01 / PROJECT BRIEF</b><span>SPACE LOCK</span></div>
+ <div class="grid2">
+  <div class="field"><label>Loại không gian</label><select id="space"><option>Phòng khách</option><option>Phòng ngủ</option><option>Bếp / Dining</option><option>Showroom</option><option>Lobby / Hotel</option><option>Văn phòng</option><option>Mặt tiền nhà ở</option><option>Kiến trúc thương mại</option></select></div>
+  <div class="field"><label>Mục đích video</label><select id="purpose"><option>Portfolio kiến trúc</option><option>Presentation cho khách hàng</option><option>Social / Reels / TikTok</option><option>Marketing showroom</option><option>Concept film</option><option>Before / After</option></select></div>
+ </div>
+ <div class="field" style="margin-top:10px"><label>Mô tả không gian / brief</label><textarea id="briefText" placeholder="Ví dụ: phòng khách Modern Luxury, sofa da nâu, đá travertine, gỗ veneer óc chó, cửa kính lớn nhìn ra sân vườn..."></textarea></div>
+ <div class="grid3" style="margin-top:10px">
+  <div class="field"><label>Giữ nguyên kiến trúc</label><select id="lock"><option>Cao — không đổi geometry</option><option>Trung bình — cho phép biến đổi nhẹ</option><option>Creative — cho phép diễn giải</option></select></div>
+  <div class="field"><label>Độ chuyển động</label><select id="energy"><option>Rất chậm / Luxury</option><option>Chậm / Cinematic</option><option>Trung bình / Editorial</option><option>Nhanh / Social</option></select></div>
+  <div class="field"><label>Thời lượng</label><select id="duration"><option>5 giây</option><option>6 giây</option><option>8 giây</option><option>10 giây</option></select></div>
+ </div>
+</section>
+
+<section class="section" id="camera">
+ <div class="sectionTitle"><b>02 / CAMERA DIRECTION</b><span>ONE MOVE RULE</span></div>
+ <div class="chips" id="cameraChips">
+  <button class="chip on" data-v="locked-off static camera">LOCKED / STATIC</button>
+  <button class="chip" data-v="slow dolly-in toward the space">DOLLY IN</button>
+  <button class="chip" data-v="slow dolly-out revealing the whole composition">DOLLY OUT</button>
+  <button class="chip" data-v="slow lateral tracking move">TRACKING</button>
+  <button class="chip" data-v="slow pan across the composition">PAN</button>
+  <button class="chip" data-v="slow tilt revealing the ceiling and vertical volume">TILT</button>
+  <button class="chip" data-v="slow crane-up reveal">CRANE</button>
+  <button class="chip" data-v="slow controlled arc around the main furniture group">ARC / ORBIT</button>
+ </div>
+ <div class="grid3" style="margin-top:12px">
+  <div class="field"><label>Góc máy</label><select id="angle"><option>Eye-level architectural view</option><option>Low-angle monumental view</option><option>High-angle spatial view</option><option>Wide establishing view</option><option>Detail close-up</option></select></div>
+  <div class="field"><label>Ống kính</label><select id="lens"><option>28mm wide-angle</option><option>35mm architectural lens</option><option>50mm natural perspective</option><option>24mm ultra-wide</option><option>Tilt-shift architectural lens</option></select></div>
+  <div class="field"><label>Verticals</label><select id="verticals"><option>Keep vertical lines perfectly straight</option><option>Natural perspective</option><option>Subtle cinematic perspective</option></select></div>
+ </div>
+</section>
+
+<section class="section" id="motion">
+ <div class="sectionTitle"><b>03 / MOTION & LIFE</b><span>CONTROLLED ACTION</span></div>
+ <div class="grid2">
+  <div class="field"><label>Chuyển động trong không gian</label><select id="life"><option>Subtle curtains and plants move gently</option><option>Soft daylight shifts across surfaces</option><option>People walk naturally through the space</option><option>Furniture remains completely still</option><option>Decorative objects move subtly with airflow</option><option>No secondary motion</option></select></div>
+  <div class="field"><label>Nhân vật / scale</label><select id="people"><option>No people</option><option>One person moving slowly</option><option>Couple walking naturally</option><option>Architect / designer observing the space</option><option>Small group, understated presence</option></select></div>
+ </div>
+ <div class="field" style="margin-top:10px"><label>Beat / hành động chính</label><input id="action" placeholder="Ví dụ: camera tiến chậm tới bàn đảo, ánh nắng trượt trên mặt đá, rèm lay nhẹ..."></div>
+ <div class="hint">Nguyên tắc: một shot nên có một chuyển động camera chính. Đừng bắt AI vừa orbit + crane + dolly trong cùng một nhịp.</div>
+</section>
+
+<section class="section" id="look">
+ <div class="sectionTitle"><b>04 / LIGHT / ATMOSPHERE / LOOK</b><span>ART DIRECTION</span></div>
+ <div class="grid3">
+  <div class="field"><label>Thời điểm</label><select id="time"><option>Soft morning daylight</option><option>Late afternoon golden hour</option><option>Overcast daylight</option><option>Dusk transitioning to blue hour</option><option>Night with warm interior lights</option></select></div>
+  <div class="field"><label>Ánh sáng</label><select id="light"><option>Soft natural daylight with realistic shadows</option><option>Warm architectural lighting</option><option>Directional sunlight with long shadows</option><option>Soft diffused editorial lighting</option><option>Low-key cinematic lighting</option></select></div>
+  <div class="field"><label>Atmosphere</label><select id="atmosphere"><option>Calm, refined and quiet</option><option>Warm and lived-in</option><option>Luxury hospitality atmosphere</option><option>Moody architectural film</option><option>Clean editorial atmosphere</option></select></div>
+ </div>
+ <div class="grid2" style="margin-top:10px">
+  <div class="field"><label>Material / texture priority</label><input id="material" placeholder="travertine, walnut veneer, brushed brass, leather, linen..."></div>
+  <div class="field"><label>Visual finish</label><select id="finish"><option>Photorealistic architectural visualization</option><option>High-end editorial film</option><option>Luxury real-estate film</option><option>Minimal cinematic film grain</option><option>Clean commercial visualization</option></select></div>
+ </div>
+</section>
+
+<section class="section" id="output">
+ <div class="sectionTitle"><b>05 / PROMPT OUTPUT</b><span id="wordCount">0 WORDS</span></div>
+ <div id="outputBox" class="output empty">Prompt sẽ xuất hiện ở đây. Hãy nhập brief rồi nhấn “GENERATE VIDEO PROMPT”.</div>
+ <div class="actions">
+   <button class="primary" onclick="generate()">GENERATE VIDEO PROMPT</button>
+   <button class="secondary" onclick="copyPrompt()">COPY PROMPT</button>
+   <button class="ghost" onclick="generateEnglish()">ENGLISH / CLEAN</button>
+   <button class="ghost" onclick="resetAll()">RESET</button>
+ </div>
+ <div class="counter">HOANGGIA AI ưu tiên prompt dạng creative brief tự nhiên, cụ thể và dễ kiểm soát thay vì tag soup.</div>
+</section>
+</main>
+
+<aside class="side">
+<section class="section">
+ <div class="sideTitle">PROMPT ARCHITECTURE</div>
+ <div class="formula"><strong>SUBJECT</strong> → <strong>ACTION</strong> → <strong>CAMERA</strong> → <strong>LIGHT</strong> → <strong>ATMOSPHERE</strong> → <strong>LOOK</strong> → <strong>CONSTRAINTS</strong></div>
+</section>
+<section class="section">
+ <div class="sideTitle">ARCHITECTURE CHECK</div>
+ <div class="checklist">
+  <div class="check">✓ <b>Geometry:</b> giữ nguyên tỷ lệ, tường, trần, cửa</div>
+  <div class="check">✓ <b>Camera:</b> chỉ một chuyển động chính</div>
+  <div class="check">✓ <b>Perspective:</b> verticals rõ ràng</div>
+  <div class="check">✓ <b>Material:</b> nêu vật liệu thật thay vì adjective</div>
+  <div class="check">✓ <b>Continuity:</b> cùng grade, light và space</div>
+ </div>
+</section>
+<section class="section">
+ <div class="sideTitle">QUICK PRESETS</div>
+ <div class="mini">
+  <div onclick="preset('arrival')"><b>ARRIVAL</b><span>Slow dolly-in</span></div>
+  <div onclick="preset('reveal')"><b>REVEAL</b><span>Dolly-out</span></div>
+  <div onclick="preset('material')"><b>MATERIAL</b><span>Detail / texture</span></div>
+  <div onclick="preset('walkthrough')"><b>WALKTHROUGH</b><span>Tracking</span></div>
+ </div>
+</section>
+<section class="section">
+ <div class="sideTitle">SOURCE IMAGE</div>
+ <div class="notice"><strong>Workflow gợi ý:</strong> đưa render đã duyệt vào công cụ image-to-video, sau đó dùng prompt này để điều khiển camera, motion, light và continuity. AI video là lớp diễn đạt chuyển động; geometry gốc vẫn nên được kiểm tra từ model/render.</div>
+</section>
+</aside>
+</div>
+
+<footer><div>HOANGGIA AI / VIDEO PROMPT STUDIO</div><div><span class="gold">KTS. HOÀNG GIA</span> · Architecture / Interior / AI</div></footer>
+</div>
+<script>
+const state={camera:'locked-off static camera',shot:'arrival'};
+document.querySelectorAll('#cameraChips .chip').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#cameraChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');state.camera=b.dataset.v;}));
+function val(id){return document.getElementById(id).value.trim();}
+function buildPrompt(clean=false){
+ const brief=val('briefText')||'a refined contemporary interior space';
+ const materials=val('material')||'natural stone, warm timber, refined metal and premium upholstery';
+ const lock=val('lock');
+ const duration=val('duration');
+ const prompt=[
+  'Create a '+duration+' architectural interior film of '+brief+'.',
+  'The space is the hero: preserve the existing architecture, proportions, walls, ceiling height, openings and major furniture geometry.',
+  'Camera: '+state.camera+', '+val('angle')+', '+val('lens')+', '+val('verticals')+'.',
+  'Action: '+(val('action')||'the camera moves with a deliberate, restrained rhythm while the space remains visually stable')+'.',
+  'Secondary motion: '+val('life')+'. '+val('people')+'.',
+  'Lighting: '+val('time')+', '+val('light')+'.',
+  'Atmosphere: '+val('atmosphere')+'.',
+  'Material focus: '+materials+'.',
+  'Visual finish: '+val('finish')+'.',
+  'Energy: '+val('energy')+'.',
+  'Continuity constraints: maintain the same spatial identity throughout the clip, consistent furniture placement, material appearance, window proportions, architectural lines and lighting direction; avoid geometry drift, warped straight lines, changing furniture, invented openings or excessive camera shake.',
+  'The result should feel like a high-end architecture and interior design film: controlled, believable, elegant and spatially legible.'
+ ].join(' ');
+ if(clean)return prompt.replace(/\s+/g,' ').trim();
+ return prompt;
+}
+function generate(){const o=document.getElementById('outputBox');const p=buildPrompt();o.textContent=p;o.classList.remove('empty');document.getElementById('wordCount').textContent=p.split(/\s+/).length+' WORDS';o.scrollIntoView({behavior:'smooth',block:'center'});}
+async function copyPrompt(){const p=buildPrompt();if(!p)return;try{await navigator.clipboard.writeText(p);toast('PROMPT COPIED');}catch(e){const a=document.createElement('textarea');a.value=p;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();toast('PROMPT COPIED');}}
+function generateEnglish(){generate();toast('ENGLISH CLEAN PROMPT READY');}
+function resetAll(){document.querySelectorAll('input,textarea').forEach(e=>e.value='');document.getElementById('outputBox').textContent='Prompt sẽ xuất hiện ở đây. Hãy nhập brief rồi nhấn “GENERATE VIDEO PROMPT”.';document.getElementById('outputBox').classList.add('empty');document.getElementById('wordCount').textContent='0 WORDS';}
+function jump(id,btn){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.navtabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function toast(t){let x=document.getElementById('toast');if(!x){x=document.createElement('div');x.id='toast';x.style='position:fixed;right:20px;bottom:20px;z-index:99;background:#c5a76a;color:#0a0a08;padding:11px 14px;border-radius:2px;font:800 9px Manrope;letter-spacing:.1em;box-shadow:0 12px 35px #0008';document.body.appendChild(x)}x.textContent=t;x.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.display='none',1800)}
+function preset(type){
+ const map={arrival:['slow dolly-in toward the space','Late afternoon golden hour'],reveal:['slow dolly-out revealing the whole composition','Soft morning daylight'],material:['locked-off static camera','Soft diffused editorial lighting'],walkthrough:['slow lateral tracking move','Warm architectural lighting']};
+ const [cam,light]=map[type];state.camera=cam;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x.dataset.v===cam));document.getElementById('light').value=light;toast(type.toUpperCase()+' PRESET');}
+</script>
+</body>
+</html>
