@@ -299,3 +299,48 @@ const dna='IDENTITY: '+val('characterIdentity')+' | APPEARANCE: '+val('character
 $('characterOutput').value=dna;
 }
 >
+document.addEventListener('DOMContentLoaded',()=>{
+  const generateButton=$('generate'), copyButton=$('copy'), jsonButton=$('json'), resetButton=$('reset');
+  const closeButton=$('close'), modal=$('modal');
+  if(generateButton) generateButton.addEventListener('click',()=>{
+    try{
+      const output=buildPrompt();
+      $('outputText').textContent=output;
+      $('outputText').classList.remove('empty');
+      $('progress').style.width='100%';
+      $('output').scrollIntoView({behavior:'smooth',block:'start'});
+    }catch(err){
+      $('outputText').textContent='Không thể kết xuất prompt: '+(err&&err.message?err.message:String(err));
+      $('outputText').classList.remove('empty');
+    }
+  });
+  if(copyButton) copyButton.addEventListener('click',async()=>{
+    const text=$('outputText').textContent||'';
+    if(!text || $('outputText').classList.contains('empty')) return;
+    try{await navigator.clipboard.writeText(text)}
+    catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove()}
+    copyButton.textContent='ĐÃ SAO CHÉP'; setTimeout(()=>copyButton.textContent='SAO CHÉP',1200);
+  });
+  if(jsonButton) jsonButton.addEventListener('click',()=>{
+    try{
+      const data=collect();
+      data.generatedPrompt=$('outputText').classList.contains('empty')?'':$('outputText').textContent;
+      const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob),a=document.createElement('a');
+      a.href=url;a.download='hoanggia-ai-video-prompt.json';a.click();URL.revokeObjectURL(url);
+    }catch(err){alert('Không thể tạo JSON: '+(err&&err.message?err.message:String(err)))}
+  });
+  if(resetButton) resetButton.addEventListener('click',()=>{
+    document.querySelectorAll('input,textarea,select').forEach(el=>{if(el.id!=='ref')el.value=''});
+    document.querySelectorAll('.chip.active,.shot.active,.card.active').forEach(el=>el.classList.remove('active'));
+    referenceFiles=[];renderReferences();if($('ref'))$('ref').value='';
+    $('outputText').textContent='Prompt sẽ xuất hiện ở đây.';$('outputText').classList.add('empty');$('progress').style.width='0%';
+    selections={};
+  });
+  if(closeButton) closeButton.addEventListener('click',()=>modal.classList.remove('show'));
+  if(modal) modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+  const dnaButton=$('generateCharacter');if(dnaButton)dnaButton.addEventListener('click',developCharacter);
+});
+</script>
+</body>
+</html>
