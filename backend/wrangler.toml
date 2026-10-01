@@ -1,0 +1,6 @@
+name = "hoanggia-ai-vision"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://hoanggiaktsda-beep.github.io"
