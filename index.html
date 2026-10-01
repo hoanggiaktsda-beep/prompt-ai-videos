@@ -218,23 +218,22 @@ textarea{min-height:82px!important}
     const mk=(title,note)=>{const s=document.createElement('section');s.className='hg-real-step';s.innerHTML='<div class="hg-real-head"><span class="hg-real-title">'+title+'</span><span class="hg-real-note">'+note+'</span></div><div class="hg-real-body"></div>';return s};
     const input=mk('INPUT','SPACE · PURPOSE · FORMAT');
     const brief=mk('BRIEF','DESIGN INTENT · MATERIAL · PEOPLE');
-    const shot=mk('SHOT / CAMERA','PRESET · PATH · ANGLE · LENS · MOTION');
-    const light=mk('LIGHTING','LIGHT SOURCE · TIME · ATMOSPHERE');
+    const shot=mk('05 / SHOT DESIGN','SHOT PRESET · CAMERA & SHOT · LIGHTING DESIGN');
     const body=old.querySelector('.hg-workspace-shell');
     left.innerHTML='<h2>01 / CREATIVE WORKSPACE</h2>';
     [input,brief,shot,light].forEach(x=>left.appendChild(x));
-    const ib=input.querySelector('.hg-real-body'), bb=brief.querySelector('.hg-real-body'), sb=shot.querySelector('.hg-real-body'), lb=light.querySelector('.hg-real-body');
+    const ib=input.querySelector('.hg-real-body'), bb=brief.querySelector('.hg-real-body'), sb=shot.querySelector('.hg-real-body');
     // Move actual existing fields; JS bindings remain intact because nodes are not cloned.
     ['purpose','duration','ratio','style'].forEach(id=>move(id,ib));
     ['brief','sceneType','archStyle','composition','furniture','materialType','palette','focal','activity','timeOfDay','atmosphere','depth','architectureDetail','decorDetail','mood','material','people','constraints','ref'].forEach(id=>move(id,bb));
     ['camera','lens','motion'].forEach(id=>move(id,sb));
-    ['light'].forEach(id=>move(id,lb));
+    ['light'].forEach(id=>move(id,sb));
     // Move existing visual sections into the correct real step, preserving their controls.
     q('.visual-section').forEach(sec=>{
       const h=(sec.querySelector('.visual-section-head')?.textContent||'').toUpperCase();
       if(h.includes('SHOT PRESET')) sb.appendChild(sec);
       else if(h.includes('CAMERA')) sb.appendChild(sec);
-      else if(h.includes('LIGHTING')) lb.appendChild(sec);
+      else if(h.includes('LIGHTING')) sb.appendChild(sec);
     });
     // Hide now-empty legacy wrappers without deleting nodes.
     q('.hg-step').forEach(x=>x.remove());
