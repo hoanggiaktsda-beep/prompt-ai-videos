@@ -237,7 +237,8 @@ document.querySelectorAll('#camera select').forEach(s=>s.addEventListener('chang
 
 document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.onclick=()=>{document.querySelectorAll('#cameraPresets .shot').forEach(x=>x.classList.remove('active'));b.classList.add('active');const p=presets[b.dataset.shot];const ids={height:'cameraHeight',speed:'cameraSpeed',dof:'depthOfField'};Object.entries(p).forEach(([field,value])=>{const id=ids[field]||field;const el=$(id);if(el){el.value=value;selections[id]=value}})});
 document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sequence .card').forEach(x=>x.classList.remove('active'));b.closest('.card').classList.add('active')});
-let referenceFiles=[];\nlet spatialBlueprint=null;
+let referenceFiles=[];
+let spatialBlueprint=null;
 function getBackendUrl(){return (localStorage.getItem('hoanggia_ai_backend_url')||$('backendUrl')?.value||'').trim().replace(/\\/$/,'')}
 function setSpatialStatus(text,ok=false){if($('spatialStatus')){$('spatialStatus').textContent=text;$('spatialStatus').style.color=ok?'var(--ok)':'var(--muted)'}if($('sImage'))$('sImage').textContent=referenceFiles.length?(ok?'VISION AI':'SẴN SÀNG'):'CHƯA CÓ'}
 function showSpatialError(msg){if($('spatialError'))$('spatialError').textContent=msg||''}
