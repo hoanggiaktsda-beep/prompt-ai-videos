@@ -295,6 +295,41 @@ header,.topbar,.hero,.intro,.landing-hero{display:none!important}
  .hg-live-workspace{padding:8px!important}
  .hg-real-body{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
+</style><style id="hg-final-minimal-ui">
+/* FINAL UI CLEANUP — remove redundant chrome, keep one working canvas */
+html,body{background:#0a0c0b!important}
+body>*:not(.hg-live-workspace){display:none!important}
+.hg-live-workspace{display:block!important;position:relative!important;width:100%!important;max-width:1220px!important;height:100vh!important;min-height:0!important;margin:0 auto!important;padding:12px 14px!important;box-sizing:border-box!important}
+.hg-live-workspace .hg-workspace-shell{height:calc(100vh - 24px)!important;grid-template-columns:minmax(0,1fr) 360px!important;gap:10px!important}
+.hg-live-workspace .hg-workspace-panel{background:#101311!important;border:1px solid rgba(255,255,255,.065)!important;border-radius:8px!important;padding:12px!important;box-shadow:none!important}
+.hg-live-workspace .hg-workspace-panel:first-child{overflow:auto!important}
+.hg-live-workspace .hg-workspace-panel:first-child>h2{font-size:9px!important;letter-spacing:.18em!important;margin:0 0 8px!important;opacity:.55!important}
+.hg-real-step{padding:9px 0!important;border-top:1px solid rgba(255,255,255,.06)!important}
+.hg-real-head{margin-bottom:6px!important;height:18px!important}
+.hg-real-title{font-size:9px!important;letter-spacing:.14em!important}
+.hg-real-note{display:none!important}
+.hg-real-body{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+.hg-real-body label{font-size:7px!important;margin-bottom:3px!important;opacity:.48!important}
+.hg-real-body input,.hg-real-body select,.hg-real-body textarea{min-height:32px!important;padding:6px 8px!important;border-radius:5px!important;font-size:10px!important}
+.hg-real-body textarea{min-height:52px!important}
+.hg-real-body .visual-section{margin:4px 0 0!important;padding:7px!important;border-radius:6px!important;background:transparent!important}
+.hg-real-body .visual-section-head{font-size:7px!important;margin-bottom:5px!important;opacity:.55!important}
+.hg-real-body .visual-card,.hg-real-body .shot-preset{min-height:30px!important;padding:6px 7px!important;font-size:7px!important;border-radius:5px!important}
+.hg-live-workspace .hg-output{height:100%!important;min-height:0!important;overflow:hidden!important}
+.hg-live-workspace .hg-output>h2{font-size:9px!important;letter-spacing:.18em!important;margin:0 0 8px!important;opacity:.55!important}
+.hg-real-output{min-height:0!important;padding:0!important;border:0!important}
+.hg-output-label{font-size:8px!important;margin-bottom:6px!important;opacity:.5!important}
+#hg-live-output{font-size:10px!important;line-height:1.55!important;padding:10px!important;border-radius:6px!important;background:#0b0d0c!important}
+#hg-output-copy{min-height:32px!important;margin-top:7px!important;border-radius:5px!important;font-size:8px!important}
+@media(max-width:900px){
+ body>*:not(.hg-live-workspace){display:none!important}
+ .hg-live-workspace{height:auto!important}
+ .hg-live-workspace .hg-workspace-shell{height:auto!important;grid-template-columns:1fr!important}
+ .hg-live-workspace .hg-output{height:420px!important}
+}
+@media(max-width:600px){
+ .hg-real-body{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
 </style></head>
 <body><div class="hg-workspace" id="hg-workspace-map">
   <div class="hg-workspace-shell">
