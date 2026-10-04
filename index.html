@@ -395,7 +395,7 @@ function initializeCharacterRefs(){
    else {setCharacterSection(k,'');const s=$('cr-'+k+'-status');if(s)s.textContent='Đã tải ảnh; chờ Vision AI.';}
    if(characterRefUrls[k])URL.revokeObjectURL(characterRefUrls[k]);characterRefFiles[k]=file;characterRefUrls[k]=URL.createObjectURL(file);
    const img=document.createElement('img');img.alt='Ảnh tham chiếu '+k;img.src=characterRefUrls[k];$('cr-'+k+'-preview').replaceChildren(img);
-   if(k!=='body'&&getBackendUrl())analyzeCharacterReference(k);
+   if(getBackendUrl()){if(k==='body')analyzeBodyReference();else analyzeCharacterReference(k);}
   });
   $('cr-'+k+'-clear')?.addEventListener('click',()=>clearCharacterRef(k));
  });
@@ -423,10 +423,11 @@ function syncBodyAppearance(){
 }
 async function analyzeBodyReference(){
  const status=$('bodyAnalysisStatus'),btn=$('bodyAnalyze'),file=characterRefFiles.body;
+ const initialFile=file;
  if(!file){status.textContent='Hãy tải ảnh BODY trước.';return}
  const endpoint=getBackendUrl();if(!endpoint){status.textContent='Vision AI chưa được triển khai/kết nối. Hãy nhập mô tả BODY thủ công hoặc cấu hình Cloudflare Worker tại SPATIAL INTELLIGENCE; không thể tự phân tích ảnh chỉ bằng GitHub Pages.';return}
  btn.disabled=true;status.textContent='Đang phân tích ảnh BODY...';
- try{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-body',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');if(typeof data.description!=='string'||!data.description.trim())throw Error('Không nhận được mô tả hợp lệ');$('bodyDescription').value=data.description.trim();syncBodyAppearance();status.textContent='Đã đề xuất mô tả. Hãy kiểm tra và chỉnh sửa nếu cần.';}catch(err){status.textContent='Không thể phân tích: '+err.message}finally{btn.disabled=false}
+ try{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-body',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');if(typeof data.description!=='string'||!data.description.trim())throw Error('Không nhận được mô tả hợp lệ');if(characterRefFiles.body!==initialFile)return;$('bodyDescription').value=data.description.trim();syncBodyAppearance();status.textContent='Đã đề xuất mô tả. Hãy kiểm tra và chỉnh sửa nếu cần.';}catch(err){status.textContent='Không thể phân tích: '+err.message}finally{btn.disabled=false}
 }
 document.addEventListener('DOMContentLoaded',()=>{
   $('bodyAnalyze')?.addEventListener('click',analyzeBodyReference);
