@@ -24,7 +24,9 @@ main{padding:24px 18px 60px;min-width:0}.hero{padding:6px 4px 22px}.eyebrow{colo
 @media(max-width:1100px){.layout{grid-template-columns:190px minmax(0,1fr)}.right{grid-column:1/-1;position:relative;top:auto;height:auto;border-left:0;border-top:1px solid var(--line)}}
 @media(max-width:760px){.layout{display:block}.side{position:relative;top:auto;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:8px}.side h4,.side-note{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.right{border-top:1px solid var(--line)}.grid2{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.shots{grid-template-columns:repeat(3,1fr)}main{padding:15px 10px 40px}.hero h1{font-size:38px}.bar{padding:9px 12px}}
 @media(max-width:430px){.cards{grid-template-columns:1fr}.shots{grid-template-columns:1fr 1fr}.step{padding:12px}.preview{grid-template-columns:repeat(3,1fr)}}
-.dna-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.dna-grid textarea{min-height:78px}@media(max-width:900px){.dna-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.dna-grid{grid-template-columns:1fr}}</style>
+.dna-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.dna-grid textarea{min-height:78px}@media(max-width:900px){.dna-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.dna-grid{grid-template-columns:1fr}}
+.character-reference{border:1px solid #4b5d51;border-radius:14px;padding:16px;margin:12px 0;background:rgba(29,44,35,.45)}.character-reference>strong{display:block;font-size:13px;letter-spacing:.05em}.character-reference p,.character-reference small{color:#aebeb3;font-size:12px}.character-ref-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}.character-ref-card{border:1px solid #415047;border-radius:12px;padding:12px;min-width:0}.character-ref-card label{display:block;font-size:12px;margin-bottom:8px}.character-ref-card input{display:block;width:100%;max-width:100%;font-size:12px}.character-ref-preview{margin:10px 0;min-height:115px;border:1px dashed #526057;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#9eb3a3;overflow:hidden}.character-ref-preview img{width:100%;height:150px;object-fit:contain}.character-ref-card button{width:100%}@media(max-width:650px){.character-ref-grid{grid-template-columns:1fr}.character-ref-preview img{height:190px}}
+</style>
 <style id="responsive-platform">
 html{min-width:0;overflow-x:hidden}body{overflow-x:hidden;-webkit-text-size-adjust:100%;padding-bottom:env(safe-area-inset-bottom)}
 button,input,textarea,select{touch-action:manipulation}
@@ -125,7 +127,9 @@ button,input,textarea,select{touch-action:manipulation}
 </select></div>
 <div class="field" style="grid-column:1/-1">
 <label>CHARACTER DNA SYSTEM · HỆ DNA NHÂN VẬT</label>
-<div class="dna-grid">
+<div class="character-reference" id="characterReference"><strong>ẢNH THAM CHIẾU NHÂN VẬT · FACE / BODY / TRANG PHỤC</strong><p>Ảnh tham chiếu độc lập với MASTER IMAGE. Mỗi mục chọn một ảnh có sẵn; không tự động phân tích bằng Vision AI.</p><div class="character-ref-grid">
+<div class="character-ref-card"><label for="cr-face">01 / FACE · KHUÔN MẶT</label><input id="cr-face" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Ảnh face"><div id="cr-face-preview" class="character-ref-preview">CHƯA CÓ ẢNH</div><button type="button" id="cr-face-clear" class="btn ghost">XÓA ẢNH</button></div><div class="character-ref-card"><label for="cr-body">02 / BODY · HÌNH THỂ</label><input id="cr-body" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Ảnh body"><div id="cr-body-preview" class="character-ref-preview">CHƯA CÓ ẢNH</div><button type="button" id="cr-body-clear" class="btn ghost">XÓA ẢNH</button></div><div class="character-ref-card"><label for="cr-wardrobe">03 / TRANG PHỤC · WARDROBE</label><input id="cr-wardrobe" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Ảnh wardrobe"><div id="cr-wardrobe-preview" class="character-ref-preview">CHƯA CÓ ẢNH</div><button type="button" id="cr-wardrobe-clear" class="btn ghost">XÓA ẢNH</button></div>
+</div><small>Ảnh chỉ lưu trong phiên làm việc trên trình duyệt. Prompt sẽ ghi rõ ảnh tham chiếu nào được cung cấp; ảnh không được tự động gửi tới AI khi chưa có backend hỗ trợ.</small></div><div class="dna-grid">
 <div class="field"><label>01 / Identity · Danh tính</label><textarea id="characterIdentity" placeholder="Tên/định danh, độ tuổi, giới tính, nguồn gốc..."></textarea></div>
 <div class="field"><label>02 / Appearance · Ngoại hình</label><textarea id="characterAppearance" placeholder="Khuôn mặt, tóc, vóc dáng, đặc điểm nhận diện..."></textarea></div>
 <div class="field"><label>03 / Wardrobe · Trang phục</label><textarea id="characterWardrobe" placeholder="Trang phục, màu sắc, chất liệu, phụ kiện, giày..."></textarea></div>
@@ -308,7 +312,7 @@ $('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('drag');setRe
 function val(id){return $(id).value.trim()}
 function collect(){return{
 purpose:val('purpose'),style:val('style'),brief:val('brief'),duration:val('duration'),ratio:val('ratio'),resolution:val('resolution'),fps:val('fps'),
-scene:selections.scene,time:selections.time,mood:selections.mood,weather:selections.weather,mood:selections.mood,characters:selections.characters,activity:selections.activity,materials:selections.materials,atmosphere:selections.atmosphere,sceneDirection:val('sceneDirection'),characterIdea:val('characterIdea'),characterOutput:val('characterOutput'),characterIdentity:val('characterIdentity'),characterAppearance:val('characterAppearance'),characterWardrobe:val('characterWardrobe'),characterRole:val('characterRole'),characterBehavior:val('characterBehavior'),characterAction:val('characterAction'),characterEmotion:val('characterEmotion'),characterSpatial:val('characterSpatial'),characterContinuity:val('characterContinuity'),
+scene:selections.scene,time:selections.time,mood:selections.mood,weather:selections.weather,mood:selections.mood,characters:selections.characters,activity:selections.activity,materials:selections.materials,atmosphere:selections.atmosphere,sceneDirection:val('sceneDirection'),characterReferences:characterReferenceSummary(),characterIdea:val('characterIdea'),characterOutput:val('characterOutput'),characterIdentity:val('characterIdentity'),characterAppearance:val('characterAppearance'),characterWardrobe:val('characterWardrobe'),characterRole:val('characterRole'),characterBehavior:val('characterBehavior'),characterAction:val('characterAction'),characterEmotion:val('characterEmotion'),characterSpatial:val('characterSpatial'),characterContinuity:val('characterContinuity'),
 shotType:val('shotType'),lens:val('lens'),height:val('cameraHeight'),angle:val('angle'),motion:val('motion'),speed:val('cameraSpeed'),parallax:val('parallax'),focus:val('focus'),dof:val('depthOfField'),framing:val('framing'),cameraDirection:val('cameraDirection'),light:selections.light,lightDirection:selections.lightDirection,lightQuality:selections.lightQuality,colorTemp:selections.colorTemp,contrast:selections.contrast,intensity:selections.intensity,shadow:selections.shadow,reflection:selections.reflection,practical:selections.practical,lightAtmosphere:selections.lightAtmosphere,lightingDirection:val('lightingDirection'),shotPurpose:selections.shotPurpose,shotAction:selections.shotAction,shotCamera:selections.shotCamera,shotSubject:selections.shotSubject,shotTransition:selections.shotTransition,shotDuration:selections.shotDuration,shotContinuity:selections.shotContinuity,shotRhythm:selections.shotRhythm,sequenceLogic:val('sequenceLogic'),shotDirection:val('shotDirection'),aiTool:selections.aiTool,promptMode:selections.promptMode,promptLanguage:selections.promptLanguage,outputFormat:selections.outputFormat,engineNotes:val('engineNotes'),constraints:val('constraints'),master:referenceFiles.length>0,referenceMode:val('referenceMode'),referenceBehavior:val('referenceBehavior'),referenceCount:referenceFiles.length
 }}
 const expert=[
@@ -343,6 +347,7 @@ return 'Create a '+d.duration+' '+d.ratio+' '+d.resolution+' '+d.fps+' high-end 
 'ẢNH GỐC · MASTER IMAGE / GEOMETRY GUARD: '+source+' '+d.constraints+' Never invent openings, duplicate objects, substitute furniture, rearrange the room, change ceiling height, distort proportions, or drift the camera-space relationship.\n\n'+
 'CONTINUITY: Same architecture, same furniture identity, same material language and consistent lighting logic across every shot. Only explicitly requested creative attributes may change.\n\n'+
 'AI VIDEO ENGINE: Target platform: '+d.aiTool+'. Prompt mode: '+d.promptMode+'. Language: '+d.promptLanguage+'. Output format: '+d.outputFormat+'. Engine notes: '+d.engineNotes+'. Adapt syntax, motion vocabulary, image-to-video behavior, camera instructions and prompt density to the selected engine without changing the creative intent, architecture or continuity constraints.\n\n'+
+'CHARACTER IMAGE REFERENCES: '+d.characterReferences+'. Keep face identity, body proportions, and wardrobe consistent across shots. Never claim the images were visually analyzed; actual image attachments must be passed separately to a capable AI engine.\\n\\n'+
 'QUALITY: photorealistic architectural visualization, physically plausible materials, natural reflections, refined color grading, cinematic depth, clean motion, no flicker, no morphing, no geometry drift, no text, no watermark.';
 }
 function developCharacter(){
@@ -364,7 +369,29 @@ Object.keys(fields).forEach(id=>$(id).value=fields[id]+' '+context);
 const dna='IDENTITY: '+val('characterIdentity')+' | APPEARANCE: '+val('characterAppearance')+' | WARDROBE: '+val('characterWardrobe')+' | ROLE: '+val('characterRole')+' | BEHAVIOR: '+val('characterBehavior')+' | ACTION: '+val('characterAction')+' | EMOTION: '+val('characterEmotion')+' | SPATIAL INTERACTION: '+val('characterSpatial')+' | CONTINUITY: '+val('characterContinuity');
 $('characterOutput').value=dna;
 }
+
+// Character reference files are session-local and independent of the room master.
+const characterRefFiles={face:null,body:null,wardrobe:null};
+const characterRefUrls={face:null,body:null,wardrobe:null};
+function characterReferenceSummary(){return ['face','body','wardrobe'].map(k=>k.toUpperCase()+': '+(characterRefFiles[k]?'uploaded reference image available in browser (attach separately to the video AI engine)':'no image provided')).join('; ')}
+function clearCharacterRef(k){
+ if(characterRefUrls[k])URL.revokeObjectURL(characterRefUrls[k]);characterRefUrls[k]=null;characterRefFiles[k]=null;
+ const input=$('cr-'+k),preview=$('cr-'+k+'-preview');if(input)input.value='';if(preview)preview.textContent='CHƯA CÓ ẢNH';
+}
+function initializeCharacterRefs(){
+ ['face','body','wardrobe'].forEach(k=>{
+  const input=$('cr-'+k);if(!input)return;
+  input.addEventListener('change',()=>{
+   const file=input.files?.[0];if(!file){clearCharacterRef(k);return}
+   if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024){alert('Chỉ nhận JPG, PNG hoặc WEBP tối đa 10 MB.');clearCharacterRef(k);return}
+   if(characterRefUrls[k])URL.revokeObjectURL(characterRefUrls[k]);characterRefFiles[k]=file;characterRefUrls[k]=URL.createObjectURL(file);
+   const img=document.createElement('img');img.alt='Ảnh tham chiếu '+k;img.src=characterRefUrls[k];$('cr-'+k+'-preview').replaceChildren(img);
+  });
+  $('cr-'+k+'-clear')?.addEventListener('click',()=>clearCharacterRef(k));
+ });
+}
 document.addEventListener('DOMContentLoaded',()=>{
+  initializeCharacterRefs();
   const generateButton=$('generate'), copyButton=$('copy'), jsonButton=$('json'), resetButton=$('reset');
   const closeButton=$('close'), modal=$('modal');
   if(generateButton) generateButton.addEventListener('click',()=>{
@@ -398,6 +425,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(resetButton) resetButton.addEventListener('click',()=>{
     document.querySelectorAll('input,textarea,select').forEach(el=>{if(el.id!=='ref')el.value=''});
     document.querySelectorAll('.chip.active,.shot.active,.card.active').forEach(el=>el.classList.remove('active'));
+    ['face','body','wardrobe'].forEach(clearCharacterRef);
     referenceFiles=[];renderReferences();if($('ref'))$('ref').value='';
     $('outputText').textContent='Prompt sẽ xuất hiện ở đây.';$('outputText').classList.add('empty');$('progress').style.width='0%';
     selections={};
