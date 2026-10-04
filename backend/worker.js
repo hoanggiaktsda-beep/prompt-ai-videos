@@ -47,6 +47,19 @@ export default {async fetch(request,env){
   const origin=request.headers.get("Origin")||"",allowed=env.ALLOWED_ORIGIN||DEFAULT_ORIGIN;
   if(request.method==="OPTIONS")return new Response(null,{status:204,headers:cors(origin,allowed)});
   const url=new URL(request.url);
+  if(url.pathname==="/analyze-character"){
+    if(request.method!=="POST")return json({error:"Method not allowed"},405,origin,allowed);
+    if(!env.OPENAI_API_KEY)return json({error:"Vision backend chưa được cấu hình."},503,origin,allowed);
+    let body;try{body=await request.json()}catch(_){return json({error:"Invalid JSON"},400,origin,allowed)}
+    const {image,kind}=body||{};
+    if(!["face","wardrobe"].includes(kind)||typeof image!=="string"||!/^data:image\/(jpeg|png|webp);base64,/i.test(image)||image.length>12000000)return json({error:"Ảnh hoặc loại tham chiếu không hợp lệ."},400,origin,allowed);
+    const instruction=kind==="face"?"Describe visually observable facial features, hair, hairstyle and identifying visual features for character continuity. Do not infer gender identity, exact age, ethnicity, health or other sensitive attributes from appearance. If not visible say insufficient detail.":"Describe visible garments, silhouette, colors, fabric appearance, footwear and accessories. Do not infer brand or hidden materials. Use tasteful neutral fashion editorial language.";
+    const upstream=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":"Bearer "+env.OPENAI_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({model:MODEL,input:[{role:"user",content:[{type:"input_text",text:instruction+" Respond in concise English, 1-3 sentences, only observed facts."},{type:"input_image",image_url:image,detail:"high"}]}],max_output_tokens:220})});
+    const raw=await upstream.json().catch(()=>({}));if(!upstream.ok)return json({error:raw?.error?.message||"Vision request failed"},502,origin,allowed);
+    const description=raw.output_text||raw.output?.flatMap(x=>x.content||[]).find(x=>x.type==="output_text")?.text||"";
+    if(!description.trim())return json({error:"Không có mô tả."},502,origin,allowed);
+    return json({description:description.trim()},200,origin,allowed);
+  }
   if(url.pathname==="/analyze-body"){
     if(request.method!=="POST")return json({error:"Method not allowed"},405,origin,allowed);
     if(!env.OPENAI_API_KEY)return json({error:"Vision backend chưa được cấu hình."},503,origin,allowed);
