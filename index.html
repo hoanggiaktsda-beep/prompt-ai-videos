@@ -379,7 +379,9 @@ $('characterOutput').value=dna;
 const characterRefFiles={face:null,body:null,wardrobe:null};
 const characterRefUrls={face:null,body:null,wardrobe:null};
 function characterReferenceSummary(){return ['face','body','wardrobe'].map(k=>k.toUpperCase()+': '+(characterRefFiles[k]?'uploaded reference image available in browser (attach separately to the video AI engine)':'no image provided')).join('; ')}
+const characterAnalysisVersion={face:0,body:0,wardrobe:0};
 function clearCharacterRef(k){
+ characterAnalysisVersion[k]++;
  if(k==='body'){if($('bodyDescription')){$('bodyDescription').value='';syncBodyAppearance();}if($('bodyAnalysisStatus'))$('bodyAnalysisStatus').textContent='Chưa phân tích.';}
  if(characterRefUrls[k])URL.revokeObjectURL(characterRefUrls[k]);characterRefUrls[k]=null;characterRefFiles[k]=null;
  if(k!=='body'){setCharacterSection(k,'');const status=$('cr-'+k+'-status');if(status)status.textContent='Chưa phân tích.';}
@@ -389,6 +391,7 @@ function initializeCharacterRefs(){
  ['face','body','wardrobe'].forEach(k=>{
   const input=$('cr-'+k);if(!input)return;
   input.addEventListener('change',()=>{
+   characterAnalysisVersion[k]++;
    const file=input.files?.[0];if(!file){clearCharacterRef(k);return}
    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024){alert('Chỉ nhận JPG, PNG hoặc WEBP tối đa 10 MB.');clearCharacterRef(k);return}
    if(k==='body'){$('bodyDescription').value='';syncBodyAppearance();$('bodyAnalysisStatus').textContent='Ảnh mới đã tải. Đang thử Browser Vision AI trên thiết bị.';}
@@ -412,7 +415,7 @@ function setCharacterSection(kind,description){
 // No image is intentionally sent to an inference API.
 let localVisionPromise=null;
 async function getLocalVision(status){
- if(!navigator.gpu)throw Error('Trình duyệt chưa hỗ trợ WebGPU. Hãy dùng Chrome/Edge mới trên thiết bị hỗ trợ.');
+ if(!navigator.gpu||!await navigator.gpu.requestAdapter())throw Error('WebGPU chưa khả dụng. Dùng Chrome/Edge mới với GPU hỗ trợ, hoặc nhập mô tả thủ công.');
  if(!localVisionPromise){
   localVisionPromise=(async()=>{
    status.textContent='Đang tải mô hình AI về thiết bị (lần đầu có thể rất lâu)...';
@@ -448,8 +451,8 @@ async function analyzeLocalVision(file,kind,status){
 async function analyzeCharacterReference(kind){
  const file=characterRefFiles[kind],status=$('cr-'+kind+'-status'),btn=$('cr-'+kind+'-analyze');if(!file){status.textContent='Hãy tải ảnh trước.';return}
  const endpoint=getBackendUrl();
- const initialFile=file;btn.disabled=true;status.textContent='Đang phân tích ảnh...';
- try{let description;if(!endpoint){description=await analyzeLocalVision(file,kind,status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-character',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image,kind})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không có mô tả hợp lệ');if(characterRefFiles[kind]!==initialFile)return;setCharacterSection(kind,description);status.textContent='Đã đồng bộ vào '+(kind==='face'?'Identity':'Wardrobe')+'. Có thể chỉnh sửa trực tiếp.';}catch(err){status.textContent='Chưa thể phân tích: '+err.message}finally{btn.disabled=false}
+ const initialFile=file,version=++characterAnalysisVersion[kind];btn.disabled=true;status.textContent='Đang phân tích ảnh...';
+ try{let description;if(!endpoint){description=await analyzeLocalVision(file,kind,status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-character',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image,kind})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không có mô tả hợp lệ');if(characterRefFiles[kind]!==initialFile||characterAnalysisVersion[kind]!==version)return;setCharacterSection(kind,description);status.textContent='Đã đồng bộ vào '+(kind==='face'?'Identity':'Wardrobe')+'. Có thể chỉnh sửa trực tiếp.';}catch(err){if(characterAnalysisVersion[kind]===version)status.textContent='Chưa thể phân tích: '+err.message}finally{if(characterAnalysisVersion[kind]===version)btn.disabled=false}
 }
 const BODY_MARK_START='[BODY EXPERT PROFILE]';
 const BODY_MARK_END='[/BODY EXPERT PROFILE]';
@@ -461,11 +464,11 @@ function syncBodyAppearance(){
 }
 async function analyzeBodyReference(){
  const status=$('bodyAnalysisStatus'),btn=$('bodyAnalyze'),file=characterRefFiles.body;
- const initialFile=file;
  if(!file){status.textContent='Hãy tải ảnh BODY trước.';return}
+ const initialFile=file,version=++characterAnalysisVersion.body;
  const endpoint=getBackendUrl();
  btn.disabled=true;status.textContent='Đang phân tích ảnh BODY...';
- try{let description;if(!endpoint){description=await analyzeLocalVision(file,'body',status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-body',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không nhận được mô tả hợp lệ');if(characterRefFiles.body!==initialFile)return;$('bodyDescription').value=description.trim();syncBodyAppearance();status.textContent='Đã đề xuất mô tả. Hãy kiểm tra và chỉnh sửa nếu cần.';}catch(err){status.textContent='Không thể phân tích: '+err.message}finally{btn.disabled=false}
+ try{let description;if(!endpoint){description=await analyzeLocalVision(file,'body',status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-body',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không nhận được mô tả hợp lệ');if(characterRefFiles.body!==initialFile||characterAnalysisVersion.body!==version)return;$('bodyDescription').value=description.trim();syncBodyAppearance();status.textContent='Đã đề xuất mô tả. Hãy kiểm tra và chỉnh sửa nếu cần.';}catch(err){if(characterAnalysisVersion.body===version)status.textContent='Không thể phân tích: '+err.message}finally{if(characterAnalysisVersion.body===version)btn.disabled=false}
 }
 document.addEventListener('DOMContentLoaded',()=>{
   $('bodyAnalyze')?.addEventListener('click',analyzeBodyReference);
