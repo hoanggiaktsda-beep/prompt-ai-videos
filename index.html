@@ -130,8 +130,8 @@ button,input,textarea,select{touch-action:manipulation}
 <div class="field" style="grid-column:1/-1">
 <label>CHARACTER DNA SYSTEM · HỆ DNA NHÂN VẬT</label>
 <div class="character-reference" id="characterReference"><strong>ẢNH THAM CHIẾU NHÂN VẬT · FACE / BODY / TRANG PHỤC</strong><p>Ảnh tham chiếu độc lập với MASTER IMAGE. FACE và TRANG PHỤC giữ ảnh tham chiếu. BODY có thể được Vision AI chuyển thành mô tả trung tính.</p><div class="character-ref-grid">
-<div class="character-ref-card"><label for="cr-face">01 / FACE · KHUÔN MẶT</label><input id="cr-face" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Ảnh face"><div id="cr-face-preview" class="character-ref-preview">CHƯA CÓ ẢNH</div><div id="cr-face-status" class="character-analysis-status" role="status">Chưa phân tích.</div><button type="button" class="btn" id="cr-face-analyze">AI MÔ TẢ FACE → IDENTITY</button><button type="button" id="cr-face-clear" class="btn ghost">XÓA ẢNH</button></div><div class="character-ref-card"><label for="cr-body">02 / BODY · HÌNH THỂ</label><input id="cr-body" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Ảnh body"><div id="cr-body-preview" class="character-ref-preview">CHƯA CÓ ẢNH</div><div class="body-description-panel"><small>ANATOMY VISUALIZATION EXPERT + AESTHETIC PROPORTION EXPERT (góc nhìn tỷ lệ thẩm mỹ, không phải tư vấn y khoa).</small><button type="button" id="bodyAnalyze" class="btn">2 AI EXPERT · PHÂN TÍCH BODY</button><label for="bodyDescription">BODY DESCRIPTION · TEXT</label><textarea id="bodyDescription" rows="5" placeholder="Mô tả trung tính từ Vision AI; có thể chỉnh sửa trước khi kết xuất prompt."></textarea><div id="bodyAnalysisStatus" role="status" aria-live="polite">Chưa kết nối Vision AI. Có thể nhập mô tả BODY thủ công; nội dung vẫn được đưa vào prompt.</div></div><button type="button" id="cr-body-clear" class="btn ghost">XÓA ẢNH</button></div><div class="character-ref-card"><label for="cr-wardrobe">03 / TRANG PHỤC · WARDROBE</label><input id="cr-wardrobe" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Ảnh wardrobe"><div id="cr-wardrobe-preview" class="character-ref-preview">CHƯA CÓ ẢNH</div><div id="cr-wardrobe-status" class="character-analysis-status" role="status">Chưa phân tích.</div><button type="button" class="btn" id="cr-wardrobe-analyze">AI MÔ TẢ TRANG PHỤC → WARDROBE</button><button type="button" id="cr-wardrobe-clear" class="btn ghost">XÓA ẢNH</button></div>
-</div><small>Ảnh chỉ lưu trong phiên làm việc trên trình duyệt. GitHub Pages không tự phân tích hình ảnh; cần backend Vision AI đã triển khai và có API key. Có thể nhập BODY DESCRIPTION thủ công để đưa vào prompt ngay.</small></div><div class="dna-grid">
+<div class="character-ref-card"><label for="cr-face">01 / FACE · KHUÔN MẶT</label><input id="cr-face" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Ảnh face"><div id="cr-face-preview" class="character-ref-preview">CHƯA CÓ ẢNH</div><div id="cr-face-status" class="character-analysis-status" role="status">Chưa phân tích.</div><small>FACIAL ANATOMY · AESTHETIC PROPORTIONS · PORTRAIT ART — chỉ mô tả đặc điểm nhìn thấy, không tư vấn y khoa.</small><button type="button" class="btn" id="cr-face-analyze">3 AI EXPERT · FACE → IDENTITY</button><button type="button" id="cr-face-clear" class="btn ghost">XÓA ẢNH</button></div><div class="character-ref-card"><label for="cr-body">02 / BODY · HÌNH THỂ</label><input id="cr-body" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Ảnh body"><div id="cr-body-preview" class="character-ref-preview">CHƯA CÓ ẢNH</div><div class="body-description-panel"><small>ANATOMY VISUALIZATION EXPERT + AESTHETIC PROPORTION EXPERT (góc nhìn tỷ lệ thẩm mỹ, không phải tư vấn y khoa).</small><button type="button" id="bodyAnalyze" class="btn">2 AI EXPERT · PHÂN TÍCH BODY</button><label for="bodyDescription">BODY DESCRIPTION · TEXT</label><textarea id="bodyDescription" rows="5" placeholder="Mô tả trung tính từ Vision AI; có thể chỉnh sửa trước khi kết xuất prompt."></textarea><div id="bodyAnalysisStatus" role="status" aria-live="polite">Browser Vision AI thử nghiệm (WebGPU); có thể nhập mô tả thủ công.</div></div><button type="button" id="cr-body-clear" class="btn ghost">XÓA ẢNH</button></div><div class="character-ref-card"><label for="cr-wardrobe">03 / TRANG PHỤC · WARDROBE</label><input id="cr-wardrobe" type="file" accept="image/png,image/jpeg,image/webp" aria-label="Ảnh wardrobe"><div id="cr-wardrobe-preview" class="character-ref-preview">CHƯA CÓ ẢNH</div><div id="cr-wardrobe-status" class="character-analysis-status" role="status">Chưa phân tích.</div><button type="button" class="btn" id="cr-wardrobe-analyze">AI MÔ TẢ TRANG PHỤC → WARDROBE</button><button type="button" id="cr-wardrobe-clear" class="btn ghost">XÓA ẢNH</button></div>
+</div><small>Ảnh chỉ lưu trong phiên làm việc trên trình duyệt. BẢN THỬ NGHIỆM: Khi để trống Backend URL, AI chạy trên thiết bị qua WebGPU, tải mô hình lần đầu và có thể không hỗ trợ máy yếu. Ảnh không gửi đến API phân tích; thư viện và mô hình tải từ CDN. Có thể nhập mô tả thủ công nếu máy không tương thích.</small></div><div class="dna-grid">
 <div class="field"><label>01 / Identity · Danh tính</label><textarea id="characterIdentity" placeholder="Tên/định danh, độ tuổi, giới tính, nguồn gốc..."></textarea></div>
 <div class="field"><label>02 / Appearance · Ngoại hình</label><textarea id="characterAppearance" placeholder="Khuôn mặt, tóc, vóc dáng, đặc điểm nhận diện..."></textarea></div>
 <div class="field"><label>03 / Wardrobe · Trang phục</label><textarea id="characterWardrobe" placeholder="Trang phục, màu sắc, chất liệu, phụ kiện, giày..."></textarea></div>
@@ -379,23 +379,28 @@ $('characterOutput').value=dna;
 const characterRefFiles={face:null,body:null,wardrobe:null};
 const characterRefUrls={face:null,body:null,wardrobe:null};
 function characterReferenceSummary(){return ['face','body','wardrobe'].map(k=>k.toUpperCase()+': '+(characterRefFiles[k]?'uploaded reference image available in browser (attach separately to the video AI engine)':'no image provided')).join('; ')}
+const characterAnalysisVersion={face:0,body:0,wardrobe:0};
 function clearCharacterRef(k){
+ characterAnalysisVersion[k]++;
+ const analysisButton=$(k==='body'?'bodyAnalyze':'cr-'+k+'-analyze');if(analysisButton)analysisButton.disabled=false;
  if(k==='body'){if($('bodyDescription')){$('bodyDescription').value='';syncBodyAppearance();}if($('bodyAnalysisStatus'))$('bodyAnalysisStatus').textContent='Chưa phân tích.';}
  if(characterRefUrls[k])URL.revokeObjectURL(characterRefUrls[k]);characterRefUrls[k]=null;characterRefFiles[k]=null;
- if(k!=='body')setCharacterSection(k,'');
+ if(k!=='body'){setCharacterSection(k,'');const status=$('cr-'+k+'-status');if(status)status.textContent='Chưa phân tích.';}
  const input=$('cr-'+k),preview=$('cr-'+k+'-preview');if(input)input.value='';if(preview)preview.textContent='CHƯA CÓ ẢNH';
 }
 function initializeCharacterRefs(){
  ['face','body','wardrobe'].forEach(k=>{
   const input=$('cr-'+k);if(!input)return;
   input.addEventListener('change',()=>{
+   characterAnalysisVersion[k]++;
+   const analyzeBtn=$(k==='body'?'bodyAnalyze':'cr-'+k+'-analyze');if(analyzeBtn)analyzeBtn.disabled=false;
    const file=input.files?.[0];if(!file){clearCharacterRef(k);return}
    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024){alert('Chỉ nhận JPG, PNG hoặc WEBP tối đa 10 MB.');clearCharacterRef(k);return}
-   if(k==='body'){$('bodyDescription').value='';syncBodyAppearance();$('bodyAnalysisStatus').textContent='Ảnh mới đã tải. Vision AI cần backend; hoặc nhập mô tả thủ công.';}
-   else {setCharacterSection(k,'');const s=$('cr-'+k+'-status');if(s)s.textContent='Đã tải ảnh; chờ Vision AI.';}
+   if(k==='body'){$('bodyDescription').value='';syncBodyAppearance();$('bodyAnalysisStatus').textContent='Ảnh mới đã tải. Đang thử Browser Vision AI trên thiết bị.';}
+   else {setCharacterSection(k,'');const s=$('cr-'+k+'-status');if(s)s.textContent='Đã tải ảnh; chuẩn bị Browser Vision AI.';}
    if(characterRefUrls[k])URL.revokeObjectURL(characterRefUrls[k]);characterRefFiles[k]=file;characterRefUrls[k]=URL.createObjectURL(file);
    const img=document.createElement('img');img.alt='Ảnh tham chiếu '+k;img.src=characterRefUrls[k];$('cr-'+k+'-preview').replaceChildren(img);
-   if(getBackendUrl()){if(k==='body')analyzeBodyReference();else analyzeCharacterReference(k);}
+   if(k==='body')analyzeBodyReference();else analyzeCharacterReference(k);
   });
   $('cr-'+k+'-clear')?.addEventListener('click',()=>clearCharacterRef(k));
  });
@@ -405,13 +410,61 @@ function setCharacterSection(kind,description){
  const parts=CHARACTER_MARKS[kind];if(!parts)return;const [startMark,endMark,id]=parts,field=$(id);if(!field)return;
  const old=field.value;const start=old.indexOf(startMark),end=old.indexOf(endMark);
  const manual=(start>=0&&end>start?(old.slice(0,start)+old.slice(end+endMark.length)):old).trim();
- const content=description.trim();field.value=(manual+(manual&&content?'\\n\\n':'')+(content?startMark+'\\n'+content+'\\n'+endMark:'')).trim();
+ const content=description.trim();field.value=(manual+(manual&&content?'\n\n':'')+(content?startMark+'\n'+content+'\n'+endMark:'')).trim();
+}
+
+// Local-only vision prototype. Model assets are downloaded from Hugging Face on first use.
+// No image is intentionally sent to an inference API.
+let localVisionPromise=null;
+async function getLocalVision(status){
+ const adapter=await navigator.gpu?.requestAdapter();
+ if(!adapter)throw Error('WebGPU chưa khả dụng. Dùng Chrome/Edge mới với GPU hỗ trợ hoặc nhập mô tả thủ công.');
+ if(!localVisionPromise){
+  localVisionPromise=(async()=>{
+   status.textContent='Đang tải mô hình Vision về máy (lần đầu có thể lâu)...';
+   const lib=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');
+   lib.env.allowRemoteModels=true;
+   const modelId='HuggingFaceTB/SmolVLM-256M-Instruct';
+   const opts={device:'webgpu',dtype:{embed_tokens:'fp16',vision_encoder:'fp16',decoder_model_merged:'q4'},progress_callback:p=>{if(p.status==='progress'&&p.progress!=null)status.textContent='Tải mô hình: '+Math.round(p.progress)+'%';}};
+   const [model,processor,tokenizer]=await Promise.all([lib.AutoModelForVision2Seq.from_pretrained(modelId,opts),lib.AutoProcessor.from_pretrained(modelId),lib.AutoTokenizer.from_pretrained(modelId)]);
+   return {model,processor,tokenizer,RawImage:lib.RawImage};
+  })().catch(e=>{localVisionPromise=null;throw e});
+ }
+ return localVisionPromise;
+}
+const localVisionQuestions={
+ face:'Describe only visible facial identity features in detailed neutral English for faithful portrait reproduction. Use facial anatomy illustration, relative facial proportions, and portrait artistry. Include face outline, visible eye shape and spacing, eyebrows, nose, lips, cheeks, chin, jaw, hair and skin texture if discernible. Do not guess gender identity, age, ethnicity, medical history or unseen details. Avoid attractiveness ratings.',
+ body:'Describe visible overall adult physique and posture neutrally for editorial character consistency: silhouette, shoulder line, relative body proportions, stance, clothing-obscured uncertainty. Avoid exact measurements, health assessments, attractiveness ratings and sexualized descriptions.',
+ wardrobe:'Describe only visible garments for consistent fashion styling: garment type, cut, fit, layers, colors, patterns, apparent fabric textures, footwear and accessories. Do not guess brand or hidden details.'
+};
+let localVisionQueue=Promise.resolve();
+async function analyzeLocalVision(file,kind,status){
+ const work=async()=>{
+  const {model,processor,tokenizer,RawImage}=await getLocalVision(status);
+  status.textContent='AI đang phân tích '+kind.toUpperCase()+' trên máy...';
+  const url=URL.createObjectURL(file);
+  try{
+   const image=await RawImage.fromURL(url);
+   const messages=[{role:'user',content:[{type:'image'},{type:'text',text:localVisionQuestions[kind]}]}];
+   const prompt=tokenizer.apply_chat_template(messages,{add_generation_prompt:true,tokenize:false});
+   const inputs=await processor(prompt,[image],{do_image_splitting:false});
+   const ids=await model.generate({...inputs,max_new_tokens:240,do_sample:false});
+   const promptTokens=inputs.input_ids.dims.at(-1);
+   const decoded=tokenizer.batch_decode(ids.slice(null,[promptTokens,null]),{skip_special_tokens:true});
+   const answer=decoded[0]?.trim();
+   if(!answer)throw Error('Mô hình không trả mô tả hợp lệ.');
+   return answer;
+  }finally{URL.revokeObjectURL(url)}
+ };
+ const task=localVisionQueue.then(work,work);
+ localVisionQueue=task.catch(()=>{});
+ return task;
 }
 async function analyzeCharacterReference(kind){
  const file=characterRefFiles[kind],status=$('cr-'+kind+'-status'),btn=$('cr-'+kind+'-analyze');if(!file){status.textContent='Hãy tải ảnh trước.';return}
- const endpoint=getBackendUrl();if(!endpoint){status.textContent='Chưa kết nối Vision AI; có thể nhập trực tiếp ở Character DNA.';return}
- const initialFile=file;btn.disabled=true;status.textContent='Đang phân tích ảnh...';
- try{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-character',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image,kind})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');if(typeof data.description!=='string'||!data.description.trim())throw Error('Không có mô tả hợp lệ');if(characterRefFiles[kind]!==initialFile)return;setCharacterSection(kind,data.description);status.textContent='Đã đồng bộ vào '+(kind==='face'?'Identity':'Wardrobe')+'. Có thể chỉnh sửa trực tiếp.';}catch(err){status.textContent='Chưa thể phân tích: '+err.message}finally{btn.disabled=false}
+ const endpoint=getBackendUrl();
+ const initialFile=file,version=++characterAnalysisVersion[kind];btn.disabled=true;status.textContent='Đang phân tích ảnh...';
+ try{let description;if(!endpoint){description=await analyzeLocalVision(file,kind,status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-character',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image,kind})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không có mô tả hợp lệ');if(characterRefFiles[kind]!==initialFile||characterAnalysisVersion[kind]!==version)return;setCharacterSection(kind,description);status.textContent='Đã đồng bộ vào '+(kind==='face'?'Identity':'Wardrobe')+'. Có thể chỉnh sửa trực tiếp.';}catch(err){if(characterAnalysisVersion[kind]===version)status.textContent='Chưa thể phân tích: '+err.message}finally{if(characterAnalysisVersion[kind]===version)btn.disabled=false}
 }
 const BODY_MARK_START='[BODY EXPERT PROFILE]';
 const BODY_MARK_END='[/BODY EXPERT PROFILE]';
@@ -419,15 +472,15 @@ function syncBodyAppearance(){
  const field=$('characterAppearance'),description=$('bodyDescription');if(!field||!description)return;
  const old=field.value;const start=old.indexOf(BODY_MARK_START),end=old.indexOf(BODY_MARK_END);
  let manual=old;if(start>=0&&end>start)manual=(old.slice(0,start)+old.slice(end+BODY_MARK_END.length)).trim();
- const body=description.value.trim();field.value=(manual+(manual&&body?'\\n\\n':'')+(body?BODY_MARK_START+'\\n'+body+'\\n'+BODY_MARK_END:'')).trim();
+ const body=description.value.trim();field.value=(manual+(manual&&body?'\n\n':'')+(body?BODY_MARK_START+'\n'+body+'\n'+BODY_MARK_END:'')).trim();
 }
 async function analyzeBodyReference(){
  const status=$('bodyAnalysisStatus'),btn=$('bodyAnalyze'),file=characterRefFiles.body;
- const initialFile=file;
  if(!file){status.textContent='Hãy tải ảnh BODY trước.';return}
- const endpoint=getBackendUrl();if(!endpoint){status.textContent='Vision AI chưa được triển khai/kết nối. Hãy nhập mô tả BODY thủ công hoặc cấu hình Cloudflare Worker tại SPATIAL INTELLIGENCE; không thể tự phân tích ảnh chỉ bằng GitHub Pages.';return}
+ const initialFile=file,version=++characterAnalysisVersion.body;
+ const endpoint=getBackendUrl();
  btn.disabled=true;status.textContent='Đang phân tích ảnh BODY...';
- try{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-body',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');if(typeof data.description!=='string'||!data.description.trim())throw Error('Không nhận được mô tả hợp lệ');if(characterRefFiles.body!==initialFile)return;$('bodyDescription').value=data.description.trim();syncBodyAppearance();status.textContent='Đã đề xuất mô tả. Hãy kiểm tra và chỉnh sửa nếu cần.';}catch(err){status.textContent='Không thể phân tích: '+err.message}finally{btn.disabled=false}
+ try{let description;if(!endpoint){description=await analyzeLocalVision(file,'body',status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-body',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không nhận được mô tả hợp lệ');if(characterRefFiles.body!==initialFile||characterAnalysisVersion.body!==version)return;$('bodyDescription').value=description.trim();syncBodyAppearance();status.textContent='Đã đề xuất mô tả. Hãy kiểm tra và chỉnh sửa nếu cần.';}catch(err){if(characterAnalysisVersion.body===version)status.textContent='Không thể phân tích: '+err.message}finally{if(characterAnalysisVersion.body===version)btn.disabled=false}
 }
 document.addEventListener('DOMContentLoaded',()=>{
   $('bodyAnalyze')?.addEventListener('click',analyzeBodyReference);
