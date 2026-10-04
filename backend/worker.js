@@ -47,13 +47,26 @@ export default {async fetch(request,env){
   const origin=request.headers.get("Origin")||"",allowed=env.ALLOWED_ORIGIN||DEFAULT_ORIGIN;
   if(request.method==="OPTIONS")return new Response(null,{status:204,headers:cors(origin,allowed)});
   const url=new URL(request.url);
+  if(url.pathname==="/analyze-character"){
+    if(request.method!=="POST")return json({error:"Method not allowed"},405,origin,allowed);
+    if(!env.OPENAI_API_KEY)return json({error:"Vision backend chưa được cấu hình."},503,origin,allowed);
+    let body;try{body=await request.json()}catch(_){return json({error:"Invalid JSON"},400,origin,allowed)}
+    const {image,kind}=body||{};
+    if(!["face","wardrobe"].includes(kind)||typeof image!=="string"||!/^data:image\/(jpeg|png|webp);base64,/i.test(image)||image.length>12000000)return json({error:"Ảnh hoặc loại tham chiếu không hợp lệ."},400,origin,allowed);
+    const instruction=kind==="face"?"Describe visually observable facial features, hair, hairstyle and identifying visual features for character continuity. Do not infer gender identity, exact age, ethnicity, health or other sensitive attributes from appearance. If not visible say insufficient detail.":"Describe visible garments, silhouette, colors, fabric appearance, footwear and accessories. Do not infer brand or hidden materials. Use tasteful neutral fashion editorial language.";
+    const upstream=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":"Bearer "+env.OPENAI_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({model:MODEL,input:[{role:"user",content:[{type:"input_text",text:instruction+" Respond in concise English, 1-3 sentences, only observed facts."},{type:"input_image",image_url:image,detail:"high"}]}],max_output_tokens:220})});
+    const raw=await upstream.json().catch(()=>({}));if(!upstream.ok)return json({error:raw?.error?.message||"Vision request failed"},502,origin,allowed);
+    const description=raw.output_text||raw.output?.flatMap(x=>x.content||[]).find(x=>x.type==="output_text")?.text||"";
+    if(!description.trim())return json({error:"Không có mô tả."},502,origin,allowed);
+    return json({description:description.trim()},200,origin,allowed);
+  }
   if(url.pathname==="/analyze-body"){
     if(request.method!=="POST")return json({error:"Method not allowed"},405,origin,allowed);
     if(!env.OPENAI_API_KEY)return json({error:"Vision backend chưa được cấu hình."},503,origin,allowed);
     let body;try{body=await request.json()}catch(_){return json({error:"Invalid JSON"},400,origin,allowed)}
     const image=body?.image;
     if(typeof image!=="string"||!/^data:image\/(jpeg|png|webp);base64,/i.test(image)||image.length>12000000)return json({error:"Ảnh JPG/PNG/WEBP không hợp lệ hoặc quá lớn."},400,origin,allowed);
-    const response=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":"Bearer "+env.OPENAI_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({model:MODEL,input:[{role:"user",content:[{type:"input_text",text:"Describe only clearly visible, non-sensitive body silhouette and posture of an adult subject for a tasteful fashion/editorial image prompt. Use neutral professional English, 1-2 short sentences. No nudity, sexualization, measurements, guesses about age, health, ethnicity or unseen details. If age is uncertain, do not infer it. If the image is unsuitable or body is not visible, respond exactly: Insufficient visual information for a body description."},{type:"input_image",image_url:image,detail:"high"}]}],max_output_tokens:180})});
+    const response=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Authorization":"Bearer "+env.OPENAI_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({model:MODEL,input:[{role:"user",content:[{type:"input_text",text:"Use two complementary professional visual-analysis lenses: (1) anatomy visualization specialist: visible overall silhouette, anatomical plausibility, natural posture, shoulder alignment and proportion consistency; (2) aesthetic proportion specialist inspired by cosmetic-surgery visual proportion analysis: neutral harmony, balance and symmetry only when visibly supported. These are AI analytical perspectives, NOT medical practitioners or medical advice. Return a single concise, tasteful, non-sexualized editorial body description in English, 1-3 sentences. Do not diagnose, recommend surgery, score attractiveness, estimate measurements, or infer sensitive traits, health, age, ethnicity or unseen details. Avoid exaggerated or sexualized anatomy. If body is not sufficiently visible or image is unsuitable, respond exactly: Insufficient visual information for a body description."},{type:"input_image",image_url:image,detail:"high"}]}],max_output_tokens:180})});
     const data=await response.json().catch(()=>({}));if(!response.ok)return json({error:data?.error?.message||"Vision request failed"},502,origin,allowed);
     const description=data.output_text||data.output?.flatMap(x=>x.content||[]).find(x=>x.type==="output_text")?.text||"";
     if(!description.trim())return json({error:"Không nhận được mô tả."},502,origin,allowed);
