@@ -382,7 +382,7 @@ function characterReferenceSummary(){return ['face','body','wardrobe'].map(k=>k.
 function clearCharacterRef(k){
  if(k==='body'){if($('bodyDescription')){$('bodyDescription').value='';syncBodyAppearance();}if($('bodyAnalysisStatus'))$('bodyAnalysisStatus').textContent='Chưa phân tích.';}
  if(characterRefUrls[k])URL.revokeObjectURL(characterRefUrls[k]);characterRefUrls[k]=null;characterRefFiles[k]=null;
- if(k!=='body')setCharacterSection(k,'');
+ if(k!=='body'){setCharacterSection(k,'');const status=$('cr-'+k+'-status');if(status)status.textContent='Chưa phân tích.';}
  const input=$('cr-'+k),preview=$('cr-'+k+'-preview');if(input)input.value='';if(preview)preview.textContent='CHƯA CÓ ẢNH';
 }
 function initializeCharacterRefs(){
@@ -405,7 +405,7 @@ function setCharacterSection(kind,description){
  const parts=CHARACTER_MARKS[kind];if(!parts)return;const [startMark,endMark,id]=parts,field=$(id);if(!field)return;
  const old=field.value;const start=old.indexOf(startMark),end=old.indexOf(endMark);
  const manual=(start>=0&&end>start?(old.slice(0,start)+old.slice(end+endMark.length)):old).trim();
- const content=description.trim();field.value=(manual+(manual&&content?'\\n\\n':'')+(content?startMark+'\\n'+content+'\\n'+endMark:'')).trim();
+ const content=description.trim();field.value=(manual+(manual&&content?'\n\n':'')+(content?startMark+'\n'+content+'\n'+endMark:'')).trim();
 }
 
 // Local-only vision prototype. Model assets are downloaded from Hugging Face on first use.
@@ -418,7 +418,7 @@ async function getLocalVision(status){
    status.textContent='Đang tải mô hình AI về thiết bị (lần đầu có thể rất lâu)...';
    const lib=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');
    lib.env.allowRemoteModels=true;
-   const pipe=await lib.pipeline('image-text-to-text','HuggingFaceTB/SmolVLM-256M-Instruct',{device:'webgpu',dtype:'fp16',progress_callback:p=>{if(p.status==='progress'&&p.progress!=null)status.textContent='Đang tải mô hình: '+Math.round(p.progress)+'%';}});
+   const pipe=await lib.pipeline('image-text-to-text','onnx-community/SmolVLM-256M-Instruct',{device:'webgpu',dtype:{embed_tokens:'fp16',vision_encoder:'fp16',decoder_model_merged:'q4'},progress_callback:p=>{if(p.status==='progress'&&p.progress!=null)status.textContent='Đang tải mô hình: '+Math.round(p.progress)+'%';}});
    return {pipe,RawImage:lib.RawImage};
   })().catch(e=>{localVisionPromise=null;throw e});
  }
@@ -436,7 +436,7 @@ async function analyzeLocalVision(file,kind,status){
  try{
   const image=await RawImage.fromURL(url);
   const messages=[{role:'user',content:[{type:'image',image},{type:'text',text:localVisionQuestions[kind]}]}];
-  const output=await pipe(messages,{max_new_tokens:260});
+  const output=await pipe(messages,{max_new_tokens:260,do_sample:false});
   const result=Array.isArray(output)?output[0]:output;
   let answer=result?.generated_text;
   if(Array.isArray(answer))answer=answer.filter(x=>x.role==='assistant').map(x=>typeof x.content==='string'?x.content:Array.isArray(x.content)?x.content.filter(y=>y.type==='text').map(y=>y.text).join(' '):'').join(' ');
@@ -457,7 +457,7 @@ function syncBodyAppearance(){
  const field=$('characterAppearance'),description=$('bodyDescription');if(!field||!description)return;
  const old=field.value;const start=old.indexOf(BODY_MARK_START),end=old.indexOf(BODY_MARK_END);
  let manual=old;if(start>=0&&end>start)manual=(old.slice(0,start)+old.slice(end+BODY_MARK_END.length)).trim();
- const body=description.value.trim();field.value=(manual+(manual&&body?'\\n\\n':'')+(body?BODY_MARK_START+'\\n'+body+'\\n'+BODY_MARK_END:'')).trim();
+ const body=description.value.trim();field.value=(manual+(manual&&body?'\n\n':'')+(body?BODY_MARK_START+'\n'+body+'\n'+BODY_MARK_END:'')).trim();
 }
 async function analyzeBodyReference(){
  const status=$('bodyAnalysisStatus'),btn=$('bodyAnalyze'),file=characterRefFiles.body;
