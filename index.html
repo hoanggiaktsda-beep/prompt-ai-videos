@@ -417,14 +417,17 @@ function setCharacterSection(kind,description){
 // No image is intentionally sent to an inference API.
 let localVisionPromise=null;
 async function getLocalVision(status){
- if(!navigator.gpu||!await navigator.gpu.requestAdapter())throw Error('WebGPU chưa khả dụng. Dùng Chrome/Edge mới với GPU hỗ trợ, hoặc nhập mô tả thủ công.');
+ const adapter=await navigator.gpu?.requestAdapter();
+ if(!adapter)throw Error('WebGPU chưa khả dụng. Dùng Chrome/Edge mới với GPU hỗ trợ hoặc nhập mô tả thủ công.');
  if(!localVisionPromise){
   localVisionPromise=(async()=>{
-   status.textContent='Đang tải mô hình AI về thiết bị (lần đầu có thể rất lâu)...';
+   status.textContent='Đang tải mô hình Vision về máy (lần đầu có thể lâu)...';
    const lib=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');
    lib.env.allowRemoteModels=true;
-   const pipe=await lib.pipeline('image-text-to-text','onnx-community/SmolVLM-256M-Instruct',{device:'webgpu',dtype:{embed_tokens:'fp16',vision_encoder:'fp16',decoder_model_merged:'q4'},progress_callback:p=>{if(p.status==='progress'&&p.progress!=null)status.textContent='Đang tải mô hình: '+Math.round(p.progress)+'%';}});
-   return {pipe,RawImage:lib.RawImage};
+   const modelId='HuggingFaceTB/SmolVLM-256M-Instruct';
+   const opts={device:'webgpu',dtype:{embed_tokens:'fp16',vision_encoder:'fp16',decoder_model_merged:'q4'},progress_callback:p=>{if(p.status==='progress'&&p.progress!=null)status.textContent='Tải mô hình: '+Math.round(p.progress)+'%';}};
+   const [model,processor]=await Promise.all([lib.AutoModelForVision2Seq.from_pretrained(modelId,opts),lib.AutoProcessor.from_pretrained(modelId)]);
+   return {model,processor,RawImage:lib.RawImage};
   })().catch(e=>{localVisionPromise=null;throw e});
  }
  return localVisionPromise;
@@ -434,22 +437,29 @@ const localVisionQuestions={
  body:'Describe visible overall adult physique and posture neutrally for editorial character consistency: silhouette, shoulder line, relative body proportions, stance, clothing-obscured uncertainty. Avoid exact measurements, health assessments, attractiveness ratings and sexualized descriptions.',
  wardrobe:'Describe only visible garments for consistent fashion styling: garment type, cut, fit, layers, colors, patterns, apparent fabric textures, footwear and accessories. Do not guess brand or hidden details.'
 };
+let localVisionQueue=Promise.resolve();
 async function analyzeLocalVision(file,kind,status){
- const {pipe,RawImage}=await getLocalVision(status);
- status.textContent='AI đang phân tích '+kind.toUpperCase()+' trực tiếp trên thiết bị...';
- const url=URL.createObjectURL(file);
- try{
-  const image=await RawImage.fromURL(url);
-  const messages=[{role:'user',content:[{type:'image',image},{type:'text',text:localVisionQuestions[kind]}]}];
-  const output=await pipe(messages,{max_new_tokens:260,do_sample:false});
-  const result=Array.isArray(output)?output[0]:output;
-  let answer=result?.generated_text;
-  if(Array.isArray(answer))answer=answer.filter(x=>x.role==='assistant').map(x=>typeof x.content==='string'?x.content:Array.isArray(x.content)?x.content.filter(y=>y.type==='text').map(y=>y.text).join(' '):'').join(' ');
-  if(typeof answer!=='string'||!answer.trim())throw Error('Mô hình không trả mô tả hợp lệ.');
-  return answer.trim();
- }finally{URL.revokeObjectURL(url)}
+ const work=async()=>{
+  const {model,processor,RawImage}=await getLocalVision(status);
+  status.textContent='AI đang phân tích '+kind.toUpperCase()+' trên máy...';
+  const url=URL.createObjectURL(file);
+  try{
+   const image=await RawImage.fromURL(url);
+   const messages=[{role:'user',content:[{type:'image'},{type:'text',text:localVisionQuestions[kind]}]}];
+   const prompt=processor.apply_chat_template(messages,{add_generation_prompt:true});
+   const inputs=await processor(prompt,[image],{do_image_splitting:false});
+   const ids=await model.generate({...inputs,max_new_tokens:240,do_sample:false});
+   const promptTokens=inputs.input_ids.dims.at(-1);
+   const decoded=processor.tokenizer.batch_decode(ids.slice(null,[promptTokens,null]),{skip_special_tokens:true});
+   const answer=decoded[0]?.trim();
+   if(!answer)throw Error('Mô hình không trả mô tả hợp lệ.');
+   return answer;
+  }finally{URL.revokeObjectURL(url)}
+ };
+ const task=localVisionQueue.then(work,work);
+ localVisionQueue=task.catch(()=>{});
+ return task;
 }
-
 async function analyzeCharacterReference(kind){
  const file=characterRefFiles[kind],status=$('cr-'+kind+'-status'),btn=$('cr-'+kind+'-analyze');if(!file){status.textContent='Hãy tải ảnh trước.';return}
  const endpoint=getBackendUrl();
