@@ -425,9 +425,10 @@ async function getLocalVision(status){
    const lib=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1');
    lib.env.allowRemoteModels=true;
    const modelId='HuggingFaceTB/SmolVLM-256M-Instruct';
-   const opts={device:'webgpu',dtype:{embed_tokens:'fp16',vision_encoder:'fp16',decoder_model_merged:'q4'},progress_callback:p=>{if(p.status==='progress'&&p.progress!=null)status.textContent='Tải mô hình: '+Math.round(p.progress)+'%';}};
-   const [model,processor,tokenizer]=await Promise.all([lib.AutoModelForVision2Seq.from_pretrained(modelId,opts),lib.AutoProcessor.from_pretrained(modelId),lib.AutoTokenizer.from_pretrained(modelId)]);
-   return {model,processor,tokenizer,RawImage:lib.RawImage};
+   const supportsF16=adapter.features.has('shader-f16');
+   const opts={device:'webgpu',dtype:{embed_tokens:supportsF16?'fp16':'fp32',vision_encoder:'q4',decoder_model_merged:'q4'},progress_callback:p=>{if(p.status==='progress'&&p.progress!=null)status.textContent='Tải mô hình: '+Math.round(p.progress)+'%';}};
+   const [model,processor]=await Promise.all([lib.AutoModelForVision2Seq.from_pretrained(modelId,opts),lib.AutoProcessor.from_pretrained(modelId)]);
+   return {model,processor,RawImage:lib.RawImage};
   })().catch(e=>{localVisionPromise=null;throw e});
  }
  return localVisionPromise;
@@ -440,17 +441,17 @@ const localVisionQuestions={
 let localVisionQueue=Promise.resolve();
 async function analyzeLocalVision(file,kind,status){
  const work=async()=>{
-  const {model,processor,tokenizer,RawImage}=await getLocalVision(status);
+  const {model,processor,RawImage}=await getLocalVision(status);
   status.textContent='AI đang phân tích '+kind.toUpperCase()+' trên máy...';
   const url=URL.createObjectURL(file);
   try{
    const image=await RawImage.fromURL(url);
    const messages=[{role:'user',content:[{type:'image'},{type:'text',text:localVisionQuestions[kind]}]}];
-   const prompt=tokenizer.apply_chat_template(messages,{add_generation_prompt:true,tokenize:false});
+   const prompt=processor.apply_chat_template(messages,{add_generation_prompt:true});
    const inputs=await processor(prompt,[image],{do_image_splitting:false});
    const ids=await model.generate({...inputs,max_new_tokens:240,do_sample:false});
    const promptTokens=inputs.input_ids.dims.at(-1);
-   const decoded=tokenizer.batch_decode(ids.slice(null,[promptTokens,null]),{skip_special_tokens:true});
+   const decoded=processor.batch_decode(ids.slice(null,[promptTokens,null]),{skip_special_tokens:true});
    const answer=decoded[0]?.trim();
    if(!answer)throw Error('Mô hình không trả mô tả hợp lệ.');
    return answer;
@@ -464,7 +465,7 @@ async function analyzeCharacterReference(kind){
  const file=characterRefFiles[kind],status=$('cr-'+kind+'-status'),btn=$('cr-'+kind+'-analyze');if(!file){status.textContent='Hãy tải ảnh trước.';return}
  const endpoint=getBackendUrl();
  const initialFile=file,version=++characterAnalysisVersion[kind];btn.disabled=true;status.textContent='Đang phân tích ảnh...';
- try{let description;if(!endpoint){description=await analyzeLocalVision(file,kind,status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-character',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image,kind})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không có mô tả hợp lệ');if(characterRefFiles[kind]!==initialFile||characterAnalysisVersion[kind]!==version)return;setCharacterSection(kind,description);status.textContent='Đã đồng bộ vào '+(kind==='face'?'Identity':'Wardrobe')+'. Có thể chỉnh sửa trực tiếp.';}catch(err){if(characterAnalysisVersion[kind]===version)status.textContent='Chưa thể phân tích: '+err.message}finally{if(characterAnalysisVersion[kind]===version)btn.disabled=false}
+ try{let description;if(!endpoint){description=await analyzeLocalVision(file,kind,status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-character',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image,kind})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không có mô tả hợp lệ');if(characterRefFiles[kind]!==initialFile||characterAnalysisVersion[kind]!==version)return;setCharacterSection(kind,description);status.textContent='Đã đồng bộ vào '+(kind==='face'?'Identity':kind==='body'?'Appearance':'Wardrobe')+'. Có thể chỉnh sửa trực tiếp.';}catch(err){if(characterAnalysisVersion[kind]===version)status.textContent='Chưa thể phân tích: '+err.message}finally{if(characterAnalysisVersion[kind]===version)btn.disabled=false}
 }
 const BODY_MARK_START='[BODY EXPERT PROFILE]';
 const BODY_MARK_END='[/BODY EXPERT PROFILE]';
