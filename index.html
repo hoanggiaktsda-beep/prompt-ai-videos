@@ -382,6 +382,7 @@ function characterReferenceSummary(){return ['face','body','wardrobe'].map(k=>k.
 const characterAnalysisVersion={face:0,body:0,wardrobe:0};
 function clearCharacterRef(k){
  characterAnalysisVersion[k]++;
+ const analysisButton=$(k==='body'?'bodyAnalyze':'cr-'+k+'-analyze');if(analysisButton)analysisButton.disabled=false;
  if(k==='body'){if($('bodyDescription')){$('bodyDescription').value='';syncBodyAppearance();}if($('bodyAnalysisStatus'))$('bodyAnalysisStatus').textContent='Chưa phân tích.';}
  if(characterRefUrls[k])URL.revokeObjectURL(characterRefUrls[k]);characterRefUrls[k]=null;characterRefFiles[k]=null;
  if(k!=='body'){setCharacterSection(k,'');const status=$('cr-'+k+'-status');if(status)status.textContent='Chưa phân tích.';}
@@ -392,6 +393,7 @@ function initializeCharacterRefs(){
   const input=$('cr-'+k);if(!input)return;
   input.addEventListener('change',()=>{
    characterAnalysisVersion[k]++;
+   const analyzeBtn=$(k==='body'?'bodyAnalyze':'cr-'+k+'-analyze');if(analyzeBtn)analyzeBtn.disabled=false;
    const file=input.files?.[0];if(!file){clearCharacterRef(k);return}
    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024){alert('Chỉ nhận JPG, PNG hoặc WEBP tối đa 10 MB.');clearCharacterRef(k);return}
    if(k==='body'){$('bodyDescription').value='';syncBodyAppearance();$('bodyAnalysisStatus').textContent='Ảnh mới đã tải. Đang thử Browser Vision AI trên thiết bị.';}
