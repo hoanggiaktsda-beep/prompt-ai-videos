@@ -479,7 +479,7 @@ async function analyzeBodyReference(){
  const status=$('bodyAnalysisStatus'),btn=$('bodyAnalyze'),file=characterRefFiles.body;
  if(!file){status.textContent='Hãy tải ảnh BODY trước.';return}
  const initialFile=file,version=++characterAnalysisVersion.body;
- const endpoint=getBackendUrl();
+ const endpoint=($('backendUrl')?.value||'').trim().replace(/\/$/,'');
  btn.disabled=true;status.textContent='Đang phân tích ảnh BODY...';
  try{let description;if(!endpoint){description=await analyzeLocalVision(file,'body',status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-body',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không nhận được mô tả hợp lệ');if(characterRefFiles.body!==initialFile||characterAnalysisVersion.body!==version)return;$('bodyDescription').value=description.trim();syncBodyAppearance();status.textContent='Đã đề xuất mô tả. Hãy kiểm tra và chỉnh sửa nếu cần.';}catch(err){if(characterAnalysisVersion.body===version)status.textContent='Không thể phân tích: '+err.message}finally{if(characterAnalysisVersion.body===version)btn.disabled=false}
 }
