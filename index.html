@@ -426,8 +426,8 @@ async function getLocalVision(status){
    lib.env.allowRemoteModels=true;
    const modelId='HuggingFaceTB/SmolVLM-256M-Instruct';
    const opts={device:'webgpu',dtype:{embed_tokens:'fp16',vision_encoder:'fp16',decoder_model_merged:'q4'},progress_callback:p=>{if(p.status==='progress'&&p.progress!=null)status.textContent='Tải mô hình: '+Math.round(p.progress)+'%';}};
-   const [model,processor]=await Promise.all([lib.AutoModelForVision2Seq.from_pretrained(modelId,opts),lib.AutoProcessor.from_pretrained(modelId)]);
-   return {model,processor,RawImage:lib.RawImage};
+   const [model,processor,tokenizer]=await Promise.all([lib.AutoModelForVision2Seq.from_pretrained(modelId,opts),lib.AutoProcessor.from_pretrained(modelId),lib.AutoTokenizer.from_pretrained(modelId)]);
+   return {model,processor,tokenizer,RawImage:lib.RawImage};
   })().catch(e=>{localVisionPromise=null;throw e});
  }
  return localVisionPromise;
@@ -440,17 +440,17 @@ const localVisionQuestions={
 let localVisionQueue=Promise.resolve();
 async function analyzeLocalVision(file,kind,status){
  const work=async()=>{
-  const {model,processor,RawImage}=await getLocalVision(status);
+  const {model,processor,tokenizer,RawImage}=await getLocalVision(status);
   status.textContent='AI đang phân tích '+kind.toUpperCase()+' trên máy...';
   const url=URL.createObjectURL(file);
   try{
    const image=await RawImage.fromURL(url);
    const messages=[{role:'user',content:[{type:'image'},{type:'text',text:localVisionQuestions[kind]}]}];
-   const prompt=processor.apply_chat_template(messages,{add_generation_prompt:true});
+   const prompt=tokenizer.apply_chat_template(messages,{add_generation_prompt:true,tokenize:false});
    const inputs=await processor(prompt,[image],{do_image_splitting:false});
    const ids=await model.generate({...inputs,max_new_tokens:240,do_sample:false});
    const promptTokens=inputs.input_ids.dims.at(-1);
-   const decoded=processor.tokenizer.batch_decode(ids.slice(null,[promptTokens,null]),{skip_special_tokens:true});
+   const decoded=tokenizer.batch_decode(ids.slice(null,[promptTokens,null]),{skip_special_tokens:true});
    const answer=decoded[0]?.trim();
    if(!answer)throw Error('Mô hình không trả mô tả hợp lệ.');
    return answer;
