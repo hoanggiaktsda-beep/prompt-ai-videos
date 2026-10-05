@@ -259,7 +259,7 @@ document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.onclick=()=>{docu
 document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sequence .card').forEach(x=>x.classList.remove('active'));b.closest('.card').classList.add('active')});
 let referenceFiles=[];
 let spatialBlueprint=null;
-function getBackendUrl(){return ($('backendUrl')?.value||localStorage.getItem('hoanggia_ai_backend_url')||'').trim().replace(/\/$/,'')}
+function getBackendUrl(){let stored='';try{stored=localStorage.getItem('hoanggia_ai_backend_url')||''}catch(_){}return ($('backendUrl')?.value||stored).trim().replace(/\/$/,'')}
 function setSpatialStatus(text,ok=false){if($('spatialStatus')){$('spatialStatus').textContent=text;$('spatialStatus').style.color=ok?'var(--ok)':'var(--muted)'}if($('sImage'))$('sImage').textContent=referenceFiles.length?(ok?'VISION AI':'SẴN SÀNG'):'CHƯA CÓ'}
 function showSpatialError(msg){if($('spatialError'))$('spatialError').textContent=msg||''}
 function fileToDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
@@ -427,8 +427,8 @@ async function getLocalVision(status){
    const modelId='HuggingFaceTB/SmolVLM-256M-Instruct';
    const supportsF16=adapter.features.has('shader-f16');
    const opts={device:'webgpu',dtype:{embed_tokens:supportsF16?'fp16':'fp32',vision_encoder:'q4',decoder_model_merged:'q4'},progress_callback:p=>{if(p.status==='progress'&&p.progress!=null)status.textContent='Tải mô hình: '+Math.round(p.progress)+'%';}};
-   const [model,processor]=await Promise.all([lib.AutoModelForVision2Seq.from_pretrained(modelId,opts),lib.AutoProcessor.from_pretrained(modelId)]);
-   return {model,processor,RawImage:lib.RawImage};
+   const [model,processor,tokenizer]=await Promise.all([lib.AutoModelForVision2Seq.from_pretrained(modelId,opts),lib.AutoProcessor.from_pretrained(modelId),lib.AutoTokenizer.from_pretrained(modelId)]);
+   return {model,processor,tokenizer,RawImage:lib.RawImage};
   })().catch(e=>{localVisionPromise=null;throw e});
  }
  return localVisionPromise;
@@ -441,17 +441,17 @@ const localVisionQuestions={
 let localVisionQueue=Promise.resolve();
 async function analyzeLocalVision(file,kind,status){
  const work=async()=>{
-  const {model,processor,RawImage}=await getLocalVision(status);
+  const {model,processor,tokenizer,RawImage}=await getLocalVision(status);
   status.textContent='AI đang phân tích '+kind.toUpperCase()+' trên máy...';
   const url=URL.createObjectURL(file);
   try{
    const image=await RawImage.fromURL(url);
    const messages=[{role:'user',content:[{type:'image'},{type:'text',text:localVisionQuestions[kind]}]}];
-   const prompt=processor.apply_chat_template(messages,{add_generation_prompt:true});
+   const prompt=tokenizer.apply_chat_template(messages,{add_generation_prompt:true,tokenize:false});
    const inputs=await processor(prompt,[image],{do_image_splitting:false});
    const ids=await model.generate({...inputs,max_new_tokens:240,do_sample:false});
    const promptTokens=inputs.input_ids.dims.at(-1);
-   const decoded=processor.batch_decode(ids.slice(null,[promptTokens,null]),{skip_special_tokens:true});
+   const decoded=tokenizer.batch_decode(ids.slice(null,[promptTokens,null]),{skip_special_tokens:true});
    const answer=decoded[0]?.trim();
    if(!answer)throw Error('Mô hình không trả mô tả hợp lệ.');
    return answer;
@@ -463,7 +463,7 @@ async function analyzeLocalVision(file,kind,status){
 }
 async function analyzeCharacterReference(kind){
  const file=characterRefFiles[kind],status=$('cr-'+kind+'-status'),btn=$('cr-'+kind+'-analyze');if(!file){status.textContent='Hãy tải ảnh trước.';return}
- const endpoint=getBackendUrl();
+ const endpoint=($('backendUrl')?.value||'').trim().replace(/\/$/,'');
  const initialFile=file,version=++characterAnalysisVersion[kind];btn.disabled=true;status.textContent='Đang phân tích ảnh...';
  try{let description;if(!endpoint){description=await analyzeLocalVision(file,kind,status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-character',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image,kind})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không có mô tả hợp lệ');if(characterRefFiles[kind]!==initialFile||characterAnalysisVersion[kind]!==version)return;setCharacterSection(kind,description);status.textContent='Đã đồng bộ vào '+(kind==='face'?'Identity':kind==='body'?'Appearance':'Wardrobe')+'. Có thể chỉnh sửa trực tiếp.';}catch(err){if(characterAnalysisVersion[kind]===version)status.textContent='Chưa thể phân tích: '+err.message}finally{if(characterAnalysisVersion[kind]===version)btn.disabled=false}
 }
@@ -479,7 +479,7 @@ async function analyzeBodyReference(){
  const status=$('bodyAnalysisStatus'),btn=$('bodyAnalyze'),file=characterRefFiles.body;
  if(!file){status.textContent='Hãy tải ảnh BODY trước.';return}
  const initialFile=file,version=++characterAnalysisVersion.body;
- const endpoint=getBackendUrl();
+ const endpoint=($('backendUrl')?.value||'').trim().replace(/\/$/,'');
  btn.disabled=true;status.textContent='Đang phân tích ảnh BODY...';
  try{let description;if(!endpoint){description=await analyzeLocalVision(file,'body',status)}else{const image=await fileToDataURL(file);const response=await fetch(endpoint+'/analyze-body',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||'Vision AI không khả dụng');description=data.description;}if(typeof description!=='string'||!description.trim())throw Error('Không nhận được mô tả hợp lệ');if(characterRefFiles.body!==initialFile||characterAnalysisVersion.body!==version)return;$('bodyDescription').value=description.trim();syncBodyAppearance();status.textContent='Đã đề xuất mô tả. Hãy kiểm tra và chỉnh sửa nếu cần.';}catch(err){if(characterAnalysisVersion.body===version)status.textContent='Không thể phân tích: '+err.message}finally{if(characterAnalysisVersion.body===version)btn.disabled=false}
 }
