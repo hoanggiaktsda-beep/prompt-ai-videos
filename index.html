@@ -226,7 +226,15 @@ button,input,textarea,select{touch-action:manipulation}
 <option value="single final production prompt" selected>Một Prompt tổng</option><option value="separate prompt for each shot">Prompt theo từng shot</option><option value="production brief plus prompts">Brief + Prompt</option><option value="structured JSON prompt package">Gói JSON</option>
 </select></div></div>
 <div class="field"><label>Ghi chú công cụ · Yêu cầu riêng cho nền tảng</label><textarea id="engineNotes" placeholder="Ví dụ: ưu tiên image-to-video, khóa composition, chuyển động camera thật chậm, không thay đổi sofa, giữ nguyên kiến trúc và vật liệu..."></textarea></div>
-<div class="actions"><button class="btn primary" id="generate">KẾT XUẤT PROMPT</button><button class="btn" id="copy">SAO CHÉP</button><button class="btn" id="json">JSON</button><button class="btn danger" id="reset">ĐẶT LẠI</button></div>
+<div class="actions"><button class="btn primary" id="generate">KẾT XUẤT PROMPT</button><button class="btn" id="copy" type="button" disabled aria-disabled="true" title="Nhập mật khẩu để mở khóa sao chép">🔒 SAO CHÉP</button><button class="btn" id="json">JSON</button><button class="btn danger" id="reset">ĐẶT LẠI</button></div>
+<div class="copy-access" style="margin-top:12px;padding:14px;border:1px solid var(--line);background:var(--panel);border-radius:10px">
+<label for="copyPassword" style="display:block;margin-bottom:8px;color:var(--gold2);font-weight:700">MỞ KHÓA SAO CHÉP PROMPT</label>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<input id="copyPassword" type="password" autocomplete="off" placeholder="Nhập mật khẩu" aria-describedby="copyLockStatus" style="flex:1;min-width:150px">
+<button class="btn" type="button" id="unlockCopy">MỞ KHÓA</button>
+<button class="btn" type="button" id="lockCopy" hidden>KHÓA LẠI</button></div>
+<div id="copyLockStatus" role="status" aria-live="polite" style="margin-top:8px;color:var(--muted)">🔒 Cần mật khẩu trước khi sao chép.</div>
+</div>
 </section>
 </main>
 
@@ -514,7 +522,25 @@ document.addEventListener('DOMContentLoaded',()=>{
       $('outputText').classList.remove('empty');
     }
   });
+  // Client-side convenience gate only: not a security boundary for public prompts.
+  let copyUnlocked=false;
+  const copyPassword=$('copyPassword'), copyLockStatus=$('copyLockStatus');
+  const setCopyLock=(unlocked,message)=>{
+    copyUnlocked=unlocked;
+    if(copyButton){copyButton.disabled=!unlocked;copyButton.setAttribute('aria-disabled',String(!unlocked));copyButton.textContent=unlocked?'SAO CHÉP':'🔒 SAO CHÉP'}
+    if($('lockCopy'))$('lockCopy').hidden=!unlocked;
+    if(copyLockStatus)copyLockStatus.textContent=message||(unlocked?'🔓 Đã mở khóa sao chép.':'🔒 Cần mật khẩu trước khi sao chép.');
+  };
+  const unlockCopy=()=>{
+    if(copyPassword?.value==='181092'){copyPassword.value='';setCopyLock(true,'🔓 Đã mở khóa sao chép.')}
+    else setCopyLock(false,'Mật khẩu không đúng.');
+  };
+  $('unlockCopy')?.addEventListener('click',unlockCopy);
+  copyPassword?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();unlockCopy()}});
+  $('lockCopy')?.addEventListener('click',()=>setCopyLock(false));
+  setCopyLock(false);
   if(copyButton) copyButton.addEventListener('click',async()=>{
+    if(!copyUnlocked)return;
     const text=$('outputText').textContent||'';
     if(!text || $('outputText').classList.contains('empty')) return;
     let copied=false;
