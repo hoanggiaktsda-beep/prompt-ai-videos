@@ -292,6 +292,7 @@ async function analyzeSpatial(){
   if(!endpoint){showSpatialError('Chưa có Backend URL. Hãy nhập URL backend Vision AI rồi bấm lại.');return}
   if(!/^https:\/\/[^\s/?#]+/i.test(endpoint)){showSpatialError('Backend phải sử dụng địa chỉ HTTPS hợp lệ.');return}
   const requestVersion=++spatialRequestVersion;
+  removeAppliedSpatialBlueprint();
   spatialBlueprint=null;
   $('spatialOutput').value='';
   $('spatialBadge').textContent='SPATIAL BLUEPRINT: CHƯA CÓ';
@@ -316,12 +317,20 @@ async function analyzeSpatial(){
   }catch(err){if(requestVersion===spatialRequestVersion){setSpatialStatus('BACKEND ERROR');showSpatialError(err&&err.message?err.message:String(err))}}
   finally{if(requestVersion===spatialRequestVersion&&button){button.disabled=false;button.textContent='PHÂN TÍCH KHÔNG GIAN'}}
 }
+const SPATIAL_TAG='[SPATIAL BLUEPRINT — LOCKED]';
+function removeAppliedSpatialBlueprint(){
+  const box=$('brief');
+  if(!box)return;
+  const pos=box.value.indexOf(SPATIAL_TAG);
+  if(pos>=0)box.value=box.value.slice(0,pos).trimEnd();
+}
 function applySpatialToPrompt(){
   if(!spatialBlueprint)return;
   const compact=JSON.stringify(spatialBlueprint);
   const box=$('brief');
-  const tag='[SPATIAL BLUEPRINT — LOCKED] '+compact;
-  if(box && !box.value.includes('[SPATIAL BLUEPRINT — LOCKED]')) box.value=(box.value?box.value+'\\n\\n':'')+tag;
+  const tag=SPATIAL_TAG+' '+compact;
+  removeAppliedSpatialBlueprint();
+  if(box)box.value=(box.value?box.value+'\\n\\n':'')+tag;
   $('applyBlueprint').textContent='BLUEPRINT ĐÃ ĐƯA VÀO PROMPT';
   $('progress').style.width='75%';
 }
@@ -340,6 +349,7 @@ $('sImage').style.color=referenceFiles.length?'var(--ok)':'var(--muted)';
 }
 function setReferences(files){
   spatialRequestVersion++;
+  removeAppliedSpatialBlueprint();
   spatialBlueprint=null;
   if($('spatialOutput'))$('spatialOutput').value='';
   if($('applyBlueprint')){$('applyBlueprint').disabled=true;$('applyBlueprint').textContent='ĐƯA BLUEPRINT VÀO PROMPT'}
@@ -595,6 +605,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     ['face','body','wardrobe'].forEach(clearCharacterRef);
     referenceFiles=[];renderReferences();if($('ref'))$('ref').value='';
     spatialRequestVersion++;
+    removeAppliedSpatialBlueprint();
     spatialBlueprint=null;
     if($('applyBlueprint'))$('applyBlueprint').textContent='ĐƯA BLUEPRINT VÀO PROMPT';
     if($('analyzeSpatial')){$('analyzeSpatial').disabled=false;$('analyzeSpatial').textContent='PHÂN TÍCH KHÔNG GIAN'}
