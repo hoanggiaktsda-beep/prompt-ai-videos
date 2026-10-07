@@ -509,9 +509,21 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(copyButton) copyButton.addEventListener('click',async()=>{
     const text=$('outputText').textContent||'';
     if(!text || $('outputText').classList.contains('empty')) return;
-    try{await navigator.clipboard.writeText(text)}
-    catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove()}
-    copyButton.textContent='ĐÃ SAO CHÉP'; setTimeout(()=>copyButton.textContent='SAO CHÉP',1200);
+    let copied=false;
+    try{
+      await navigator.clipboard.writeText(text);
+      copied=true;
+    }catch(e){
+      const ta=document.createElement('textarea');
+      ta.value=text;ta.setAttribute('readonly','');
+      ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();
+      try{copied=document.execCommand('copy')}catch(_){copied=false}
+      ta.remove();
+    }
+    copyButton.textContent=copied?'ĐÃ SAO CHÉP':'KHÔNG THỂ SAO CHÉP';
+    if(!copied) alert('Trình duyệt chặn sao chép. Hãy chọn nội dung prompt và sao chép thủ công.');
+    setTimeout(()=>copyButton.textContent='SAO CHÉP',1800);
   });
   if(jsonButton) jsonButton.addEventListener('click',()=>{
     try{
