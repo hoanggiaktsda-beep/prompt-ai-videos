@@ -39,6 +39,14 @@ button,input,textarea,select{touch-action:manipulation}
 @media (max-width:600px){.top{position:sticky;top:0}.bar{padding:9px 12px;min-height:50px}.brand b{font-size:11px}.brand small{font-size:6px}.system{font-size:6px}.layout{display:block}.side{position:sticky;top:50px;z-index:15;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:6px 8px;background:rgba(8,9,8,.98)}.side h4,.side-note{display:none}.nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}.nav button{flex:0 0 auto;white-space:nowrap;padding:9px 10px;font-size:7px}.nav button.active{background:#15130f}main{padding:14px 8px 30px}.hero{padding:4px 4px 16px}.hero h1{font-size:clamp(34px,12vw,48px)}.hero p{font-size:10px}.step{padding:12px;margin-bottom:8px}.step-head{margin-bottom:10px}.step-head strong{font-size:8px}.grid2{grid-template-columns:1fr;gap:7px}.field{margin-bottom:8px}input,textarea,select{font-size:16px;padding:11px 10px;min-height:44px}.chip,.shot,.card button,.btn{min-height:42px}.chips{gap:5px}.chip{font-size:7px;padding:9px 10px}.drop{min-height:150px}.drop strong{font-size:8px}.preview{grid-template-columns:repeat(3,1fr)}.preview img{height:82px}.shots{grid-template-columns:repeat(2,1fr)}.shot{padding:9px}.cards{grid-template-columns:1fr 1fr}.actions{gap:6px}.btn{flex:1 1 auto;padding:11px 10px;font-size:7px}.right{position:relative;top:auto;height:auto;border-left:0;border-top:1px solid var(--line);padding:14px 10px}.output{min-height:260px;max-height:none;font-size:9px;overflow-wrap:anywhere}.status-row{font-size:8px}.modal{padding:10px}.modal img{max-width:100%;max-height:80vh}.close{top:8px;right:8px}}
 @media (max-width:380px){.brand small{display:none}.system{display:none}.nav button{padding:8px;font-size:6px}.cards,.shots{grid-template-columns:1fr 1fr}.chip{padding:8px 7px}.step{padding:10px}.hero h1{font-size:34px}}
 @media (orientation:landscape) and (max-width:900px){.layout{display:block}.side{position:sticky;top:50px}.right{display:block}.hero{padding-bottom:12px}main{padding-top:12px}.output{min-height:220px}}
+/* P0 desktop alignment: balance both side rails around the workspace. */
+@media (min-width:1201px) and (max-width:1440px){
+  .layout{grid-template-columns:300px minmax(0,1fr) 300px}
+}
+@media (min-width:1441px){
+  .layout,.bar{width:min(1760px,100%);max-width:1760px;margin-left:auto;margin-right:auto}
+  .layout{grid-template-columns:340px minmax(0,1fr) 340px}
+}
 </style>
 <style id="final-footer-style">
 .hg-final-footer{margin:42px 0 0;border-top:1px solid #292c28;padding:28px 0 18px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end}
