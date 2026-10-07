@@ -279,6 +279,8 @@ document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.onclick=()=>{docu
 document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sequence .card').forEach(x=>x.classList.remove('active'));b.closest('.card').classList.add('active')});
 let referenceFiles=[];
 let spatialBlueprint=null;
+let spatialRequestVersion=0;
+let referenceObjectUrls=[];
 function getBackendUrl(){return ($('backendUrl')?.value||localStorage.getItem('hoanggia_ai_backend_url')||'').trim().replace(/\/$/,'')}
 function setSpatialStatus(text,ok=false){if($('spatialStatus')){$('spatialStatus').textContent=text;$('spatialStatus').style.color=ok?'var(--ok)':'var(--muted)'}if($('sImage'))$('sImage').textContent=referenceFiles.length?(ok?'VISION AI':'SẴN SÀNG'):'CHƯA CÓ'}
 function showSpatialError(msg){if($('spatialError'))$('spatialError').textContent=msg||''}
@@ -288,6 +290,13 @@ async function analyzeSpatial(){
   if(!referenceFiles.length){showSpatialError('Hãy thêm ít nhất 1 ảnh tham chiếu trước.');return}
   const endpoint=getBackendUrl();
   if(!endpoint){showSpatialError('Chưa có Backend URL. Hãy nhập URL backend Vision AI rồi bấm lại.');return}
+  if(!/^https:\/\/[^\s/?#]+/i.test(endpoint)){showSpatialError('Backend phải sử dụng địa chỉ HTTPS hợp lệ.');return}
+  const requestVersion=++spatialRequestVersion;
+  spatialBlueprint=null;
+  $('spatialOutput').value='';
+  $('spatialBadge').textContent='SPATIAL BLUEPRINT: CHƯA CÓ';
+  $('applyBlueprint').disabled=true;
+  $('applyBlueprint').textContent='ĐƯA BLUEPRINT VÀO PROMPT';
   localStorage.setItem('hoanggia_ai_backend_url',endpoint);
   const button=$('analyzeSpatial'); if(button){button.disabled=true;button.textContent='ĐANG PHÂN TÍCH...'}
   setSpatialStatus('VISION AI ĐANG PHÂN TÍCH');
@@ -296,6 +305,7 @@ async function analyzeSpatial(){
     const d=collect();
     const response=await fetch(endpoint+'/analyze-spatial',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images,instruction:d.brief||'',context:{style:d.style,scene:d.scene,referenceBehavior:d.referenceBehavior}})});
     const payload=await response.json().catch(()=>({}));
+    if(requestVersion!==spatialRequestVersion)return;
     if(!response.ok) throw new Error(payload.error||('Backend trả về HTTP '+response.status));
     spatialBlueprint=payload.blueprint||payload.spatial_blueprint||payload;
     $('spatialOutput').value=JSON.stringify(spatialBlueprint,null,2);
@@ -303,8 +313,8 @@ async function analyzeSpatial(){
     $('applyBlueprint').disabled=false;
     setSpatialStatus('VISION AI CONNECTED',true);
     $('progress').style.width='65%';
-  }catch(err){setSpatialStatus('BACKEND ERROR');showSpatialError(err&&err.message?err.message:String(err))}
-  finally{if(button){button.disabled=false;button.textContent='PHÂN TÍCH KHÔNG GIAN'}}
+  }catch(err){if(requestVersion===spatialRequestVersion){setSpatialStatus('BACKEND ERROR');showSpatialError(err&&err.message?err.message:String(err))}}
+  finally{if(requestVersion===spatialRequestVersion&&button){button.disabled=false;button.textContent='PHÂN TÍCH KHÔNG GIAN'}}
 }
 function applySpatialToPrompt(){
   if(!spatialBlueprint)return;
@@ -318,15 +328,26 @@ function applySpatialToPrompt(){
 
 $('pick').onclick=()=>$('ref').click();
 function renderReferences(){
+referenceObjectUrls.forEach(url=>URL.revokeObjectURL(url));
+referenceObjectUrls=[];
 const mode=referenceFiles.length===1?'single':referenceFiles.length>1?'multi':'';
 if(mode && !$('referenceMode').value)$('referenceMode').value=mode;
 $('preview').innerHTML='';
-referenceFiles.forEach((file,index)=>{const url=URL.createObjectURL(file);const img=document.createElement('img');img.src=url;img.alt='Reference '+(index+1);img.onclick=()=>{$('modalImg').src=url;$('modal').classList.add('show')};$('preview').appendChild(img)});
+referenceFiles.forEach((file,index)=>{const url=URL.createObjectURL(file);referenceObjectUrls.push(url);const img=document.createElement('img');img.src=url;img.alt='Reference '+(index+1);img.onclick=()=>{$('modalImg').src=url;$('modal').classList.add('show')};$('preview').appendChild(img)});
 $('count').textContent=referenceFiles.length+' / 12 ẢNH THAM CHIẾU';
 $('sImage').textContent=referenceFiles.length?'SẴN SÀNG':'CHƯA CÓ';
 $('sImage').style.color=referenceFiles.length?'var(--ok)':'var(--muted)';
 }
-function setReferences(files){referenceFiles=Array.from(files||[]).filter(f=>f.type.startsWith('image/')).slice(0,12);renderReferences()}
+function setReferences(files){
+  spatialRequestVersion++;
+  spatialBlueprint=null;
+  if($('spatialOutput'))$('spatialOutput').value='';
+  if($('applyBlueprint')){$('applyBlueprint').disabled=true;$('applyBlueprint').textContent='ĐƯA BLUEPRINT VÀO PROMPT'}
+  if($('spatialBadge'))$('spatialBadge').textContent='SPATIAL BLUEPRINT: CHƯA CÓ';
+  const button=$('analyzeSpatial');if(button){button.disabled=false;button.textContent='PHÂN TÍCH KHÔNG GIAN'}
+  referenceFiles=Array.from(files||[]).filter(f=>f.type.startsWith('image/')).slice(0,12);
+  renderReferences();
+}
 $('ref').onchange=e=>setReferences(e.target.files);
 $('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('drag')};
 $('drop').ondragleave=e=>$('drop').classList.remove('drag');
@@ -573,7 +594,10 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.querySelectorAll('.chip.active,.shot.active,.card.active').forEach(el=>el.classList.remove('active'));
     ['face','body','wardrobe'].forEach(clearCharacterRef);
     referenceFiles=[];renderReferences();if($('ref'))$('ref').value='';
+    spatialRequestVersion++;
     spatialBlueprint=null;
+    if($('applyBlueprint'))$('applyBlueprint').textContent='ĐƯA BLUEPRINT VÀO PROMPT';
+    if($('analyzeSpatial')){$('analyzeSpatial').disabled=false;$('analyzeSpatial').textContent='PHÂN TÍCH KHÔNG GIAN'}
     if($('spatialOutput'))$('spatialOutput').value='';
     if($('applyBlueprint'))$('applyBlueprint').disabled=true;
     if($('spatialBadge'))$('spatialBadge').textContent='SPATIAL BLUEPRINT: CHƯA CÓ';
