@@ -573,6 +573,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.querySelectorAll('.chip.active,.shot.active,.card.active').forEach(el=>el.classList.remove('active'));
     ['face','body','wardrobe'].forEach(clearCharacterRef);
     referenceFiles=[];renderReferences();if($('ref'))$('ref').value='';
+    spatialBlueprint=null;
+    if($('spatialOutput'))$('spatialOutput').value='';
+    if($('applyBlueprint'))$('applyBlueprint').disabled=true;
+    if($('spatialBadge'))$('spatialBadge').textContent='SPATIAL BLUEPRINT: CHƯA CÓ';
+    if($('spatialError'))$('spatialError').textContent='';
+    setSpatialStatus('CHƯA KẾT NỐI BACKEND');
+    setCopyLock(false);
     $('outputText').textContent='Prompt sẽ xuất hiện ở đây.';$('outputText').classList.add('empty');$('progress').style.width='0%';
     selections={};
   });
