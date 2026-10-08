@@ -388,22 +388,30 @@ const expert=[
 'Producer: feasibility and delivery discipline'
 ];
 function buildPrompt(){
-syncBodyAppearance();
-const d=collect();
-const source=d.master?(d.referenceMode==='multi'?'Use ALL uploaded reference images as a coordinated reference set. Cross-check architecture, furniture, materials, proportions, details and visual language across the entire set; stay faithful to the supplied images.':'Use the single uploaded reference image as the primary spatial source. Analyze it deeply, then develop only the requested creative attributes.'):'No reference image supplied; do not invent spatial details from an absent master image.';
-const base=d.brief||d.scene;
-return 'Create a '+d.duration+' '+d.ratio+' '+d.resolution+' '+d.fps+' high-end cinematic architectural interior video.\n\n'+
-'SCENE: '+base+'. Design style: '+d.style+'. Time: '+d.time+'. Weather: '+d.weather+'. Mood: '+d.mood+'. Characters: '+d.characters+'. Activity: '+d.activity+'. Character DNA: '+(d.characterOutput||d.characterIdea||d.characters)+'. Materials: '+d.materials+'. Atmosphere: '+d.atmosphere+'. Creative direction: '+d.sceneDirection+'.\n\n'+
-'CREATIVE DIRECTION: Apply one coordinated professional decision across 17 expert disciplines: '+expert.join('; ')+'. Do not output separate agent opinions.\n\n'+
-'CAMERA BRIEF: Shot Type: '+d.shotType+'. Focal Length: '+d.lens+'. Camera Height: '+d.height+'. Camera Angle: '+d.angle+'. Movement: '+d.motion+'. Speed: '+d.speed+'. Parallax: '+d.parallax+'. Focus: '+d.focus+'. Depth of Field: '+d.dof+'. Framing: '+d.framing+'. Direction: '+d.cameraDirection+'. Treat all 10 camera parameters as mandatory constraints. Maintain stable verticals, believable perspective, controlled spatial depth and deliberate architectural composition.\n\n'+
-'LIGHTING BRIEF: Source: '+d.light+'. Direction: '+d.lightDirection+'. Quality: '+d.lightQuality+'. Color Temperature: '+d.colorTemp+'. Contrast: '+d.contrast+'. Intensity: '+d.intensity+'. Shadow: '+d.shadow+'. Reflection: '+d.reflection+'. Practical: '+d.practical+'. Atmosphere: '+d.lightAtmosphere+'. Direction notes: '+d.lightingDirection+'. Preserve realistic exposure, shadow direction, material response, reflections and lighting continuity.\n\n'+
-'SHOT DESIGN BRIEF: Purpose: '+d.shotPurpose+'. Action: '+d.shotAction+'. Camera: '+d.shotCamera+'. Subject: '+d.shotSubject+'. Transition: '+d.shotTransition+'. Duration: '+d.shotDuration+'. Rhythm: '+d.shotRhythm+'. Continuity: '+d.shotContinuity+'. Sequence Logic: '+d.sequenceLogic+'. Shot Direction: '+d.shotDirection+'. Treat each shot as one deliberate cinematic beat; never duplicate or randomly reinterpret the architecture.\n\n'+
-'ẢNH GỐC · MASTER IMAGE / GEOMETRY GUARD: '+source+' '+d.constraints+' Never invent openings, duplicate objects, substitute furniture, rearrange the room, change ceiling height, distort proportions, or drift the camera-space relationship.\n\n'+
-'CONTINUITY: Same architecture, same furniture identity, same material language and consistent lighting logic across every shot. Only explicitly requested creative attributes may change.\n\n'+
-'AI VIDEO ENGINE: Target platform: '+d.aiTool+'. Prompt mode: '+d.promptMode+'. Language: '+d.promptLanguage+'. Output format: '+d.outputFormat+'. Engine notes: '+d.engineNotes+'. Adapt syntax, motion vocabulary, image-to-video behavior, camera instructions and prompt density to the selected engine without changing the creative intent, architecture or continuity constraints.\n\n'+
-'BODY PROFILE (EDITABLE TEXT): '+(d.bodyDescription||'Not specified; do not infer body features from unanalysed images.')+'. Use neutral adult non-explicit editorial language.\n\n'+
-'CHARACTER IMAGE REFERENCES: '+d.characterReferences+'. Keep face identity, body proportions, and wardrobe consistent across shots. Never claim the images were visually analyzed; actual image attachments must be passed separately to a capable AI engine.\\n\\n'+
-'QUALITY: photorealistic architectural visualization, physically plausible materials, natural reflections, refined color grading, cinematic depth, clean motion, no flicker, no morphing, no geometry drift, no text, no watermark.';
+ syncBodyAppearance();
+ const d=collect();
+ const compact=items=>items.filter(x=>x!==undefined&&x!==null&&String(x).trim()&&String(x).trim()!=="Không áp dụng").map(x=>String(x).trim()).join("; ");
+ const field=(name,value)=>value?name+": "+value:"";
+ const hasMaster=!!d.master;
+ const context=compact([
+  field("Không gian",d.brief||d.scene),field("Phong cách",d.style),
+  field("Thời điểm",d.time),field("Thời tiết",d.weather),field("Không khí",d.mood),
+  field("Vật liệu",d.materials),field("Bối cảnh",d.atmosphere),
+  hasMaster?"Ảnh tải lên là nguồn tham chiếu kiến trúc và bố cục.":"Không có ảnh gốc; chỉ dùng dữ liệu được mô tả."
+ ]);
+ const camera=compact([field("Loại cảnh",d.shotType),field("Tiêu cự",d.lens),field("Chiều cao",d.height),field("Góc",d.angle),field("Chuyển động",d.motion),field("Tốc độ",d.speed),field("Parallax",d.parallax),field("Lấy nét",d.focus),field("DOF",d.dof),field("Khung hình",d.framing),d.cameraDirection]);
+ const light=compact([field("Nguồn",d.light),field("Hướng",d.lightDirection),field("Tính chất",d.lightQuality),field("Nhiệt độ màu",d.colorTemp),field("Tương phản",d.contrast),field("Cường độ",d.intensity),field("Bóng",d.shadow),field("Phản xạ",d.reflection),field("Đèn thực tế",d.practical),d.lightingDirection]);
+ const shot=compact([field("Mục đích",d.shotPurpose),field("Hành động",d.shotAction),field("Chủ thể",d.shotSubject),field("Chuyển cảnh",d.shotTransition),field("Thời lượng cảnh",d.shotDuration),field("Nhịp",d.shotRhythm),field("Liên tục",d.shotContinuity),d.sequenceLogic,d.shotDirection]);
+ const character=compact([field("Nhân vật",d.characters),field("Hoạt động",d.activity),field("Mô tả",d.characterOutput||d.characterIdea),field("BODY dạng chữ",d.bodyDescription),field("Tham chiếu FACE/BODY/Trang phục",d.characterReferences)]);
+ const task=compact([field("Ý tưởng",d.sceneDirection),field("Camera",camera),field("Ánh sáng",light),field("Thiết kế cảnh",shot),character?field("Nhân vật",character):""]);
+ const limits=compact([d.constraints,"Giữ kiến trúc, bố cục, nhận dạng đồ nội thất và vật liệu nhất quán giữa các cảnh; không thêm cửa, thay cấu tạo hoặc làm biến dạng hình học.",hasMaster?"Không trộn nhận dạng giữa các ảnh tham chiếu.":"Không suy diễn chi tiết kiến trúc không có dữ liệu.","Không khẳng định đã phân tích ảnh FACE/BODY khi chưa có kết quả phân tích."]);
+ return [
+  "BỐI CẢNH: "+context,
+  "VAI TRÒ: Đạo diễn hình ảnh kiến trúc và nội thất; phối hợp camera, ánh sáng, thiết kế cảnh và hậu kỳ theo một định hướng thống nhất.",
+  "NHIỆM VỤ: "+task,
+  "RÀNG BUỘC: "+limits,
+  "KẾT QUẢ: Video kiến trúc điện ảnh "+compact([d.duration,d.ratio,d.resolution,d.fps,field("Nền tảng",d.aiTool),field("Định dạng",d.outputFormat)])+"; chuyển động mượt, vật liệu chân thực, không nhấp nháy hoặc biến dạng."
+ ].join("\n\n");
 }
 function developCharacter(){
 const idea=val('characterIdea');
