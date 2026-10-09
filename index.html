@@ -387,9 +387,28 @@ const expert=[
 'Voice Artist: clarity when voice is requested',
 'Producer: feasibility and delivery discipline'
 ];
+function buildEnglishPrompt(d){
+ const english=(v)=>{if(!v)return '';let x=String(v).trim();const dictionary={'Phòng khách':'living room','Phòng ăn':'dining room','Phòng ngủ':'bedroom','Bếp':'kitchen','Không có người':'no people','Không hoạt động':'no subject movement','Trời quang':'clear skies','Buổi sáng':'morning','Buổi tối':'evening','Điềm tĩnh / Tinh tế':'calm and refined','Mềm tự nhiên':'natural soft shadows','Cân bằng':'balanced','Trung bình':'medium','Chậm / Slow':'slow','Tiến máy / Dolly-in':'slow dolly-in','Khóa máy / Locked-off':'locked-off camera','Nét sâu / Deep':'deep focus','Sâu / Deep':'deep depth of field','Ánh sáng ban ngày / Cửa sổ':'natural window daylight','Bám sát hình ảnh tham chiếu, chỉ phát triển phần được yêu cầu':'faithful to the reference image; develop only explicitly requested changes'};
+ for(const [a,b] of Object.entries(dictionary))x=x.split(a).join(b);
+ x=x.replace(/^[^/]+\s\/\s(?=[A-Za-z][A-Za-z\s-]*$)/,'').replace(/\s*·\s*[^·]*[À-ỹ][^·]*$/u,'');
+ return x;
+ };
+ const item=(label,value)=>value?label+': '+english(value):'';
+ const combine=(a)=>a.filter(Boolean).join('; ');
+ const context=combine([item('Space',d.brief||d.scene),item('Design style',d.style),item('Time of day',d.time),item('Weather',d.weather),item('Mood',d.mood),item('Materials',d.materials),item('Atmosphere',d.atmosphere),d.master?'Use the uploaded image as the architectural and compositional reference.':'Use only the described scene information.']);
+ const camera=combine([item('Shot type',d.shotType),item('Focal length',d.lens),item('Camera height',d.height),item('Angle',d.angle),item('Movement',d.motion),item('Speed',d.speed),item('Parallax',d.parallax),item('Focus',d.focus),item('Depth of field',d.dof),item('Framing',d.framing),english(d.cameraDirection)]);
+ const lighting=combine([item('Source',d.light),item('Direction',d.lightDirection),item('Quality',d.lightQuality),item('Color temperature',d.colorTemp),item('Contrast',d.contrast),item('Intensity',d.intensity),item('Shadows',d.shadow),item('Reflections',d.reflection),english(d.lightingDirection)]);
+ const shots=combine([item('Purpose',d.shotPurpose),item('Action',d.shotAction),item('Subject',d.shotSubject),item('Transition',d.shotTransition),item('Duration',d.shotDuration),item('Rhythm',d.shotRhythm),item('Continuity',d.shotContinuity),english(d.sequenceLogic),english(d.shotDirection)]);
+ const task=combine([item('Scene direction',d.sceneDirection),item('Camera',camera),item('Lighting',lighting),item('Shot design',shots),item('Characters',d.characters),item('Character actions',d.activity),item('Character description',d.characterOutput||d.characterIdea),item('Body description',d.bodyDescription)]);
+ const restrictions=combine([english(d.constraints),'Preserve the original architecture, geometry, composition, furniture identity, materials and lighting continuity. Do not invent doors, objects or hidden geometry. Do not merge identities across reference images. Do not claim visual analysis unless it has actually been completed.']);
+ const result=['CONTEXT: '+context,'ROLE: Architectural and interior cinematography director coordinating camera, lighting, shot design and post-production.','TASK: '+task,'CONSTRAINTS: '+restrictions,'RESULT: Produce a cinematic architectural video; '+combine([english(d.duration),english(d.ratio),english(d.resolution),english(d.fps),item('Platform',d.aiTool)])+'; smooth physically plausible motion, realistic materials, no flicker, warping or identity drift.'].join('\n\n');
+ if(/[À-ỹ]/u.test(result))throw Error('English-only output requires translation of Vietnamese free-text or selections. Please translate the remaining Vietnamese fields into English before generating; the system will not falsely label mixed-language output as 100% English.');
+ return result;
+}
 function buildPrompt(){
  syncBodyAppearance();
  const d=collect();
+ if(d.promptLanguage==='English')return buildEnglishPrompt(d);
  const compact=items=>items.filter(x=>x!==undefined&&x!==null&&String(x).trim()&&String(x).trim()!=="Không áp dụng").map(x=>String(x).trim()).join("; ");
  const field=(name,value)=>value?name+": "+value:"";
  const hasMaster=!!d.master;
