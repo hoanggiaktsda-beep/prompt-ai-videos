@@ -88,6 +88,10 @@ button,input,textarea,select{touch-action:manipulation}
 <section class="hero"><div class="eyebrow">AI CREATIVE DIRECTOR / KIẾN TRÚC 3D</div><h1>VIDEO <em>STUDIO</em></h1><p>Thiết kế video kiến trúc theo một workflow duy nhất: Master Image → Spatial Truth → Camera → Light → Shot → Continuity → Final Prompt.</p></section>
 
 <section class="step" id="project"><div class="step-head"><strong>01 / DỰ ÁN</strong><small>TÓM TẮT DỰ ÁN</small></div>
+<div class="hg-project-auto" style="border:1px solid #806b43;background:#15140f;padding:12px;margin:0 0 13px">
+<button class="btn primary" id="hgProjectSuggest" type="button" style="min-height:44px">✦ HG TỰ ĐỀ XUẤT · DỰ ÁN</button>
+<div id="hgProjectSuggestStatus" role="status" aria-live="polite" style="margin-top:8px;color:#d8bd7d;font-size:11px"></div>
+</div>
 <div class="grid2">
 <div class="field"><label>Mục tiêu video</label><select id="purpose"><option value="">— Bỏ trống / Không chỉ định —</option><option>Showcase kiến trúc và nội thất</option><option>Walkthrough / Virtual Tour</option><option>Flythrough kiến trúc</option><option>Archviz / Visualization</option><option>Interior Design Presentation</option><option>Exterior / Facade Showcase</option><option>Before / After Renovation</option><option>Design Concept / Mood Film</option><option>Project Case Study</option><option>Portfolio / Award Submission</option><option>Luxury Brand Film</option><option>Video quảng cáo / Commercial</option><option>Tour không gian điện ảnh</option><option>Video social ngắn</option><option>TikTok / Reels / Shorts</option><option>YouTube Video</option><option>Hero / Teaser / Trailer</option><option>Đời sống / lifestyle / Editorial Film</option><option>Real Estate Marketing</option><option>Property / Apartment Tour</option><option>Product / Đồ nội thất Showcase</option><option>Showroom Launch</option><option>Brand Story / Corporate Film</option><option>360° / VR Experience</option><option>LED / Event Visual</option><option>Digital Signage</option><option>Educational / Tutorial</option><option>Behind the Scenes</option><option>Portfolio / case study</option></select></div>
 <div class="field"><label>Phong cách thiết kế</label><select id="style"><option value="">— Bỏ trống / Không chỉ định —</option><option>Hiện đại / Modern</option><option>Đương đại / Contemporary</option><option>Hiện đại / Hiện đại sang trọng / Modern Luxury</option><option>Đương đại / Đương đại sang trọng / Contemporary Luxury</option><option>Tối giản / Minimalist</option><option>Tối giản sang trọng / Minimal Luxury</option><option>Tối giản ấm áp / Warm Minimalism</option><option>Xa xỉ tinh tế / Quiet Luxury</option><option>Organic Hiện đại / Modern</option><option>Organic Đương đại / Contemporary</option><option>Italian Hiện đại / Modern</option><option>Italian Đương đại / Contemporary</option><option>Bắc Âu / Scandinavian</option><option>Nhật - Bắc Âu / Japandi</option><option>Nhật Bản / Japanese</option><option>Wabi-Sabi · vẻ đẹp vô thường</option><option>Thiền / Zen</option><option>Sinh học / Biophilic</option><option>Sinh thái / Bền vững</option><option>Cổ điển / Traditional</option><option>Tân cổ điển / Neoclassical</option><option>Neo Classic Đương đại / Contemporary</option><option>Chuyển tiếp / Transitional</option><option>French Hiện đại / Modern / Parisian</option><option>Đồng quê Anh / English Country</option><option>Art Deco · nghệ thuật trang trí</option><option>Art Nouveau · Tân nghệ thuật</option><option>Công nghiệp / Industrial</option><option>Công nghiệp / Industrial Hiện đại / Modern</option><option>Loft · không gian công nghiệp mở</option><option>Brutalist · kiến trúc thô mộc</option><option>Bauhaus · trường phái công năng</option><option>Mid-Century Hiện đại / Modern</option><option>Memphis · hình khối & màu sắc</option><option>Mộc mạc / Rustic</option><option>Hiện đại / Modern Mộc mạc / Rustic</option><option>Nhà nông trại / Farmhouse</option><option>Hiện đại / Modern Nhà nông trại / Farmhouse</option><option>Ven biển / Coastal</option><option>Địa Trung Hải / Mediterranean</option><option>Nhiệt đới / Tropical</option><option>Bali / Balinese</option><option>Ma-rốc / Moroccan</option><option>Bohemian / Boho</option><option>Chiết trung / Eclectic</option><option>Tối đa / Maximalist</option><option>Cổ điển hoài niệm / Vintage</option><option>Hoài cổ / Retro</option><option>Thanh lịch cũ / Shabby Chic</option><option>Hollywood Regency / Glam</option><option>Tối trầm / Dark Moody</option></select></div>
@@ -698,6 +702,37 @@ document.addEventListener('DOMContentLoaded',()=>{
   </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const button=document.getElementById('hgProjectSuggest'),status=document.getElementById('hgProjectSuggestStatus');
+ if(!button)return;
+ button.addEventListener('click',()=>{
+  const blueprint=(document.getElementById('spatialOutput')?.value||'').trim();
+  const brief=(document.getElementById('brief')?.value||'').trim();
+  const source=(blueprint||brief).toLowerCase();
+  if(!source){status.textContent='Hãy nhập mô tả dự án hoặc tải ảnh và phân tích không gian trước. HG không tự đoán nội dung khi thiếu dữ liệu.';return;}
+  const human=/portrait|human|person|nhân vật|chân dung/.test(source);
+  const exterior=/exterior|facade|ngoại thất|mặt tiền|công trình/.test(source);
+  const luxury=/luxury|sang trọng|cao cấp/.test(source);
+  const selections={
+   purpose:human?['lifestyle']:exterior?['Exterior / Facade']:['Showcase kiến trúc'],
+   style:luxury?['Minimal Luxury','Contemporary Luxury']:['Contemporary','Hiện đại'],
+   duration:['5 giây'],
+   ratio:['16:9'],
+   resolution:['1920×1080','1080'],
+   fps:['24 fps']
+  };
+  let applied=0,retained=0;
+  Object.entries(selections).forEach(([id,terms])=>{
+   const el=document.getElementById(id);if(!el)return;
+   if(el.value){retained++;return;}
+   const option=Array.from(el.options).find(o=>o.value&&terms.some(t=>o.textContent.toLowerCase().includes(t.toLowerCase())));
+   if(option){el.value=option.value;el.dispatchEvent(new Event('change',{bubbles:true}));applied++;}
+  });
+  status.textContent='HG đã đề xuất '+applied+' thông số dự án, giữ nguyên '+retained+' mục đã chọn. Kiểm tra và chỉnh sửa trước khi tạo prompt.';
+ });
+});
+</script>
 <!-- HG AUTO DIRECTOR V2: populate the existing 7-step workflow -->
 <style>.hg-auto{border:1px solid #806b43;background:#15140f;padding:14px;margin:12px 0}.hg-auto h3{font:800 12px Manrope;color:#e1c68c;margin:0 0 7px}.hg-auto p,.hg-auto-status{font-size:11px;color:#aeb3a9;white-space:pre-wrap}.hg-auto button{min-height:44px}</style>
 <script>
