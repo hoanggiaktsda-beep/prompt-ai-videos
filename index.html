@@ -390,6 +390,10 @@ const expert=[
 ];
 function buildEnglishPrompt(d){
  const english=(v)=>{if(!v)return '';let x=String(v).trim();const dictionary={'Phòng khách':'living room','Phòng ăn':'dining room','Phòng ngủ':'bedroom','Bếp':'kitchen','Không có người':'no people','Không hoạt động':'no subject movement','Trời quang':'clear skies','Buổi sáng':'morning','Buổi tối':'evening','Điềm tĩnh / Tinh tế':'calm and refined','Mềm tự nhiên':'natural soft shadows','Cân bằng':'balanced','Trung bình':'medium','Chậm / Slow':'slow','Tiến máy / Dolly-in':'slow dolly-in','Khóa máy / Locked-off':'locked-off camera','Nét sâu / Deep':'deep focus','Sâu / Deep':'deep depth of field','Ánh sáng ban ngày / Cửa sổ':'natural window daylight','Bám sát hình ảnh tham chiếu, chỉ phát triển phần được yêu cầu':'faithful to the reference image; develop only explicitly requested changes'};
+ const terms={
+ 'giây':'seconds','không gian':'space','kiến trúc':'architecture','nội thất':'interior','ánh sáng':'lighting','máy quay':'camera','chuyển động':'motion','bố cục':'composition','phong cách':'style','thiết kế':'design','sang trọng':'luxury','hiện đại':'modern','đương đại':'contemporary','tối giản':'minimalist','ấm áp':'warm','tự nhiên':'natural','nhẹ':'subtle','mạnh':'strong','tĩnh':'static','chậm':'slow','nhanh':'fast','mềm':'soft','sâu':'deep','vừa':'moderate','góc cao':'high angle','góc thấp':'low angle','ngang tầm mắt':'eye level','phòng làm việc':'home office','phòng tắm':'bathroom','ngoại thất':'exterior','mặt tiền':'facade','buổi chiều':'afternoon','ban ngày':'daytime','buổi tối':'evening','ban đêm':'night','trời quang':'clear skies','mây nhẹ':'light clouds','mưa':'rain','nắng':'sunlight','không có':'none','đá tự nhiên':'natural stone','gỗ':'wood','màu':'color','trung tính':'neutral','điện ảnh':'cinematic','tinh tế':'refined','bám sát':'faithful to','tham chiếu':'reference','nhân vật':'character','đồ nội thất':'furniture','giữ nguyên':'preserve','không thêm':'do not add','không thay đổi':'do not change','mượt':'smooth','thực tế':'realistic','tập trung':'focus','cảnh quay':'shot','cảnh':'scene','toàn cảnh':'wide shot','cận cảnh':'close-up','trung cảnh':'medium shot','từ trên xuống':'top-down','trước':'front','sau':'back','bên':'side','đối xứng':'symmetrical','trung tâm':'center','nhịp':'rhythm','thời lượng':'duration','độ phân giải':'resolution','không xác định':'unspecified','không áp dụng':'not applicable'
+ };
+ for(const [a,b] of Object.entries(terms).sort((a,b)=>b[0].length-a[0].length))x=x.replace(new RegExp(a,'gi'),b);
  for(const [a,b] of Object.entries(dictionary))x=x.split(a).join(b);
  x=x.replace(/^[^/]+\s\/\s(?=[A-Za-z][A-Za-z\s-]*$)/,'').replace(/\s*·\s*[^·]*[À-ỹ][^·]*$/u,'');
  return x;
@@ -403,13 +407,18 @@ function buildEnglishPrompt(d){
  const task=combine([item('Scene direction',d.sceneDirection),item('Camera',camera),item('Lighting',lighting),item('Shot design',shots),item('Characters',d.characters),item('Character actions',d.activity),item('Character description',d.characterOutput||d.characterIdea),item('Body description',d.bodyDescription)]);
  const restrictions=combine([english(d.constraints),'Preserve the original architecture, geometry, composition, furniture identity, materials and lighting continuity. Do not invent doors, objects or hidden geometry. Do not merge identities across reference images. Do not claim visual analysis unless it has actually been completed.']);
  const result=['CONTEXT: '+context,'ROLE: Architectural and interior cinematography director coordinating camera, lighting, shot design and post-production.','TASK: '+task,'CONSTRAINTS: '+restrictions,'RESULT: Produce a cinematic architectural video; '+combine([english(d.duration),english(d.ratio),english(d.resolution),english(d.fps),item('Platform',d.aiTool)])+'; smooth physically plausible motion, realistic materials, no flicker, warping or identity drift.'].join('\n\n');
- if(/[À-ỹ]/u.test(result))throw Error('English-only output requires translation of Vietnamese free-text or selections. Please translate the remaining Vietnamese fields into English before generating; the system will not falsely label mixed-language output as 100% English.');
+ if(/[À-ỹ]/u.test(result)){const warning=document.getElementById('englishPromptWarning');if(warning){warning.hidden=false;warning.textContent='Some Vietnamese descriptions could not be translated automatically. The prompt has been generated, but please review the remaining Vietnamese phrases.';}}
  return result;
 }
 function buildPrompt(){
  syncBodyAppearance();
  const d=collect();
- if(d.promptLanguage==='English')return buildEnglishPrompt(d);
+ const previousWarning=document.getElementById('englishPromptWarning');if(previousWarning)previousWarning.remove();
+ if(d.promptLanguage==='English'){
+  const warning=document.createElement('div');warning.id='englishPromptWarning';warning.hidden=true;warning.style.cssText='padding:10px;margin:10px 0;color:#e6bc79;font-size:12px';warning.setAttribute('role','status');
+  document.getElementById('outputText')?.before(warning);
+  return buildEnglishPrompt(d);
+ }
  const compact=items=>items.filter(x=>x!==undefined&&x!==null&&String(x).trim()&&String(x).trim()!=="Không áp dụng").map(x=>String(x).trim()).join("; ");
  const field=(name,value)=>value?name+": "+value:"";
  const hasMaster=!!d.master;
