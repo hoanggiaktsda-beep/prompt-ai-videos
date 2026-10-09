@@ -847,5 +847,46 @@ document.addEventListener('DOMContentLoaded',()=>{
  }
 });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const btn=document.getElementById('hgAutoApply');
+ if(!btn)return;
+ const status=document.getElementById('hgAutoStatus');
+ let rerun=false,busy=false;
+ btn.addEventListener('click',async function(e){
+  if(rerun){rerun=false;return;}
+  e.stopImmediatePropagation();
+  if(busy)return;
+  busy=true;btn.disabled=true;
+  try{
+   const output=document.getElementById('spatialOutput');
+   if(!output.value.trim()){
+    if(!referenceFiles.length){
+     status.textContent='Vui lòng tải ít nhất một ảnh ở bước 02 để HG thực sự phân tích hình ảnh trước khi tự đề xuất.';
+     return;
+    }
+    status.textContent='HG đang phân tích ảnh nguồn và chuẩn bị phương án đạo diễn...';
+    if(getBackendUrl()){
+     await analyzeSpatial();
+     if(!output.value.trim())throw Error('Vision AI backend chưa trả về kết quả phân tích hợp lệ. Kiểm tra kết nối backend.');
+    }else{
+     const temp=document.createElement('span');
+     temp.textContent='Đang khởi tạo Vision AI trên thiết bị...';
+     status.replaceChildren(temp);
+     const question='Describe this architecture or interior design image accurately in English for a cinematography director. Identify room or exterior, visible furniture and materials, lighting direction, atmosphere, perspective, camera composition and appropriate gentle cinematic camera motion. Do not invent unseen features.';
+     localVisionQuestions.hgScene=question;
+     const description=await analyzeLocalVision(referenceFiles[0],'hgScene',temp);
+     if(!description||description.trim().length<20)throw Error('Vision AI chưa phân tích được ảnh.');
+     output.value=description;
+     status.textContent='Vision AI trên thiết bị đã phân tích ảnh. HG đang chọn thông số...';
+    }
+   }
+   rerun=true;btn.click();
+  }catch(err){status.textContent='Không thể tự phân tích: '+(err?.message||String(err))+'. Có thể nhập Backend URL hoặc dùng thiết bị có WebGPU.';}
+  finally{busy=false;btn.disabled=false;}
+ },true);
+});
+</script>
 </body>
 </html>
