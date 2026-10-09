@@ -741,17 +741,13 @@ document.addEventListener('DOMContentLoaded', function(){
   el.insertBefore(option,el.options[1]||null);
   el.addEventListener('change',function(){
    if(el.value!==AUTO)return;
-   const blueprint=(document.getElementById('spatialOutput')?.value||'').trim();
-   if(!blueprint){
-    el.value='';
-    alert('Hãy tải ảnh và phân tích tại bước 02 trước khi dùng HG tự đề xuất.');
-    document.getElementById('image')?.scrollIntoView({behavior:'smooth'});
-    return;
-   }
    const section=el.closest('section.step');
    const btn=section?.querySelector('.hg-section-suggest');
-   if(btn){btn.click();}
-   if(el.value===AUTO){el.value='';alert('Chưa có phương án tự đề xuất phù hợp cho lựa chọn này.');}
+   if(btn)btn.click();
+   if(el.value===AUTO){
+    const first=Array.from(el.options).find(o=>o.value&&o.value!==AUTO);
+    if(first){el.value=first.value;el.dispatchEvent(new Event('change',{bubbles:true}));}
+   }
   });
  });
 });
@@ -788,7 +784,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const blueprint=(document.getElementById('spatialOutput')?.value||'').trim();
   const brief=(document.getElementById('brief')?.value||'').trim();
   const evidence=blueprint||brief;
-  if(!evidence){status.textContent='Hãy nhập mô tả dự án hoặc phân tích ảnh bằng Vision AI trước. HG không tự suy đoán ảnh khi chưa phân tích.';document.getElementById('brief')?.focus();return;}
+  if(!evidence && status)status.textContent='HG đang dùng các nguyên tắc đạo diễn mặc định; chưa có kết quả phân tích hình ảnh nên đây không phải đề xuất dựa trên ảnh.';
   const t=evidence.toLowerCase();
   const person=/person|people|human|portrait|face|nhân vật|con người|chân dung|khuôn mặt/.test(t);
   const ext=/exterior|facade|building|landscape|ngoại thất|mặt tiền|cảnh quan/.test(t);
