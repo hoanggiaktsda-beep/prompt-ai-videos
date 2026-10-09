@@ -764,9 +764,10 @@ document.addEventListener('DOMContentLoaded', function(){
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
  const imageStep=document.getElementById('image');if(!imageStep)return;
- const panel=document.createElement('div');panel.id='hgAutoDirector';panel.className='hg-auto';
- panel.innerHTML='<h3>✦ HG TỰ ĐỀ XUẤT · TOÀN BỘ 7 BƯỚC</h3><p>Vision AI phân tích ảnh nguồn; HG điền các mục còn trống trên toàn bộ Video AI. Bấm lại để cập nhật những mục HG đã tự chọn. Mục chỉnh tay được giữ nguyên.</p><button class="btn primary" id="hgAutoApply" type="button">HG TỰ ĐỀ XUẤT TOÀN BỘ</button><div class="hg-auto-status" id="hgAutoStatus" role="status" aria-live="polite"></div>';
- imageStep.insertBefore(panel,imageStep.children[1]||null);
+ // HG per-field suggestions remain available; the redundant global panel is removed.
+ const status=document.createElement('div');
+ status.id='hgAutoStatus';status.hidden=true;
+ imageStep.appendChild(status);
  const autoSet=new Map();
  function pick(el,terms){
   const opts=Array.from(el.options||[]).filter(o=>o.value!==''&&o.value!=='__HG_AUTO__'&&!/bỏ trống|không chỉ định/i.test(o.textContent));
@@ -849,39 +850,5 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
-<script>
-document.addEventListener('DOMContentLoaded',()=>{
- const button=document.getElementById('hgAutoApply');
- const status=document.getElementById('hgAutoStatus');
- if(!button||!status)return;
- let busy=false;
- button.addEventListener('click',async e=>{
-  e.stopImmediatePropagation();
-  if(busy)return;
-  busy=true;button.disabled=true;
-  try{
-   const output=document.getElementById('spatialOutput');
-   if(!output.value.trim()){
-    if(!referenceFiles.length){
-     status.textContent='Hãy tải ảnh tại bước 02. HG cần dữ liệu ảnh hoặc mô tả dự án để đề xuất chính xác.';
-     const brief=(document.getElementById('brief')?.value||'').trim();
-     if(brief&&typeof window.hgApplySuggestions==='function')window.hgApplySuggestions('all');
-     return;
-    }
-    if(!getBackendUrl()){
-     status.textContent='Đã nhận ảnh. Để tránh iPhone bị thoát trang do quá tải bộ nhớ, HG không tự tải mô hình Vision AI lớn vào điện thoại. Hãy cấu hình backend Vision AI tại bước 02, hoặc nhập mô tả dự án để HG đề xuất an toàn.';
-     return;
-    }
-    status.textContent='HG đang phân tích ảnh bằng backend...';
-    await analyzeSpatial();
-    if(!output.value.trim())throw Error('Backend chưa trả về kết quả phân tích ảnh.');
-   }
-   if(typeof window.hgApplySuggestions!=='function')throw Error('Bộ đề xuất chưa khởi tạo.');
-   window.hgApplySuggestions('all');
-  }catch(err){status.textContent='HG chưa thể hoàn tất: '+(err?.message||String(err));}
-  finally{busy=false;button.disabled=false;}
- },true);
-});
-</script>
 </body>
 </html>
