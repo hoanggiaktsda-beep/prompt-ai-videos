@@ -679,32 +679,72 @@ document.addEventListener('DOMContentLoaded',()=>{
   </div>
 </div>
 
-<!-- HG AUTO DIRECTOR: additive enhancement, existing workflow preserved -->
-<style>.hg-auto{border:1px solid #806b43;background:#15140f;padding:14px;margin:12px 0}.hg-auto h3{font:800 12px Manrope;color:#e1c68c;margin:0 0 7px}.hg-auto p{font-size:11px;color:#aeb3a9}.hg-auto button{min-height:44px}.hg-auto-status{font-size:11px;color:#d8bd7d;white-space:pre-wrap;margin-top:9px}</style>
+<!-- HG AUTO DIRECTOR V2: populate the existing 7-step workflow -->
+<style>.hg-auto{border:1px solid #806b43;background:#15140f;padding:14px;margin:12px 0}.hg-auto h3{font:800 12px Manrope;color:#e1c68c;margin:0 0 7px}.hg-auto p,.hg-auto-status{font-size:11px;color:#aeb3a9;white-space:pre-wrap}.hg-auto button{min-height:44px}</style>
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
- const imageStep=document.getElementById('image');if(!imageStep||document.getElementById('hgAutoDirector'))return;
+ const imageStep=document.getElementById('image');if(!imageStep)return;
  const panel=document.createElement('div');panel.id='hgAutoDirector';panel.className='hg-auto';
- panel.innerHTML='<h3>✦ HG TỰ ĐỀ XUẤT · AI CREATIVE DIRECTOR</h3><p>Phân tích ảnh bằng Vision AI hiện có trước, sau đó HG chọn các thông số phù hợp. Không thay đổi lựa chọn đã nhập thủ công; có thể chỉnh sửa từng mục sau khi áp dụng.</p><button class="btn primary" id="hgAutoApply" type="button">HG TỰ ĐỀ XUẤT TỪ ẢNH</button><div class="hg-auto-status" id="hgAutoStatus" role="status" aria-live="polite"></div>';
+ panel.innerHTML='<h3>✦ HG TỰ ĐỀ XUẤT · TOÀN BỘ 7 BƯỚC</h3><p>Vision AI phân tích ảnh nguồn; HG điền các mục còn trống trên toàn bộ Video AI. Bấm lại để cập nhật những mục HG đã tự chọn. Mục chỉnh tay được giữ nguyên.</p><button class="btn primary" id="hgAutoApply" type="button">HG TỰ ĐỀ XUẤT TOÀN BỘ</button><div class="hg-auto-status" id="hgAutoStatus" role="status" aria-live="polite"></div>';
  imageStep.insertBefore(panel,imageStep.children[1]||null);
+ const autoSet=new Map();
+ function pick(el,terms){
+  const opts=Array.from(el.options||[]).filter(o=>o.value!==''&&!/bỏ trống|không chỉ định/i.test(o.textContent));
+  for(const term of terms){const o=opts.find(x=>x.textContent.toLowerCase().includes(term.toLowerCase()));if(o)return o;}
+  return null;
+ }
  document.getElementById('hgAutoApply').addEventListener('click',()=>{
-  const status=document.getElementById('hgAutoStatus');const blueprint=(document.getElementById('spatialOutput')?.value||'').trim();
-  if(!blueprint){status.textContent='Cần tải ảnh và chạy PHÂN TÍCH KHÔNG GIAN bằng Vision AI trước. HG không suy đoán nội dung ảnh khi chưa có kết quả phân tích.';document.getElementById('analyzeSpatial')?.focus();return;}
-  const t=blueprint.toLowerCase();const human=/person|people|human|portrait|face|nhân vật|con người|chân dung|khuôn mặt/.test(t);
-  const exterior=/exterior|facade|building|landscape|ngoại thất|mặt tiền|cảnh quan/.test(t);
-  const suggestions={purpose:human?'Đời sống / lifestyle / Editorial Film':exterior?'Exterior / Facade Showcase':'Showcase kiến trúc và nội thất',referenceMode:'single',referenceBehavior:'faithful',motion:human?'Khóa máy / Locked-off':exterior?'Trượt ngang / Lateral track':'Tiến máy / Dolly-in',cameraSpeed:'Chậm / Slow',sequenceLogic:'Một cảnh quay liên tục'};
-  const changed=[];const skipped=[];
-  for(const [id,choice] of Object.entries(suggestions)){
-    const el=document.getElementById(id);if(!el||!('value' in el))continue;
-    if(el.value){skipped.push(id);continue;}
-    const options=[...el.options||[]];const opt=options.find(o=>o.value===choice||o.textContent.trim()===choice)||options.find(o=>o.textContent.toLowerCase().includes(choice.toLowerCase().split(' / ')[0]));
-    if(opt){el.value=opt.value;el.dispatchEvent(new Event('change',{bubbles:true}));changed.push(id);}
+  const status=document.getElementById('hgAutoStatus');
+  const blueprint=(document.getElementById('spatialOutput')?.value||'').trim();
+  if(!blueprint){status.textContent='Chưa có dữ liệu thị giác. Tải ảnh và chạy PHÂN TÍCH KHÔNG GIAN trước để HG chọn đúng theo ảnh; không tự bịa nhận diện.';document.getElementById('analyzeSpatial')?.focus();return;}
+  const t=blueprint.toLowerCase();
+  const person=/person|people|human|portrait|face|nhân vật|con người|chân dung|khuôn mặt/.test(t);
+  const ext=/exterior|facade|building|landscape|ngoại thất|mặt tiền|cảnh quan/.test(t);
+  const dining=/dining|phòng ăn/.test(t),bed=/bedroom|phòng ngủ/.test(t),kitchen=/kitchen|nhà bếp|phòng bếp/.test(t);
+  const night=/night|evening|đêm|buổi tối/.test(t);
+  const warm=/warm|ấm|golden/.test(t);
+  const luxury=/luxury|sang trọng|cao cấp/.test(t);
+  const candidates={
+   purpose:[person?'lifestyle':ext?'Exterior':'Showcase kiến trúc'],
+   style:[luxury?'Minimal Luxury':'Contemporary','Modern'],
+   duration:['8 giây','10 giây'],ratio:['16:9'],resolution:['1080','1920'],fps:['24 fps'],
+   referenceMode:['Thêm 1 ảnh'],referenceBehavior:['Bám sát'],
+   scene:[dining?'Phòng ăn':bed?'Phòng ngủ':kitchen?'Bếp':ext?'Ngoại thất':'Phòng khách'],
+   time:[night?'Buổi tối':'Buổi sáng'],weather:['Trời quang'],mood:[luxury?'Tinh tế':'Điềm tĩnh'],
+   characters:[person?'1 người':'Không có người'],activity:[person?'Đi bộ chậm':'Không hoạt động'],
+   materials:[/marble|cẩm thạch/.test(t)?'Marble':/wood|gỗ/.test(t)?'Gỗ':'Đá tự nhiên'],
+   atmosphere:['Trong trẻo','Clean'],
+   shotType:[person?'Trung cảnh':ext?'Toàn cảnh':'Trung toàn'],
+   lens:[person?'50mm':ext?'24mm':'35mm','28mm'],
+   cameraHeight:['Ngang tầm mắt'],angle:['Ngang tầm mắt'],
+   motion:[person?'Khóa máy':ext?'Trượt ngang':'Tiến máy'],
+   cameraSpeed:[person?'Siêu chậm':'Chậm'],parallax:['Nhẹ'],focus:[person?'Nét chủ thể':'Nét sâu'],
+   depthOfField:[person?'Vừa':'Sâu'],framing:[person?'Quy tắc 1/3':'Đường dẫn thị giác'],
+   light:[night?'Đèn thực tế':'Ánh sáng ban ngày'],lightDirection:['Bên'],lightQuality:['Mềm'],
+   colorTemp:[warm||night?'3000K':'5000K'],contrast:['Cân bằng'],intensity:['Trung bình'],
+   shadow:['Mềm tự nhiên'],reflection:['Tự nhiên có kiểm soát'],practical:['Tinh tế'],
+   lightAtmosphere:['Trong sạch'],
+   shotPurpose:['Thiết lập không gian'],shotAction:[person?'Chuyển động chủ thể':'Chuyển động'],
+   shotCamera:['Dùng Bản thiết kế'],shotSubject:[person?'Nhân vật':'Toàn bộ không gian'],
+   shotTransition:['Cắt thẳng'],shotDuration:['5s'],shotContinuity:['Kiến trúc + Đồ nội thất'],
+   shotRhythm:['Điện ảnh chậm'],aiTool:['Kling AI'],promptMode:['Ảnh → Video','Theo nền tảng'],
+   promptLanguage:['Tiếng Việt'],outputFormat:['Brief + Prompt']
+  };
+  let filled=0,kept=0,missing=[];
+  document.querySelectorAll('select').forEach(el=>{
+   const key=el.id||el.dataset.field;if(!key)return;
+   const terms=candidates[key];if(!terms)return;
+   if(el.value && autoSet.get(el)!==el.value){kept++;return;}
+   const chosen=pick(el,terms);if(!chosen){missing.push(key);return;}
+   el.value=chosen.value;autoSet.set(el,el.value);
+   el.dispatchEvent(new Event('change',{bubbles:true}));filled++;
+  });
+  const notes=document.getElementById('engineNotes');
+  if(notes&&(!notes.value.trim()||notes.dataset.hgAuto==='yes')){
+   notes.value='HG AUTO DIRECTOR · Dựa trên Spatial Blueprint: '+(person?'Bảo toàn nhận diện nhân vật, vóc dáng, trang phục và biểu cảm tự nhiên.':ext?'Giữ nguyên hình khối, mặt đứng, tỷ lệ và môi trường công trình.':'Giữ nguyên kiến trúc, hình học, đồ nội thất, vật liệu, bố cục và ánh sáng của ảnh nguồn.')+' Chuyển động máy mượt, nhất quán, không tự tạo kiến trúc hoặc vật thể ngoài ảnh. Chỉ sử dụng chức năng thực sự được nền tảng kết xuất hỗ trợ.';
+   notes.dataset.hgAuto='yes';notes.dispatchEvent(new Event('input',{bubbles:true}));
   }
-  const notes=document.getElementById('engineNotes');if(notes&&!notes.value.trim()){
-   notes.value='HG AUTO DIRECTOR: '+(human?'Ưu tiên bảo toàn nhận diện nhân vật, chuyển động biểu cảm tự nhiên.':exterior?'Ưu tiên bảo toàn hình khối công trình, phối cảnh và bối cảnh.':'Ưu tiên bảo toàn kiến trúc, hình học, vật liệu, sản phẩm và góc nhìn ảnh nguồn.')+' Chuyển động mượt, một cảnh liên tục; không tự thêm vật thể, không thay đổi thiết kế. Chỉ dùng các thông số được mô hình video đích hỗ trợ.';
-   notes.dispatchEvent(new Event('input',{bubbles:true}));changed.push('engineNotes');
-  }
-  status.textContent='HG đã tham chiếu Spatial Blueprint và điền '+changed.length+' mục còn trống. Giữ nguyên '+skipped.length+' mục đã chọn. Hãy rà soát trước khi tạo prompt; đây là gợi ý theo kết quả Vision AI, không phải bảo đảm kết xuất video.';
+  status.textContent='Đã đề xuất '+filled+' mục trên 7 bước; giữ '+kept+' lựa chọn thủ công.'+(missing.length?' Các mục chưa tìm thấy lựa chọn phù hợp: '+missing.join(', ')+'.':'')+' Hãy rà soát lại trước khi tạo prompt.';
  });
 });
 </script>
