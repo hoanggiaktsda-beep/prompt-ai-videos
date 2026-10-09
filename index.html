@@ -747,11 +747,24 @@ document.addEventListener('DOMContentLoaded',()=>{
   for(const term of terms){const o=opts.find(x=>x.textContent.toLowerCase().includes(term.toLowerCase()));if(o)return o;}
   return null;
  }
- document.getElementById('hgAutoApply').addEventListener('click',()=>{
+ const sections=['project','image','scene','camera','lighting','shots','output'];
+ sections.forEach((id,index)=>{
+  const section=document.getElementById(id);if(!section)return;
+  const head=section.querySelector('.step-head');if(!head)return;
+  const control=document.createElement('button');control.type='button';control.className='btn hg-section-suggest';
+  control.textContent='✦ HG TỰ ĐỀ XUẤT';control.style.cssText='min-height:38px;margin-left:8px;border-color:#806b43;color:#e1c68c;white-space:normal';
+  control.setAttribute('aria-label','HG tự đề xuất cho bước '+(index+1));
+  head.appendChild(control);
+  control.addEventListener('click',()=>applyHGAuto(id));
+ });
+ document.getElementById('hgAutoApply').addEventListener('click',()=>applyHGAuto('all'));
+ function applyHGAuto(scope){
   const status=document.getElementById('hgAutoStatus');
   const blueprint=(document.getElementById('spatialOutput')?.value||'').trim();
-  if(!blueprint){status.textContent='Chưa có dữ liệu thị giác. Tải ảnh và chạy PHÂN TÍCH KHÔNG GIAN trước để HG chọn đúng theo ảnh; không tự bịa nhận diện.';document.getElementById('analyzeSpatial')?.focus();return;}
-  const t=blueprint.toLowerCase();
+  const brief=(document.getElementById('brief')?.value||'').trim();
+  const evidence=blueprint||brief;
+  if(!evidence){status.textContent='Hãy nhập mô tả dự án hoặc phân tích ảnh bằng Vision AI trước. HG không tự suy đoán ảnh khi chưa phân tích.';document.getElementById('brief')?.focus();return;}
+  const t=evidence.toLowerCase();
   const person=/person|people|human|portrait|face|nhân vật|con người|chân dung|khuôn mặt/.test(t);
   const ext=/exterior|facade|building|landscape|ngoại thất|mặt tiền|cảnh quan/.test(t);
   const dining=/dining|phòng ăn/.test(t),bed=/bedroom|phòng ngủ/.test(t),kitchen=/kitchen|nhà bếp|phòng bếp/.test(t);
@@ -785,7 +798,8 @@ document.addEventListener('DOMContentLoaded',()=>{
    promptLanguage:['Tiếng Việt'],outputFormat:['Brief + Prompt']
   };
   let filled=0,kept=0,missing=[];
-  document.querySelectorAll('select').forEach(el=>{
+  const root=scope==='all'?document:document.getElementById(scope);
+  root.querySelectorAll('select').forEach(el=>{
    const key=el.id||el.dataset.field;if(!key)return;
    const terms=candidates[key];if(!terms)return;
    if(el.value && autoSet.get(el)!==el.value){kept++;return;}
@@ -794,12 +808,17 @@ document.addEventListener('DOMContentLoaded',()=>{
    el.dispatchEvent(new Event('change',{bubbles:true}));filled++;
   });
   const notes=document.getElementById('engineNotes');
-  if(notes&&(!notes.value.trim()||notes.dataset.hgAuto==='yes')){
+  if(notes&&(scope==='all'||scope==='output')&&(!notes.value.trim()||notes.dataset.hgAuto==='yes')){
    notes.value='HG AUTO DIRECTOR · Dựa trên Spatial Blueprint: '+(person?'Bảo toàn nhận diện nhân vật, vóc dáng, trang phục và biểu cảm tự nhiên.':ext?'Giữ nguyên hình khối, mặt đứng, tỷ lệ và môi trường công trình.':'Giữ nguyên kiến trúc, hình học, đồ nội thất, vật liệu, bố cục và ánh sáng của ảnh nguồn.')+' Chuyển động máy mượt, nhất quán, không tự tạo kiến trúc hoặc vật thể ngoài ảnh. Chỉ sử dụng chức năng thực sự được nền tảng kết xuất hỗ trợ.';
    notes.dataset.hgAuto='yes';notes.dispatchEvent(new Event('input',{bubbles:true}));
   }
-  status.textContent='Đã đề xuất '+filled+' mục trên 7 bước; giữ '+kept+' lựa chọn thủ công.'+(missing.length?' Các mục chưa tìm thấy lựa chọn phù hợp: '+missing.join(', ')+'.':'')+' Hãy rà soát lại trước khi tạo prompt.';
- });
+  status.textContent='HG đề xuất cho '+(scope==='all'?'toàn bộ 7 bước':'bước '+scope)+': '+filled+' mục; giữ '+kept+' lựa chọn thủ công.'+(missing.length?' Các mục chưa tìm thấy lựa chọn phù hợp: '+missing.join(', ')+'.':'')+' Hãy rà soát lại trước khi tạo prompt.';
+  if(scope!=='all'){
+   let inline=document.getElementById('hgStatus_'+scope);
+   if(!inline){inline=document.createElement('div');inline.id='hgStatus_'+scope;inline.setAttribute('role','status');inline.style.cssText='font-size:11px;color:#d8bd7d;margin:6px 0 12px';document.getElementById(scope)?.querySelector('.step-head')?.after(inline);}
+   inline.textContent=status.textContent;
+  }
+ }
 });
 </script>
 </body>
