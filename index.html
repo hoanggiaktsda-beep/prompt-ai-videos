@@ -678,5 +678,35 @@ document.addEventListener('DOMContentLoaded',()=>{
     <a class="hg-youtube-link" href="https://www.youtube.com/@sadvinterior" target="_blank" rel="noopener">MỞ KÊNH YOUTUBE ↗</a>
   </div>
 </div>
+
+<!-- HG AUTO DIRECTOR: additive enhancement, existing workflow preserved -->
+<style>.hg-auto{border:1px solid #806b43;background:#15140f;padding:14px;margin:12px 0}.hg-auto h3{font:800 12px Manrope;color:#e1c68c;margin:0 0 7px}.hg-auto p{font-size:11px;color:#aeb3a9}.hg-auto button{min-height:44px}.hg-auto-status{font-size:11px;color:#d8bd7d;white-space:pre-wrap;margin-top:9px}</style>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const imageStep=document.getElementById('image');if(!imageStep||document.getElementById('hgAutoDirector'))return;
+ const panel=document.createElement('div');panel.id='hgAutoDirector';panel.className='hg-auto';
+ panel.innerHTML='<h3>✦ HG TỰ ĐỀ XUẤT · AI CREATIVE DIRECTOR</h3><p>Phân tích ảnh bằng Vision AI hiện có trước, sau đó HG chọn các thông số phù hợp. Không thay đổi lựa chọn đã nhập thủ công; có thể chỉnh sửa từng mục sau khi áp dụng.</p><button class="btn primary" id="hgAutoApply" type="button">HG TỰ ĐỀ XUẤT TỪ ẢNH</button><div class="hg-auto-status" id="hgAutoStatus" role="status" aria-live="polite"></div>';
+ imageStep.insertBefore(panel,imageStep.children[1]||null);
+ document.getElementById('hgAutoApply').addEventListener('click',()=>{
+  const status=document.getElementById('hgAutoStatus');const blueprint=(document.getElementById('spatialOutput')?.value||'').trim();
+  if(!blueprint){status.textContent='Cần tải ảnh và chạy PHÂN TÍCH KHÔNG GIAN bằng Vision AI trước. HG không suy đoán nội dung ảnh khi chưa có kết quả phân tích.';document.getElementById('analyzeSpatial')?.focus();return;}
+  const t=blueprint.toLowerCase();const human=/person|people|human|portrait|face|nhân vật|con người|chân dung|khuôn mặt/.test(t);
+  const exterior=/exterior|facade|building|landscape|ngoại thất|mặt tiền|cảnh quan/.test(t);
+  const suggestions={purpose:human?'Đời sống / lifestyle / Editorial Film':exterior?'Exterior / Facade Showcase':'Showcase kiến trúc và nội thất',referenceMode:'single',referenceBehavior:'faithful',motion:human?'Khóa máy / Locked-off':exterior?'Trượt ngang / Lateral track':'Tiến máy / Dolly-in',cameraSpeed:'Chậm / Slow',sequenceLogic:'Một cảnh quay liên tục'};
+  const changed=[];const skipped=[];
+  for(const [id,choice] of Object.entries(suggestions)){
+    const el=document.getElementById(id);if(!el||!('value' in el))continue;
+    if(el.value){skipped.push(id);continue;}
+    const options=[...el.options||[]];const opt=options.find(o=>o.value===choice||o.textContent.trim()===choice)||options.find(o=>o.textContent.toLowerCase().includes(choice.toLowerCase().split(' / ')[0]));
+    if(opt){el.value=opt.value;el.dispatchEvent(new Event('change',{bubbles:true}));changed.push(id);}
+  }
+  const notes=document.getElementById('engineNotes');if(notes&&!notes.value.trim()){
+   notes.value='HG AUTO DIRECTOR: '+(human?'Ưu tiên bảo toàn nhận diện nhân vật, chuyển động biểu cảm tự nhiên.':exterior?'Ưu tiên bảo toàn hình khối công trình, phối cảnh và bối cảnh.':'Ưu tiên bảo toàn kiến trúc, hình học, vật liệu, sản phẩm và góc nhìn ảnh nguồn.')+' Chuyển động mượt, một cảnh liên tục; không tự thêm vật thể, không thay đổi thiết kế. Chỉ dùng các thông số được mô hình video đích hỗ trợ.';
+   notes.dispatchEvent(new Event('input',{bubbles:true}));changed.push('engineNotes');
+  }
+  status.textContent='HG đã tham chiếu Spatial Blueprint và điền '+changed.length+' mục còn trống. Giữ nguyên '+skipped.length+' mục đã chọn. Hãy rà soát trước khi tạo prompt; đây là gợi ý theo kết quả Vision AI, không phải bảo đảm kết xuất video.';
+ });
+});
+</script>
 </body>
 </html>
