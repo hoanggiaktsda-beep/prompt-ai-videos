@@ -250,7 +250,7 @@ button,input,textarea,select{touch-action:manipulation}
 <div class="progress"><i id="progress"></i></div>
 </div>
 <div class="meta"><span class="tag">KIẾN TRÚC 3D</span><span class="tag">ĐIỆN ẢNH</span><span class="tag">LIÊN TỤC</span></div>
-<div id="outputText" class="output empty">Prompt sẽ xuất hiện ở đây.</div>
+<div id="outputText" class="output empty" hidden aria-hidden="true">Prompt sẽ xuất hiện ở đây.</div>
 <div class="note">Phiên bản GitHub Pages này chạy độc lập, không yêu cầu API key và không gửi ảnh lên máy chủ. AI API thật cần một backend bảo mật riêng; không nên đặt secret key trong frontend.</div>
 <div class="formula"><b>QUY TRÌNH</b><br>ẢNH GỐC · MASTER IMAGE → SPATIAL TRUTH → CREATIVE DIRECTOR → CAMERA → LIGHT → CẢNH QUAY · SHOT → LIÊN TỤC → FINAL PROMPT</div>
 </aside>
@@ -595,7 +595,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   const copyPassword=$('copyPassword'), copyLockStatus=$('copyLockStatus');
   const setCopyLock=(unlocked,message)=>{
     copyUnlocked=unlocked;
-    if(copyButton){copyButton.disabled=!unlocked;copyButton.setAttribute('aria-disabled',String(!unlocked));copyButton.textContent=unlocked?'SAO CHÉP':'🔒 SAO CHÉP'}
+    const promptPanel=$('outputText');
+    if(promptPanel){promptPanel.hidden=!unlocked;promptPanel.setAttribute('aria-hidden',String(!unlocked));promptPanel.style.display=unlocked?'':'none';}
+    if(copyButton){copyButton.disabled=!unlocked;copyButton.setAttribute('aria-disabled',String(!unlocked));copyButton.textContent=unlocked?'SAO CHÉP YÊU CẦU AI':'🔒 SAO CHÉP YÊU CẦU AI'}
     if($('lockCopy'))$('lockCopy').hidden=!unlocked;
     if(copyLockStatus)copyLockStatus.textContent=message||(unlocked?'🔓 Đã mở khóa sao chép.':'🔒 Cần mật khẩu trước khi sao chép.');
   };
