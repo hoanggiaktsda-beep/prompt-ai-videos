@@ -188,23 +188,23 @@ button,input,textarea,select{touch-action:manipulation}
 <div class="field"><label>Creative Direction / Ý đồ cảnh</label><textarea id="sceneDirection" placeholder="Ví dụ: camera tiến chậm vào phòng khách, ánh sáng hoàng hôn xuyên qua rèm, vật liệu travertine bắt sáng, không gian sang trọng và tĩnh lặng..."></textarea></div>
 </section>
 
-<section id="hgCameraAI" aria-label="HOANGGIA CAMERA AI V1.1">
-<div class="panel-heading"><span class="eyebrow">CAMERA &amp; LENS AI · V1.1 · VIDEO</span><span class="mini">SMART LENS FILTER</span></div>
-<label>Chế độ điều khiển<select id="hgCamMode"><option value="auto">AUTO AI — Đề xuất theo kiểu ảnh</option><option value="manual">MANUAL PRO — Tự lựa chọn</option></select></label>
-<label>01 · Kiểu ảnh mong muốn<select id="hgCamStyle"></select></label>
-<p class="hg-cam-note">Chọn kiểu ảnh trước. Hệ thống tự lọc lens theo mục đích và hệ máy. Lens có thể thuộc nhiều kiểu ảnh.</p>
-<div id="hgCamAuto" class="hg-cam-summary"></div>
-<div id="hgCamManual">
-<div class="hg-cam-grid"><label>02 · Hãng máy<select id="hgCamBrand"></select></label><label>03 · Thân máy<select id="hgCamBody"></select></label></div>
-<label>04 · Lens phù hợp<select id="hgCamLens"></select></label>
-<label class="hg-cam-check"><input id="hgCamAll" type="checkbox"> Xem tất cả lens cùng hệ máy (nâng cao)</label>
-</div>
-<div class="hg-cam-grid"><label>Khẩu độ mô phỏng<select id="hgCamAperture"><option value="auto" selected>AI tự đề xuất theo không gian</option><option>f/1.4</option><option>f/1.8</option><option>f/2.8</option><option>f/4</option><option>f/5.6</option><option>f/8</option><option>f/11</option><option>f/16</option></select></label><label>Lấy nét<select id="hgCamFocus"><option value="auto">AI tự chọn</option><option value="subject">Nét chủ thể, mờ hậu cảnh</option><option value="all" selected>Nét toàn bộ không gian</option></select></label></div>
-<label class="hg-cam-check"><input id="hgCamLock" type="checkbox" checked> Khóa góc máy và bố cục ảnh gốc</label>
-<div id="hgCamSummary" class="hg-cam-summary" role="status"></div>
-<p class="hg-cam-note">Thiết lập quang học cho prompt video, không điều khiển máy quay thật. Kiểm tra adapter với lens Tilt-Shift.</p>
-</section>
 <section class="step" id="camera"><div class="step-head"><strong>04 / MÁY QUAY · CAMERA</strong><small>BẢN THIẾT KẾ MÁY QUAY ĐIỆN ẢNH / CINEMATIC CAMERA BRIEF</small></div>
+<div class="grid2" id="hgVideoCameraEquipment" style="margin:8px 0 14px">
+<div class="field"><label>Hãng máy · Camera Brand</label><select id="hgCamBrand"></select></div>
+<div class="field"><label>Thân máy · Camera Body</label><select id="hgCamBody"></select></div>
+<div class="field"><label>Ống kính · Lens Model</label><select id="hgCamLens"></select></div>
+<div class="field"><label>Kiểu ảnh · Lens Purpose</label><select id="hgCamStyle"></select></div>
+</div>
+<p id="hgCamSummary" style="color:var(--gold2);font-size:11px;margin:0 0 12px" role="status"></p>
+<div id="hgCameraAI" hidden aria-hidden="true">
+<select id="hgCamMode"><option value="manual" selected>MANUAL PRO</option></select>
+<div id="hgCamManual"></div><div id="hgCamAuto"></div>
+<input id="hgCamAll" type="checkbox">
+<select id="hgCamAperture"><option value="auto" selected>AI tự đề xuất</option><option>f/1.4</option><option>f/1.8</option><option>f/2.8</option><option>f/4</option><option>f/5.6</option><option>f/8</option><option>f/11</option><option>f/16</option></select>
+<select id="hgCamFocus"><option value="auto" selected>AI tự chọn</option><option value="subject">Nét chủ thể</option><option value="all">Nét toàn cảnh</option></select>
+<input id="hgCamLock" type="checkbox" checked>
+</div>
+
 <div class="shots" id="cameraPresets">
 <button class="shot active" data-shot="hero"><b>HERO</b><small>35mm · Dolly-in</small></button>
 <button class="shot" data-shot="reveal"><b>REVEAL</b><small>28mm · Reveal</small></button>
@@ -881,6 +881,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
-<script type="module" src="./camera-ai.mjs?v=20261024-video-v11"></script>
+<script type="module" src="./camera-ai.mjs?v=20261024-video-inline-v12"></script>
 </body>
 </html>
