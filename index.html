@@ -426,12 +426,41 @@ hgShotTypeSelect?.addEventListener('change',()=>{
  const key=hgShotPresetForType(hgShotTypeSelect.value);
  if(!key)return;
  hgApplyCameraPreset(key,{keepShotType:true});
- document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.classList.toggle('active',b.dataset.shot===key));
+ hgSelectedShotPresets.clear();hgSelectedShotPresets.add(key);hgRenderShotPresets();
 });
-document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.onclick=()=>{
- document.querySelectorAll('#cameraPresets .shot').forEach(x=>x.classList.remove('active'));
- b.classList.add('active');hgApplyCameraPreset(b.dataset.shot);
+const hgSelectedShotPresets=new Set();
+const hgShotNames={hero:'HERO',reveal:'REVEAL',detail:'DETAIL',walk:'WALK',orbit:'ORBIT',static:'STATIC'};
+function hgShotPrompt(lang='vi'){
+ if(!hgSelectedShotPresets.size)return '';
+ const keys=Array.from(hgSelectedShotPresets);
+ const descriptions={
+  hero:['35mm · dolly-in · hero framing','35mm · tiến máy · bố cục chủ đạo'],
+  reveal:['28mm · wide reveal','28mm · mở cảnh toàn cảnh'],
+  detail:['85mm · close-up detail','85mm · đặc tả chi tiết'],
+  walk:['24mm · gimbal tracking','24mm · di chuyển gimbal'],
+  orbit:['50mm · orbit around subject','50mm · xoay quanh chủ thể'],
+  static:['35mm · locked-off shot','35mm · máy cố định']
+ };
+ return (lang==='en'?'SELECTED CAMERA SHOT PRIORITIES (combine as a shot sequence; do not execute incompatible camera movements simultaneously): ':'CÁC SHOT ƯU TIÊN ĐÃ CHỌN (phối hợp thành chuỗi cảnh, không thực hiện chuyển động mâu thuẫn đồng thời): ')+keys.map((k,i)=>(i+1)+'. '+hgShotNames[k]+' — '+descriptions[k][lang==='en'?0:1]).join('; ')+'.';
+}
+function hgRenderShotPresets(){
+ document.querySelectorAll('#cameraPresets .shot').forEach(b=>{
+  const active=hgSelectedShotPresets.has(b.dataset.shot);
+  b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));
+ });
+ const note=$('hgCameraPresetStatus');
+ if(note)note.textContent=hgSelectedShotPresets.size?'Đã chọn '+hgSelectedShotPresets.size+' shot ưu tiên: '+Array.from(hgSelectedShotPresets).map(k=>hgShotNames[k]).join(' → ')+'. Các thiết lập bên dưới phản ánh shot vừa chọn; prompt sẽ chứa toàn bộ shot ưu tiên.':'Chọn một hoặc nhiều shot ưu tiên. Các lựa chọn có thể kết hợp thành chuỗi cảnh.';
+}
+document.querySelectorAll('#cameraPresets .shot').forEach(b=>{
+ b.type='button';b.setAttribute('aria-pressed','false');
+ b.onclick=()=>{
+  const key=b.dataset.shot;
+  if(hgSelectedShotPresets.has(key))hgSelectedShotPresets.delete(key);
+  else {hgSelectedShotPresets.add(key);hgApplyCameraPreset(key);}
+  hgRenderShotPresets();
+ };
 });
+hgRenderShotPresets();
 document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sequence .card').forEach(x=>x.classList.remove('active'));b.closest('.card').classList.add('active')});
 let referenceFiles=[];
 let spatialBlueprint=null;
@@ -572,7 +601,7 @@ function buildPrompt(){
  if(d.promptLanguage==='English'){
   const warning=document.createElement('div');warning.id='englishPromptWarning';warning.hidden=true;warning.style.cssText='padding:10px;margin:10px 0;color:#e6bc79;font-size:12px';warning.setAttribute('role','status');
   document.getElementById('outputText')?.before(warning);
-  return buildEnglishPrompt(d)+(window.hgCameraAI?.getPrompt("en")?"\n\n"+window.hgCameraAI.getPrompt("en"):"");
+  return buildEnglishPrompt(d)+(window.hgCameraAI?.getPrompt("en")?"\n\n"+window.hgCameraAI.getPrompt("en"):"")+(hgShotPrompt("en")?"\n\n"+hgShotPrompt("en"):"");
  }
  const compact=items=>items.filter(x=>x!==undefined&&x!==null&&String(x).trim()&&String(x).trim()!=="Không áp dụng").map(x=>String(x).trim()).join("; ");
  const field=(name,value)=>value?name+": "+value:"";
@@ -595,7 +624,7 @@ function buildPrompt(){
   "NHIỆM VỤ: "+task,
   "RÀNG BUỘC: "+limits,
   "KẾT QUẢ: Video kiến trúc điện ảnh "+compact([d.duration,d.ratio,d.resolution,d.fps,field("Nền tảng",d.aiTool),field("Định dạng",d.outputFormat)])+"; chuyển động mượt, vật liệu chân thực, không nhấp nháy hoặc biến dạng."
- ].join("\n\n")+(window.hgCameraAI?.getPrompt("vi")?"\n\n"+window.hgCameraAI.getPrompt("vi"):"");
+ ].join("\n\n")+(window.hgCameraAI?.getPrompt("vi")?"\n\n"+window.hgCameraAI.getPrompt("vi"):"")+(hgShotPrompt("vi")?"\n\n"+hgShotPrompt("vi"):"");
 }
 function developCharacter(){
 const idea=val('characterIdea');
