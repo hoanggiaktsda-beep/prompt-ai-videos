@@ -489,6 +489,7 @@ function hgRenderShotPresets(){
  });
  const note=$('hgCameraPresetStatus');
  hgApplyDirectorConstraints();
+ if(typeof hgUpdateSequence==='function')hgUpdateSequence();
  window.hgCameraAI?.setShotPriorities?.(Array.from(hgSelectedShotPresets));
  if(note)note.textContent=hgSelectedShotPresets.size?'Đã chọn '+hgSelectedShotPresets.size+' shot ưu tiên: '+Array.from(hgSelectedShotPresets).map(k=>hgShotNames[k]).join(' → ')+'. Các thiết lập bên dưới phản ánh shot vừa chọn; prompt sẽ chứa toàn bộ shot ưu tiên.':'Chọn một hoặc nhiều shot ưu tiên. Các lựa chọn có thể kết hợp thành chuỗi cảnh.';
 }
@@ -502,7 +503,55 @@ document.querySelectorAll('#cameraPresets .shot').forEach(b=>{
  };
 });
 hgRenderShotPresets();
-document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sequence .card').forEach(x=>x.classList.remove('active'));b.closest('.card').classList.add('active')});
+const HG_SEQUENCE_PROFILES={
+ reveal:{shotPurpose:/thiết lập không gian|khám phá bố cục|chuyển vùng/i,shotAction:/tĩnh có kiểm soát|chuyển động.*máy/i,shotCamera:/dùng bản thiết kế|khóa trục|tiếp tục trục/i,shotSubject:/toàn bộ không gian|quan hệ không gian|mặt đứng/i,shotTransition:/cắt thẳng|nối theo không gian|nối chuyển động/i,shotDuration:/3s|4s|5s|6s/i,shotContinuity:/kiến trúc|trục máy|ánh sáng/i,shotRhythm:/điềm tĩnh|chậm|nhịp đều/i},
+ hero:{shotPurpose:/khoảnh khắc chủ đạo|nhấn nội thất|thương hiệu/i,shotAction:/chuyển động.*máy|tĩnh có kiểm soát/i,shotCamera:/dùng bản thiết kế|khóa trục/i,shotSubject:/đồ nội thất|toàn bộ không gian|mặt đứng/i,shotTransition:/cắt tương đồng|cắt thẳng|nối theo không gian/i,shotDuration:/3s|4s|5s/i,shotContinuity:/kiến trúc|đồ nội thất|vật liệu/i,shotRhythm:/điềm tĩnh|chậm|nhịp đều/i},
+ detail:{shotPurpose:/nhấn vật liệu|nhấn nội thất|chi tiết/i,shotAction:/tĩnh có kiểm soát|chuyển động.*máy/i,shotCamera:/dùng bản thiết kế|khóa trục/i,shotSubject:/vật liệu|design chi tiết|đồ nội thất/i,shotTransition:/nối theo vật liệu|cắt tương đồng|cắt thẳng/i,shotDuration:/3s|4s/i,shotContinuity:/vật liệu|đồ nội thất|kiến trúc/i,shotRhythm:/điềm tĩnh|chậm/i},
+ walk:{shotPurpose:/khám phá bố cục|chuyển vùng không gian|thiết lập không gian/i,shotAction:/chuyển động.*máy/i,shotCamera:/dùng bản thiết kế|tiếp tục trục|khóa trục/i,shotSubject:/quan hệ không gian|toàn bộ không gian/i,shotTransition:/nối chuyển động|nối theo không gian|cắt thẳng/i,shotDuration:/4s|5s|6s|8s/i,shotContinuity:/kiến trúc|trục máy/i,shotRhythm:/nhịp đều|chậm|điềm tĩnh/i},
+ orbit:{shotPurpose:/khoảnh khắc chủ đạo|nhấn nội thất|thương hiệu/i,shotAction:/chuyển động.*máy/i,shotCamera:/dùng bản thiết kế|khóa trục/i,shotSubject:/đồ nội thất|mặt đứng|toàn bộ không gian/i,shotTransition:/cắt tương đồng|cắt thẳng/i,shotDuration:/4s|5s|6s/i,shotContinuity:/kiến trúc|đồ nội thất|trục máy/i,shotRhythm:/nhịp đều|chậm/i},
+ static:{shotPurpose:/thiết lập không gian|chi tiết|khoảnh khắc chủ đạo/i,shotAction:/tĩnh có kiểm soát/i,shotCamera:/dùng bản thiết kế|khóa trục/i,shotSubject:/toàn bộ không gian|mặt đứng|đồ nội thất/i,shotTransition:/cắt thẳng|cắt tương đồng/i,shotDuration:/3s|4s|5s/i,shotContinuity:/kiến trúc|trục máy|vật liệu/i,shotRhythm:/điềm tĩnh|chậm/i},
+ flycam:{shotPurpose:/thiết lập không gian|khám phá bố cục|khoảnh khắc chủ đạo/i,shotAction:/chuyển động.*máy|tĩnh có kiểm soát/i,shotCamera:/dùng bản thiết kế|khóa trục/i,shotSubject:/mặt đứng|toàn bộ không gian|quan hệ không gian/i,shotTransition:/cắt thẳng|nối theo không gian|nối chuyển động/i,shotDuration:/4s|5s|6s|8s/i,shotContinuity:/kiến trúc|thời gian|ánh sáng/i,shotRhythm:/điềm tĩnh|nhịp đều|chậm/i}
+};
+const hgSeqFields=Array.from(document.querySelectorAll('#shots .shot-select'));
+const hgSeqBase=new Map(hgSeqFields.map(el=>[el,Array.from(el.options).map(o=>({o,hidden:o.hidden,disabled:o.disabled}))]));
+const hgSeqState=new Map();
+let hgActiveSequence='01';
+function hgSequenceKey(){
+ const selected=Array.from(hgSelectedShotPresets);
+ const order=['reveal','walk','detail','hero'];
+ const index=Math.max(0,Number(hgActiveSequence)-1);
+ return selected[index]||selected.find(k=>k===order[index])||selected[selected.length-1]||order[index];
+}
+function hgUpdateSequence(){
+ const key=hgSequenceKey(),rules=HG_SEQUENCE_PROFILES[key]||HG_SEQUENCE_PROFILES.reveal;
+ for(const el of hgSeqFields){
+  const regex=rules[el.dataset.field];
+  const entries=hgSeqBase.get(el)||[];
+  for(const rec of entries){
+   const valid=!regex||regex.test(rec.o.textContent+' '+rec.o.value);
+   const generic=!rec.o.value;
+   rec.o.hidden=rec.hidden||(!valid&&!generic);
+   rec.o.disabled=rec.disabled||(!valid&&!generic);
+  }
+  const validOptions=entries.map(x=>x.o).filter(o=>o.value&&!o.hidden&&!o.disabled);
+  const saved=hgSeqState.get(hgActiveSequence)?.[el.dataset.field];
+  const candidate=validOptions.find(o=>o.value===saved)||validOptions[0];
+  if(candidate)el.value=candidate.value;
+ }
+}
+function hgSaveSequence(){
+ const data={};for(const el of hgSeqFields)data[el.dataset.field]=el.value;
+ hgSeqState.set(hgActiveSequence,data);
+}
+hgSeqFields.forEach(el=>el.addEventListener('change',hgSaveSequence));
+document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{
+ hgSaveSequence();
+ hgActiveSequence=b.dataset.shotSeq;
+ document.querySelectorAll('#sequence .card').forEach(x=>x.classList.remove('active'));
+ b.closest('.card').classList.add('active');
+ hgUpdateSequence();
+});
+hgUpdateSequence();
 let referenceFiles=[];
 let spatialBlueprint=null;
 let spatialRequestVersion=0;
