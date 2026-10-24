@@ -98,6 +98,14 @@ button,input,textarea,select{touch-action:manipulation}
 <main id="workspace" role="main">
 <section class="hero"><div class="eyebrow">AI CREATIVE DIRECTOR / KIẾN TRÚC 3D</div><h1>VIDEO <em>STUDIO</em></h1><p>Thiết kế video kiến trúc theo một workflow duy nhất: Master Image → Spatial Truth → Camera → Light → Shot → Continuity → Final Prompt.</p></section>
 
+<section id="hgGlobalVideoMode" style="margin:12px 0 20px;padding:16px;border:1px solid #79653d;background:#12130f;border-radius:8px">
+<div style="font-size:11px;letter-spacing:.1em;color:#d9b978;font-weight:800;margin-bottom:12px">00 / LĨNH VỰC VIDEO · GLOBAL MODE</div>
+<div class="grid2">
+<div class="field"><label>Chọn lĩnh vực sản xuất video</label><select id="hgVideoDomain">
+<option value="architecture">KIẾN TRÚC · ARCHITECTURE</option><option value="interior">NỘI THẤT · INTERIOR</option><option value="product">SẢN PHẨM · PRODUCT</option><option value="cinema">CINEMA · ĐIỆN ẢNH</option>
+</select></div>
+<div class="field"><label>Phạm vi áp dụng</label><div id="hgVideoDomainInfo" role="status" style="padding:11px;color:#d6c399;font-size:12px">Các lựa chọn bên dưới được lọc theo lĩnh vực.</div></div>
+</div></section>
 <section class="step" id="project"><div class="step-head"><strong>01 / DỰ ÁN</strong><small>TÓM TẮT DỰ ÁN</small></div>
 
 <div class="grid2">
@@ -1002,5 +1010,63 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 <script type="module" src="./camera-ai.mjs?v=20261024-video-camera-regex-v14"></script>
+<script>
+/* HG VIDEO DOMAIN V1 — category-aware non-destructive filtering of existing controls */
+(()=>{
+const domain=document.getElementById('hgVideoDomain'),info=document.getElementById('hgVideoDomainInfo');if(!domain)return;
+const domains={
+architecture:{label:'Kiến trúc',terms:/kiến trúc|architecture|architectural|exterior|facade|mặt tiền|ngoại thất|building|landscape|cảnh quan|real estate|bất động sản|flythrough|aerial|drone|biệt thự|công trình|elevation|mặt đứng|trục kiến trúc|wide|toàn cảnh|establishing|reveal|walkthrough|virtual tour|đô thị|urban|sân vườn|cẩu|crane|tracking|dolly|static|symmetr|đối xứng|tĩnh|góc rộng|24mm|28mm|35mm|16mm|18mm|20mm|14mm|tilt|pan|sáng|tối|đèn|ánh sáng|chậm|slow|medium|nhẹ|subtle|sâu|deep|trung bình|moderate|đường dẫn|leading|khóa|locked/i},
+interior:{label:'Nội thất',terms:/nội thất|interior|phòng|room|living|dining|bed|kitchen|bath|foyer|corridor|showroom|furniture|sofa|bàn|ghế|tủ|gỗ|wood|đá|marble|vải|fabric|material|texture|luxury|minimal|contemporary|modern|japandi|wabi|tour|walkthrough|hero|detail|cận|trung|medium|reveal|orbit|dolly|tracking|static|symmetr|đối xứng|góc|angle|24mm|28mm|35mm|50mm|85mm|sáng|tối|đèn|ánh sáng|chậm|slow|nhẹ|subtle|sâu|deep|vừa|moderate|nét|focus|đường dẫn|leading|khóa|locked/i},
+product:{label:'Sản phẩm',terms:/sản phẩm|product|furniture|sofa|bàn|ghế|giường|nội thất|chi tiết|detail|close|cận|macro|texture|material|vật liệu|bề mặt|surface|craft|hoàn thiện|studio|cyclorama|commercial|quảng cáo|brand|hero|orbit|xoay|static|locked|khóa|push|dolly|pan|zoom|reflection|phản chiếu|bokeh|focus|nét|35mm|50mm|65mm|85mm|100mm|135mm|medium|trung|slow|chậm|nhẹ|subtle|mỏng|shallow|vừa|moderate|chủ thể|đối xứng|symmetr|trung tâm|center|đèn|ánh sáng/i},
+cinema:{label:'Cinema',terms:/cinema|cinematic|điện ảnh|film|movie|story|kịch bản|nhân vật|character|person|người|portrait|chân dung|commercial|quảng cáo|brand|lifestyle|editorial|music|mv|trailer|teaser|reel|tiktok|short|youtube|drama|action|hành động|narrative|đạo diễn|director|transition|chuyển cảnh|one.take|match.cut|whip|handheld|gimbal|dolly|zoom|orbit|rack.focus|reaction|pov|qua vai|over.the.shoulder|two.shot|silhouette|bokeh|wide|close|trung|cận|hero|reveal|detail|walk|static|tracking|slow|fast|chậm|nhanh|ánh sáng|light|night|day|24mm|35mm|50mm|85mm|focus|nét|góc|angle|shot/i}
+};
+const specific=['purpose','style','scene','shotType','lens','motion','framing','cameraHeight','angle','cameraSpeed','focus','depthOfField','parallax'];
+const common=/^(—|✦|hg tự đề xuất|không|none|auto|ai tự|tự động|bỏ trống|không chỉ định)/i;
+const shotTags={
+architecture:/toàn cảnh|extreme|wide|thiết lập|bird|aerial|top.down|elevation|mặt đứng|reveal|flythrough|walkthrough|architectural|kiến trúc|trục|cảnh mở|cảnh kết|khóa máy|tracking|dolly|cẩu|crane|đối xứng|góc cao|góc thấp|góc 3\/4|phối cảnh|hyperlapse|timelapse/i,
+interior:/toàn cảnh|wide|trung|medium|chi tiết|detail|hero|reveal|walk|orbit|dolly|tracking|static|locked|gimbal|góc|đối xứng|cận|close|kiến trúc|trục|phòng|room|nội thất|sofa|furniture|material|vật liệu|texture|craft|day.to.night|chuyển cảnh|mở đầu/i,
+product:/hero|product|sản phẩm|furniture|sofa|chi tiết|detail|cận|close|macro|vật liệu|texture|surface|craft|studio|orbit|xoay|static|khóa|dolly|zoom|reflection|phản chiếu|silhouette|b.roll|match.cut|chuyển nét|rack.focus|trung cảnh|medium|góc 3\/4|chính diện/i,
+cinema:/.*/
+};
+const defaults={
+architecture:{purpose:/kiến trúc|architecture/i,shotType:/toàn cảnh thiết lập/i,lens:/24mm/i,motion:/trượt ngang/i},
+interior:{purpose:/nội thất|interior/i,shotType:/trung toàn/i,lens:/35mm/i,motion:/tiến máy/i},
+product:{purpose:/product|sản phẩm/i,shotType:/sản phẩm chính diện|khung chủ đạo/i,lens:/50mm/i,motion:/xoay vòng|khóa máy/i},
+cinema:{purpose:/cinema|film|trailer|quảng cáo/i,shotType:/trung cảnh/i,lens:/50mm/i,motion:/đi gimbal|tiến máy/i}
+};
+const original=new WeakMap(),autoChosen=new WeakMap();
+function selectedOption(el){return el.options[el.selectedIndex]||null}
+function apply(){
+ const mode=domain.value,config=domains[mode];let hidden=0;
+ document.querySelectorAll('section.step select').forEach(el=>{
+  if(!original.has(el))original.set(el,Array.from(el.querySelectorAll('option')).map(o=>({node:o,disabled:o.disabled,hidden:o.hidden})));
+  const records=original.get(el),key=el.id||el.dataset.field||'';
+  const useFilter=(el.id==='shotType'||key==='purpose'||key==='scene'||key==='style');
+  for(const rec of records){
+   const o=rec.node;if(!o.isConnected)continue;
+   const text=o.textContent.trim(),value=o.value;
+   const generic=common.test(text)||!value||value==='__HG_AUTO__';
+   const allow=!useFilter||generic||(el.id==='shotType'?shotTags[mode].test(text):config.terms.test(text+' '+value));
+   o.disabled=rec.disabled||!allow;o.hidden=rec.hidden||!allow;
+   if(!allow)hidden++;
+  }
+  const current=selectedOption(el);
+  const invalid=!current||current.disabled||current.hidden||!current.value;
+  const wasAuto=autoChosen.has(el)&&autoChosen.get(el)===el.value;
+  if(invalid||wasAuto){
+   const preferred=defaults[mode][key];
+   const available=Array.from(el.options).filter(o=>!o.disabled&&!o.hidden&&o.value&&o.value!=='__HG_AUTO__');
+   const pick=(preferred&&available.find(o=>preferred.test(o.textContent)))||available[0];
+   if(pick&&el.value!==pick.value){el.value=pick.value;autoChosen.set(el,pick.value);el.dispatchEvent(new Event('change',{bubbles:true}));}
+  }
+ });
+ info.textContent='Chế độ '+config.label+': lọc mục tiêu, loại không gian, phong cách và shot; giữ các thông số kỹ thuật dùng chung. Có thể chỉnh từng mục thủ công.';
+ window.hgVideoDomain=mode;
+}
+domain.addEventListener('change',apply);
+document.addEventListener('DOMContentLoaded',apply,{once:true});
+apply();
+})();
+</script>
 </body>
 </html>
