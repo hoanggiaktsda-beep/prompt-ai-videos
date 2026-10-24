@@ -737,7 +737,7 @@ function buildPrompt(){
   "NHIỆM VỤ: "+task,
   "RÀNG BUỘC: "+limits,
   "KẾT QUẢ: Video kiến trúc điện ảnh "+compact([d.duration,d.ratio,d.resolution,d.fps,field("Nền tảng",d.aiTool),field("Định dạng",d.outputFormat)])+"; chuyển động mượt, vật liệu chân thực, không nhấp nháy hoặc biến dạng."
- ].join("\n\n")+(window.hgCameraAI?.getPrompt("vi")?"\n\n"+window.hgCameraAI.getPrompt("vi"):"")+(hgShotPrompt("vi")?"\n\n"+hgShotPrompt("vi"):"");
+ ].join("\n\n")+(window.hgCameraAI?.getPrompt("vi")?"\n\n"+window.hgCameraAI.getPrompt("vi"):"")+(hgShotPrompt("vi")?"\n\n"+hgShotPrompt("vi"):"")+"\n\n"+hgSequencePrompt("vi");
 }
 function developCharacter(){
 const idea=val('characterIdea');
