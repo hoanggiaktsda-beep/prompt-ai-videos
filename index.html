@@ -552,6 +552,29 @@ document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{
  hgUpdateSequence();
 });
 hgUpdateSequence();
+function hgSequencePrompt(lang='vi'){
+ hgSaveSequence();
+ const keys=['01','02','03','04'];
+ const shotNames={reveal:'REVEAL',hero:'HERO',detail:'DETAIL',walk:'WALK',orbit:'ORBIT',static:'STATIC',flycam:'FLYCAM'};
+ const fieldLabels={shotPurpose:'Purpose',shotAction:'Action',shotCamera:'Camera operation',shotSubject:'Subject',shotTransition:'Transition',shotDuration:'Duration',shotContinuity:'Continuity',shotRhythm:'Rhythm'};
+ const lines=keys.map((id,i)=>{
+  const data=hgSeqState.get(id)||{};
+  const chosen=Array.from(hgSelectedShotPresets);
+  const key=chosen[i]||['reveal','walk','detail','hero'][i];
+  const fields=hgSeqFields.map(el=>{
+   const value=data[el.dataset.field];
+   if(!value)return '';
+   const option=Array.from(el.options).find(o=>o.value===value);
+   const label=lang==='en'?value:(option?.textContent?.trim()||value);
+   return fieldLabels[el.dataset.field]+': '+label;
+  }).filter(Boolean).join('; ');
+  return 'SHOT '+id+' — '+(shotNames[key]||key.toUpperCase())+' | '+fields;
+ });
+ const logic=document.getElementById('sequenceLogic')?.value?.trim();
+ const direction=document.getElementById('shotDirection')?.value?.trim();
+ const intro=lang==='en'?'SHOT-BY-SHOT DIRECTOR PLAN (execute each shot separately in order; never combine incompatible camera movements in a single shot):':'KỊCH BẢN ĐẠO DIỄN THEO TỪNG SHOT (thực hiện lần lượt từng cảnh, không trộn chuyển động máy mâu thuẫn trong cùng một shot):';
+ return intro+'\n'+lines.join('\n')+(logic?'\nSequence logic: '+logic:'')+(direction?'\nDirector intention: '+direction:'');
+}
 let referenceFiles=[];
 let spatialBlueprint=null;
 let spatialRequestVersion=0;
@@ -691,7 +714,7 @@ function buildPrompt(){
  if(d.promptLanguage==='English'){
   const warning=document.createElement('div');warning.id='englishPromptWarning';warning.hidden=true;warning.style.cssText='padding:10px;margin:10px 0;color:#e6bc79;font-size:12px';warning.setAttribute('role','status');
   document.getElementById('outputText')?.before(warning);
-  return buildEnglishPrompt(d)+(window.hgCameraAI?.getPrompt("en")?"\n\n"+window.hgCameraAI.getPrompt("en"):"")+(hgShotPrompt("en")?"\n\n"+hgShotPrompt("en"):"");
+  return buildEnglishPrompt(d)+(window.hgCameraAI?.getPrompt("en")?"\n\n"+window.hgCameraAI.getPrompt("en"):"")+(hgShotPrompt("en")?"\n\n"+hgShotPrompt("en"):"")+"\n\n"+hgSequencePrompt("en");
  }
  const compact=items=>items.filter(x=>x!==undefined&&x!==null&&String(x).trim()&&String(x).trim()!=="Không áp dụng").map(x=>String(x).trim()).join("; ");
  const field=(name,value)=>value?name+": "+value:"";
