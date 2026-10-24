@@ -213,6 +213,7 @@ button,input,textarea,select{touch-action:manipulation}
 <button class="shot" data-shot="orbit"><b>ORBIT</b><small>50mm · Orbit</small></button>
 <button class="shot" data-shot="static"><b>STATIC</b><small>35mm · Locked</small></button>
 </div>
+<p id="hgCameraPresetStatus" role="status" style="color:var(--gold2);font-size:11px;margin:8px 0 12px">Chọn HERO, REVEAL, DETAIL, WALK, ORBIT hoặc STATIC để tự điền các thiết lập phù hợp bên dưới.</p>
 <div class="grid2" style="margin-top:9px">
 <div class="field"><label>01 / Loại shot · Shot Type</label><select id="shotType"><option value="">— Bỏ trống / Không chỉ định —</option><option>Toàn cảnh thiết lập / Establishing Wide</option><option>Toàn cảnh / Wide</option><option>Trung toàn / Medium Wide</option><option>Trung cảnh / Medium</option><option>Cận trung / Medium Close-up</option><option>Cận cảnh / Close-up</option><option>Siêu cận / Extreme Close-up</option><option>Chi tiết / Detail</option><option>Khung chủ đạo / Hero</option><option>Góc nhìn chủ thể / POV</option><option>Qua vai / Over-the-Shoulder</option><option>Từ trên xuống / Top-down</option><option>Toàn cảnh từ trên cao / Bird's-eye</option><option>Đối xứng / Symmetrical</option><option>Nâng cao / Elevation</option></select></div>
 <div class="field"><label>02 / Tiêu cự · Focal Length</label><select id="lens"><option value="">— Bỏ trống / Không chỉ định —</option><option>14mm · siêu rộng</option><option>16mm · siêu rộng</option><option>18mm · rộng</option><option>20mm · rộng</option><option>24mm · rộng</option><option>28mm · rộng tự nhiên</option><option selected>35mm · tiêu chuẩn điện ảnh</option><option>40mm · tự nhiên</option><option>50mm · tiêu chuẩn</option><option>65mm · chân dung nhẹ</option><option>75mm · nén nhẹ</option><option>85mm · cận cảnh</option><option>100mm · tele ngắn</option><option>135mm · tele</option><option>32mm · anamorphic</option><option>50mm · anamorphic</option><option>75mm · anamorphic</option></select></div>
@@ -303,7 +304,34 @@ document.querySelectorAll('.shot-select').forEach(s=>s.addEventListener('change'
 document.querySelectorAll('.output-select').forEach(s=>s.addEventListener('change',()=>{selections[s.dataset.field]=s.value}));
 document.querySelectorAll('#camera select').forEach(s=>s.addEventListener('change',()=>{selections[s.id]=s.value}));
 
-document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.onclick=()=>{document.querySelectorAll('#cameraPresets .shot').forEach(x=>x.classList.remove('active'));b.classList.add('active');const p=presets[b.dataset.shot];const ids={height:'cameraHeight',speed:'cameraSpeed',dof:'depthOfField'};Object.entries(p).forEach(([field,value])=>{const id=ids[field]||field;const el=$(id);if(el){el.value=value;selections[id]=value}})});
+const HG_CAMERA_PRESET_RULES={
+ hero:{shotType:['Khung chủ đạo','Trung toàn'],lens:['35mm'],cameraHeight:['Ngang tầm mắt'],angle:['Ngang tầm mắt'],motion:['Tiến máy'],cameraSpeed:['Chậm'],parallax:['Trung bình','Nhẹ'],focus:['Nét chủ thể','Nét sâu'],depthOfField:['Vừa','Trung bình'],framing:['Trung tâm','Đối xứng']},
+ reveal:{shotType:['Toàn cảnh thiết lập','Toàn cảnh'],lens:['28mm','24mm'],cameraHeight:['Ngang tầm mắt'],angle:['Ngang tầm mắt'],motion:['Lùi máy','Tiến máy'],cameraSpeed:['Chậm'],parallax:['Trung bình'],focus:['Nét sâu'],depthOfField:['Sâu'],framing:['Đường dẫn','Đối xứng']},
+ detail:{shotType:['Chi tiết','Cận cảnh'],lens:['85mm'],cameraHeight:['Ngang ngực','Ngang tầm mắt'],angle:['Góc 3/4','Ngang tầm mắt'],motion:['Tiến máy'],cameraSpeed:['Siêu chậm','Chậm'],parallax:['Nhẹ'],focus:['Nét chủ thể'],depthOfField:['Nông','Mỏng','Vừa'],framing:['Chủ thể','Quy tắc 1/3']},
+ walk:{shotType:['Toàn cảnh','Trung toàn'],lens:['24mm'],cameraHeight:['Ngang tầm mắt'],angle:['Ngang tầm mắt'],motion:['Đi gimbal','Trượt ngang','Di chuyển ngang'],cameraSpeed:['Chậm'],parallax:['Trung bình'],focus:['Nét sâu'],depthOfField:['Sâu','Vừa'],framing:['Đường dẫn']},
+ orbit:{shotType:['Khung chủ đạo','Trung cảnh'],lens:['50mm'],cameraHeight:['Ngang tầm mắt'],angle:['Góc 3/4'],motion:['Xoay vòng'],cameraSpeed:['Chậm'],parallax:['Trung bình','Mạnh'],focus:['Nét chủ thể'],depthOfField:['Vừa'],framing:['Chủ thể','Trung tâm']},
+ static:{shotType:['Đối xứng','Khung chủ đạo'],lens:['35mm'],cameraHeight:['Ngang tầm mắt'],angle:['Chính diện','Ngang tầm mắt'],motion:['Khóa máy'],cameraSpeed:['Tĩnh'],parallax:['Không','Nhẹ'],focus:['Nét sâu'],depthOfField:['Sâu'],framing:['Đối xứng','Trung tâm']}
+};
+function hgPickCameraOption(select,terms){
+ const options=Array.from(select.options).filter(o=>o.value&&o.value!=='__HG_AUTO__');
+ for(const term of terms){const found=options.find(o=>o.textContent.toLocaleLowerCase('vi').includes(term.toLocaleLowerCase('vi')));if(found)return found;}
+ return null;
+}
+function hgApplyCameraPreset(key){
+ const rules=HG_CAMERA_PRESET_RULES[key];if(!rules)return;
+ let applied=0;const unavailable=[];
+ Object.entries(rules).forEach(([id,terms])=>{
+  const control=$(id);if(!control)return;
+  const chosen=hgPickCameraOption(control,terms);
+  if(chosen){control.value=chosen.value;control.dispatchEvent(new Event('change',{bubbles:true}));applied++;}
+  else unavailable.push(id);
+ });
+ const note=$('hgCameraPresetStatus');if(note)note.textContent='HG đã đề xuất '+applied+' thiết lập theo '+key.toUpperCase()+'.'+(unavailable.length?' Chưa có lựa chọn tương ứng: '+unavailable.join(', ')+'.':'');
+}
+document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('#cameraPresets .shot').forEach(x=>x.classList.remove('active'));
+ b.classList.add('active');hgApplyCameraPreset(b.dataset.shot);
+});
 document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sequence .card').forEach(x=>x.classList.remove('active'));b.closest('.card').classList.add('active')});
 let referenceFiles=[];
 let spatialBlueprint=null;
