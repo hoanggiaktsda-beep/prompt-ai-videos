@@ -30,7 +30,8 @@ const $panel=el("hgCameraAI");
 if($panel){
  const mode=el("hgCamMode"),style=el("hgCamStyle"),brand=el("hgCamBrand"),body=el("hgCamBody"),lens=el("hgCamLens"),aperture=el("hgCamAperture"),focus=el("hgCamFocus"),lock=el("hgCamLock"),all=el("hgCamAll"),summary=el("hgCamSummary");
  STYLES.forEach(s=>style.append(opt(s[0],s[1]+" — "+s[2])));
- db.forEach(d=>brand.append(opt(d[0],d[0])));
+ brand.replaceChildren(opt("","— Chọn hãng máy —"),...db.map(d=>opt(d[0],d[0])));
+ brand.value="Sony";
  const purpose=()=>STYLES.find(s=>s[0]===style.value)||STYLES[0];
  const suggestedAperture=()=>{
    const scene=(document.getElementById("brief")?.value||"")+" "+(document.getElementById("sceneDirection")?.value||"")+" "+(document.getElementById("purpose")?.value||"");
