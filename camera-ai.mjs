@@ -129,13 +129,17 @@ if($panel){
    const oldBody=body.value,oldLens=lens.value;
    if(droneMode()){
     const manufacturer=HG_DRONES.find(x=>x[0]===brand.value);
-    const models=manufacturer?.[1]||[];
+    const modelMatchesShot=(name,key)=>{
+     const rules={hero:/Mavic|Inspire|Astro|EVO II/i,reveal:/./,detail:/Mavic 4|Inspire|Matrice|Max|X10|Astro|ANAFI USA/i,walk:/Mavic|Inspire|Air 3S|X10/i,orbit:/Mavic|Inspire|Air 3S|EVO II/i,static:/./,flycam:/./};
+     return (rules[key]||/./).test(name);
+    };
+    const models=(manufacturer?.[1]||[]).filter(x=>selectedShots.every(k=>modelMatchesShot(x[0],k)));
     body.replaceChildren(...models.map(x=>opt(x[0],brand.value+" "+x[0])));
     if(!useRecommendation&&models.some(x=>x[0]===oldBody))body.value=oldBody;
     const cameras=models.find(x=>x[0]===body.value)?.[1]||[];
     lens.replaceChildren(...cameras.map(x=>opt(x,x)));
     if(!useRecommendation&&cameras.includes(oldLens))lens.value=oldLens;
-    summary.textContent="FLYCAM "+HG_DRONE_CATALOG_YEAR+" · "+brand.value+" "+body.value+" · "+lens.value+" · "+(/Inspire|Astro/.test(body.value)?"Ống kính theo cấu hình máy":"Camera tích hợp, không thay lens vật lý");
+    summary.textContent=(models.length?"FLYCAM ":"Không có mẫu hỗ trợ toàn bộ shot đã chọn · FLYCAM ")+HG_DRONE_CATALOG_YEAR+" · "+brand.value+" "+body.value+" · "+lens.value+" · "+(/Inspire|Astro/.test(body.value)?"Ống kính theo cấu hình máy":"Camera tích hợp, không thay lens vật lý");
     el("hgCamManual").hidden=mode.value==="auto";
     el("hgCamAuto").hidden=mode.value!=="auto";
     el("hgCamAuto").textContent=summary.textContent;
