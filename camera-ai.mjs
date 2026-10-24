@@ -33,6 +33,38 @@ if($panel){
  brand.replaceChildren(opt("","— Chọn hãng máy —"),...db.map(d=>opt(d[0],d[0])));
  brand.value="Sony";
  const purpose=()=>STYLES.find(s=>s[0]===style.value)||STYLES[0];
+ const domain=el("hgVideoDomain");
+ const categoryStyle={architecture:"architecture",interior:"interior",product:"furniture",cinema:"cinematic"};
+ const bodyRank={
+  architecture:/A7R|R5|Z8|Z9|GFX|X2D|IQ4|SL3/i,
+  interior:/A7R|R5|Z8|GFX|X2D|SL3/i,
+  product:/A7R|R5|Z8|GFX|X2D|IQ4|SL3/i,
+  cinema:/A7S|A1|R5 C|R5 Mark|Z6 III|Z8|SL2-S|SL3-S/i
+ };
+ const recommendedBrands={
+  architecture:["Fujifilm","Sony","Canon","Nikon","Hasselblad","Leica","Phase One"],
+  interior:["Sony","Canon","Nikon","Fujifilm","Hasselblad","Leica","Phase One"],
+  product:["Hasselblad","Fujifilm","Sony","Canon","Nikon","Phase One","Leica"],
+  cinema:["Sony","Canon","Nikon","Leica","Fujifilm","Hasselblad","Phase One"]
+ };
+ let lastDomain="";
+ const applyDomain=()=>{
+  const domainKey=domain?.value||"interior";
+  if(domainKey===lastDomain)return;
+  lastDomain=domainKey;
+  const desired=categoryStyle[domainKey]||"interior";
+  style.value=desired;
+  const brands=recommendedBrands[domainKey]||recommendedBrands.interior;
+  const oldBrand=brand.value;
+  brand.replaceChildren(...brands.map(name=>opt(name,name)));
+  brand.value=brands.includes(oldBrand)?oldBrand:brands[0];
+  const d=current();
+  const recommended=d[2].find(x=>bodyRank[domainKey]?.test(x));
+  if(recommended)body.dataset.hgPreferred=recommended;
+  all.checked=false;
+  refresh(true);
+ };
+
  const suggestedAperture=()=>{
    const scene=(document.getElementById("brief")?.value||"")+" "+(document.getElementById("sceneDirection")?.value||"")+" "+(document.getElementById("purpose")?.value||"");
    const normalized=scene.toLocaleLowerCase("vi");
@@ -50,19 +82,21 @@ if($panel){
  const resolvedAperture=()=>aperture.value==="auto"?suggestedAperture().value:aperture.value;
 
  const current=()=>db.find(d=>d[0]===brand.value)||db[0];
- const refresh=()=>{
+ function refresh(useRecommendation=false){
    const d=current(),oldBody=body.value,oldLens=lens.value;
    body.replaceChildren(...d[2].map(x=>opt(x,d[0]+" "+x)));
-   if(d[2].includes(oldBody))body.value=oldBody;
+   if(d[2].includes(oldBody)&&!useRecommendation)body.value=oldBody;
+   else if(useRecommendation&&d[2].includes(body.dataset.hgPreferred||""))body.value=body.dataset.hgPreferred;
    const filtered=d[3].filter(x=>all.checked||x[1].split(" ").includes(style.value));
    lens.replaceChildren(...filtered.map(x=>opt(x[0],d[0]+" "+x[0])));
-   if(filtered.some(x=>x[0]===oldLens))lens.value=oldLens;
+   if(filtered.some(x=>x[0]===oldLens)&&!useRecommendation)lens.value=oldLens;
    summary.textContent=(mode.value==="auto"?"AI đề xuất: ":"Đang chọn: ")+d[0]+" "+body.value+" · "+d[0]+" "+(lens.value||"Chưa có lens phù hợp")+" · "+resolvedAperture()+(aperture.value==="auto"?" (AI tự đề xuất: "+suggestedAperture().reason+")":"")+". "+purpose()[3]+".";
    el("hgCamManual").hidden=mode.value==="auto";
    el("hgCamAuto").hidden=mode.value!=="auto";
    el("hgCamAuto").textContent="Gợi ý theo mục đích: "+purpose()[3]+". "+d[0]+" "+body.value+" · "+(lens.value||"Chưa có lens")+". Có thể chuyển MANUAL PRO để tùy chỉnh.";
- };
- [mode,style,brand,body,lens,aperture,focus,lock,all].forEach(n=>n.addEventListener("change",refresh));
+ }
+ [mode,style,brand,body,lens,aperture,focus,lock,all].forEach(n=>n.addEventListener("change",()=>refresh()));
+ domain?.addEventListener("change",applyDomain);
  window.hgCameraAI={
   getSnapshot:()=>({mode:mode.value,style:style.value,brand:brand.value,body:body.value,lens:lens.value,aperture:aperture.value,resolvedAperture:resolvedAperture(),focus:focus.value,lock:lock.checked,showAll:all.checked}),
   restore(v){if(!v||typeof v!=="object")return;for(const [n,k] of [[mode,"mode"],[style,"style"],[brand,"brand"]])if(typeof v[k]==="string"&&[...n.options].some(o=>o.value===v[k]))n.value=v[k];refresh();for(const [n,k] of [[body,"body"],[lens,"lens"],[aperture,"aperture"],[focus,"focus"]])if(typeof v[k]==="string"&&[...n.options].some(o=>o.value===v[k]))n.value=v[k];lock.checked=v.lock!==false;all.checked=v.showAll===true;refresh()},
@@ -76,5 +110,5 @@ if($panel){
    return lang==="en"?en:"THIẾT LẬP CAMERA AI V1.1 (mô phỏng nhiếp ảnh): "+s[1]+". Thân máy: "+d[0]+" "+body.value+" (ngàm "+d[1]+"). Ống kính: "+d[0]+" "+lens.value+". Khẩu độ mục tiêu: "+resolvedAperture()+(aperture.value==="auto"?" (AI tự đề xuất: "+suggestedAperture().reason+")":"")+" (giới hạn theo thông số thực của lens). Lấy nét: "+({auto:"AI tự chọn chủ thể",subject:"nét chủ thể, mờ hậu cảnh",all:"nét toàn bộ không gian"}[focus.value])+". "+(lock.checked?"Khóa góc nhìn, bố cục, hình học, đường đứng và tỷ lệ nội thất.":"Chỉ thay góc nhìn khi có yêu cầu; bảo toàn kiến trúc và tỷ lệ nội thất.")+" Đây là mô phỏng quang học, không phải ảnh chụp bằng thiết bị thật.";
   }
  };
- refresh();
+ if(domain)applyDomain();else refresh();
 }
