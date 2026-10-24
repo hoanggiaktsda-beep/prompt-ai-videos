@@ -502,7 +502,7 @@ document.querySelectorAll('#cameraPresets .shot').forEach(b=>{
   hgRenderShotPresets();
  };
 });
-hgRenderShotPresets();
+// Initialize after the sequence controls are declared to avoid TDZ runtime errors.
 const HG_SEQUENCE_PROFILES={
  reveal:{shotPurpose:/thiết lập không gian|khám phá bố cục|chuyển vùng/i,shotAction:/tĩnh có kiểm soát|chuyển động.*máy/i,shotCamera:/dùng bản thiết kế|khóa trục|tiếp tục trục/i,shotSubject:/toàn bộ không gian|quan hệ không gian|mặt đứng/i,shotTransition:/cắt thẳng|nối theo không gian|nối chuyển động/i,shotDuration:/3s|4s|5s|6s/i,shotContinuity:/kiến trúc|trục máy|ánh sáng/i,shotRhythm:/điềm tĩnh|chậm|nhịp đều/i},
  hero:{shotPurpose:/khoảnh khắc chủ đạo|nhấn nội thất|thương hiệu/i,shotAction:/chuyển động.*máy|tĩnh có kiểm soát/i,shotCamera:/dùng bản thiết kế|khóa trục/i,shotSubject:/đồ nội thất|toàn bộ không gian|mặt đứng/i,shotTransition:/cắt tương đồng|cắt thẳng|nối theo không gian/i,shotDuration:/3s|4s|5s/i,shotContinuity:/kiến trúc|đồ nội thất|vật liệu/i,shotRhythm:/điềm tĩnh|chậm|nhịp đều/i},
@@ -558,6 +558,7 @@ document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{
  hgUpdateSequence();
 });
 hgUpdateSequence();
+hgRenderShotPresets();
 function hgSequencePrompt(lang='vi'){
  hgSaveSequence();
  const keys=['01','02','03','04'];
