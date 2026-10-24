@@ -1083,7 +1083,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   for(const term of terms){const o=opts.find(x=>x.textContent.toLowerCase().includes(term.toLowerCase()));if(o)return o;}
   return null;
  }
- const sections=['project','image','scene','camera','lighting','shots','output'];
+ const sections=['project','scene','camera','lighting','shots','output'];
  sections.forEach((id,index)=>{
   const section=document.getElementById(id);if(!section)return;
   const head=section.querySelector('.step-head');if(!head)return;
