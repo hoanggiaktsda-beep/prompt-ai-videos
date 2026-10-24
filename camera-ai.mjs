@@ -23,6 +23,9 @@ const db=[
 ["Phase One","XF",["XF IQ4 150MP","XF IQ4 100MP"],[
 ["Schneider Kreuznach 35mm LS f/3.5","interior architecture"],["Schneider Kreuznach 55mm LS f/2.8","interior furniture"],["Schneider Kreuznach 80mm LS f/2.8","furniture cinematic"],["Schneider Kreuznach 120mm LS f/4 Macro","macro"],["Schneider Kreuznach 150mm LS f/2.8","bokeh furniture"]]]
 ];
+
+const HG_DRONE_CATALOG_YEAR=2026;
+const HG_DRONES=[["DJI",[["Mavic 4 Pro",["28mm wide","70mm medium tele","168mm tele"]],["Inspire 3 X9-8K Air",["DL 18mm","DL 24mm","DL 35mm","DL 50mm","DL 75mm"]],["Matrice 4E",["24mm wide","70mm medium tele","168mm tele"]],["Matrice 4T",["24mm wide","70mm medium tele","168mm tele","thermal"]],["Air 3S",["24mm wide","70mm medium tele"]]]],["Autel Robotics",[["EVO II Pro V3",["29mm wide"]],["EVO Max 4T",["wide","zoom","thermal"]]]],["Skydio",[["X10",["wide","narrow","tele","thermal"]]]],["Freefly Systems",[["Astro Sony ILX-LR1",["Sony 24mm","Sony 35mm","Sony 50mm"]]]],["Parrot",[["ANAFI Ai",["integrated wide"]],["ANAFI USA",["wide","zoom","thermal"]]]],["Yuneec",[["H850-RTK E90X",["E90X wide"]]]]];
 const el=id=>document.getElementById(id);
 const make=(tag,txt)=>{const n=document.createElement(tag);if(txt)n.textContent=txt;return n};
 const opt=(v,t)=>{const n=make("option",t);n.value=v;return n};
@@ -57,6 +60,15 @@ if($panel){
   static:{styles:["architecture","interior","furniture"],mm:[14,85],body:/A7R|R5|Z8|Z9|GFX|X2D|IQ4|SL3/i}
  };
  let selectedShots=[];
+ const droneMode=()=>selectedShots.includes("flycam");
+ const droneBrands=()=>HG_DRONES.map(x=>x[0]);
+ const setEquipmentBrands=()=>{
+  const names=droneMode()?droneBrands():(recommendedBrands[domain?.value]||recommendedBrands.interior);
+  const old=brand.value;
+  brand.replaceChildren(...names.map(x=>opt(x,x)));
+  brand.value=names.includes(old)?old:names[0];
+ };
+
  const lensRange=name=>{
   const nums=(name.match(/\d+(?:\.\d+)?/g)||[]).map(Number);
   // Strip aperture numbers by extracting focal length before f/F when possible.
@@ -76,7 +88,7 @@ if($panel){
  const updateShotSelection=keys=>{
   selectedShots=Array.isArray(keys)?keys.filter(k=>shotProfiles[k]):[];
   style.value=selectedShots.length?recommendedStyle():(categoryStyle[domain?.value]||"interior");
-  all.checked=false;refresh(true);
+  all.checked=false;setEquipmentBrands();refresh(true);
  };
  let lastDomain="";
  const applyDomain=()=>{
@@ -85,7 +97,7 @@ if($panel){
   lastDomain=domainKey;
   const desired=categoryStyle[domainKey]||"interior";
   style.value=desired;
-  const brands=recommendedBrands[domainKey]||recommendedBrands.interior;
+  const brands=droneMode()?droneBrands():(recommendedBrands[domainKey]||recommendedBrands.interior);
   const oldBrand=brand.value;
   brand.replaceChildren(...brands.map(name=>opt(name,name)));
   brand.value=brands.includes(oldBrand)?oldBrand:brands[0];
@@ -114,7 +126,22 @@ if($panel){
 
  const current=()=>db.find(d=>d[0]===brand.value)||db[0];
  function refresh(useRecommendation=false){
-   const d=current(),oldBody=body.value,oldLens=lens.value;
+   const oldBody=body.value,oldLens=lens.value;
+   if(droneMode()){
+    const manufacturer=HG_DRONES.find(x=>x[0]===brand.value);
+    const models=manufacturer?.[1]||[];
+    body.replaceChildren(...models.map(x=>opt(x[0],brand.value+" "+x[0])));
+    if(!useRecommendation&&models.some(x=>x[0]===oldBody))body.value=oldBody;
+    const cameras=models.find(x=>x[0]===body.value)?.[1]||[];
+    lens.replaceChildren(...cameras.map(x=>opt(x,x)));
+    if(!useRecommendation&&cameras.includes(oldLens))lens.value=oldLens;
+    summary.textContent="FLYCAM "+HG_DRONE_CATALOG_YEAR+" · "+brand.value+" "+body.value+" · "+lens.value+" · "+(/Inspire|Astro/.test(body.value)?"Ống kính theo cấu hình máy":"Camera tích hợp, không thay lens vật lý");
+    el("hgCamManual").hidden=mode.value==="auto";
+    el("hgCamAuto").hidden=mode.value!=="auto";
+    el("hgCamAuto").textContent=summary.textContent;
+    return;
+   }
+   const d=current();
    const bodies=d[2].filter(x=>!selectedShots.length||selectedShots.some(k=>bodyFitsShot(x,k)));
    const availableBodies=bodies.length?bodies:d[2];
    body.replaceChildren(...availableBodies.map(x=>opt(x,d[0]+" "+x)));
@@ -128,7 +155,9 @@ if($panel){
    el("hgCamAuto").hidden=mode.value!=="auto";
    el("hgCamAuto").textContent="Gợi ý theo mục đích: "+purpose()[3]+". "+d[0]+" "+body.value+" · "+(lens.value||"Chưa có lens")+". Có thể chuyển MANUAL PRO để tùy chỉnh.";
  }
- [mode,style,brand,body,lens,aperture,focus,lock,all].forEach(n=>n.addEventListener("change",()=>refresh()));
+ [mode,style,lens,aperture,focus,lock,all].forEach(n=>n.addEventListener("change",()=>refresh()));
+ brand.addEventListener("change",()=>refresh(true));
+ body.addEventListener("change",()=>refresh(true));
  domain?.addEventListener("change",applyDomain);
  window.hgCameraAI={
   getSnapshot:()=>({mode:mode.value,style:style.value,brand:brand.value,body:body.value,lens:lens.value,aperture:aperture.value,resolvedAperture:resolvedAperture(),focus:focus.value,lock:lock.checked,showAll:all.checked}),
@@ -136,6 +165,7 @@ if($panel){
   setShotPriorities:keys=>updateShotSelection(keys),
   reset(){mode.value="auto";style.value="interior";brand.value="Sony";aperture.value="auto";focus.value="all";lock.checked=true;all.checked=false;refresh()},
   getPrompt(lang="vi"){
+   if(droneMode())return body.value&&lens.value?(lang==="en"?"Aerial drone equipment: ":"Thiết bị flycam: ")+brand.value+" "+body.value+"; "+lens.value+".":"";
    const s=purpose(),d=current(),chosen=d[3].find(x=>x[0]===lens.value);
    if(!chosen)return "";
    const focusText={auto:"AI-selected subject focus",subject:"sharp main subject with softly blurred background",all:"deep focus across the scene"}[focus.value];
