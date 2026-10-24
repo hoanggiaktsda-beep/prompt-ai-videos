@@ -530,12 +530,15 @@ function hgUpdateSequence(){
   for(const rec of entries){
    const valid=!regex||regex.test(rec.o.textContent+' '+rec.o.value);
    const generic=!rec.o.value;
-   rec.o.hidden=rec.hidden||(!valid&&!generic);
-   rec.o.disabled=rec.disabled||(!valid&&!generic);
+   // Recommendations are advisory: keep every option selectable manually.
+   rec.o.hidden=rec.hidden;
+   rec.o.disabled=rec.disabled;
+   rec.o.dataset.hgRecommended=String(valid||generic);
   }
   const validOptions=entries.map(x=>x.o).filter(o=>o.value&&!o.hidden&&!o.disabled);
   const saved=hgSeqState.get(hgActiveSequence)?.[el.dataset.field];
-  const candidate=validOptions.find(o=>o.value===saved)||validOptions[0];
+  const current=el.value;
+  const candidate=validOptions.find(o=>o.value===saved)||validOptions.find(o=>o.value===current)||validOptions[0];
   if(candidate)el.value=candidate.value;
  }
 }
@@ -543,7 +546,10 @@ function hgSaveSequence(){
  const data={};for(const el of hgSeqFields)data[el.dataset.field]=el.value;
  hgSeqState.set(hgActiveSequence,data);
 }
-hgSeqFields.forEach(el=>el.addEventListener('change',hgSaveSequence));
+hgSeqFields.forEach(el=>el.addEventListener('change',()=>{
+ hgSaveSequence();
+ // User overrides remain available; suggestions never lock the dropdown.
+}));
 document.querySelectorAll('[data-shot-seq]').forEach(b=>b.onclick=()=>{
  hgSaveSequence();
  hgActiveSequence=b.dataset.shotSeq;
