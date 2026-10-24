@@ -40,7 +40,7 @@ if($panel){
    const target=focus.value==="subject"?"f/2.8":focus.value==="all"?"f/8":({bokeh:"f/1.8",macro:"f/8",architecture:"f/8",interior:"f/8",furniture:"f/5.6",cinematic:"f/2.8"}[kind]||"f/5.6");
    const chosen=db.find(d=>d[0]===brand.value)?.[3].find(x=>x[0]===lens.value);
    const raw=chosen?.[0]||"";
-   const m=raw.match(/(?:f\\/?|F)(\\d+(?:\\.\\d+)?)/);
+   const m=raw.match(new RegExp("[fF]\\/?([0-9]+(?:\\.[0-9]+)?)"));
    const min=m?Number(m[1]):2.8;
    const selected=Math.max(min,Number(target.slice(2)));
    const allowed=[1.4,1.8,2,2.8,4,5.6,8,11,16];
