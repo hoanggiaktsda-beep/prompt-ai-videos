@@ -127,12 +127,12 @@ button,input,textarea,select{touch-action:manipulation}
 <label class="drop" id="drop"><input id="ref" type="file" accept="image/*" multiple><div><strong>THẢ ẢNH THAM CHIẾU VÀO ĐÂY</strong><small id="uploadHint">1 ảnh: AI phân tích và phát triển · Nhiều ảnh: AI đối chiếu và bám theo toàn bộ reference set</small><div class="actions"><button class="btn" type="button" id="pick">CHỌN ẢNH</button></div></div></label>
 <div class="preview" id="preview"></div><div class="count" id="count">0 / 0 ẢNH THAM CHIẾU</div>
 <div class="spatial-panel" id="spatialPanel">
-  <div class="spatial-head"><strong>SPATIAL INTELLIGENCE · VISION AI</strong><span class="spatial-status" id="spatialStatus">CHƯA KẾT NỐI BACKEND</span></div>
+  <div class="spatial-head"><strong>SPATIAL INTELLIGENCE · VISION AI</strong><span class="spatial-status" id="spatialStatus">CẦN BACKEND ĐỂ NHẬN DIỆN</span></div>
   <div class="spatial-grid">
     <input id="backendUrl" type="url" placeholder="Backend URL · ví dụ https://your-worker.workers.dev">
     <button class="btn ai" id="analyzeSpatial" type="button">PHÂN TÍCH KHÔNG GIAN</button>
   </div>
-  <div class="note">Ảnh được gửi tới backend đã cấu hình để Vision AI phân tích. API key không nằm trong GitHub Pages.</div>
+  <div class="note">Tải ảnh lên: xem trước và đưa tham chiếu vào prompt ngay trên trình duyệt. Nhận diện nội dung ảnh bằng Vision AI chỉ hoạt động khi có backend HTTPS hỗ trợ /analyze-spatial. API key không đặt trên GitHub Pages.</div>
   <div class="spatial-actions">
     <span class="spatial-badge" id="spatialBadge">SPATIAL BLUEPRINT: CHƯA CÓ</span>
     <button class="btn" id="applyBlueprint" type="button" disabled>ĐƯA BLUEPRINT VÀO PROMPT</button>
@@ -593,7 +593,7 @@ async function analyzeSpatial(){
   showSpatialError('');
   if(!referenceFiles.length){showSpatialError('Hãy thêm ít nhất 1 ảnh tham chiếu trước.');return}
   const endpoint=getBackendUrl();
-  if(!endpoint){showSpatialError('Chưa có Backend URL. Hãy nhập URL backend Vision AI rồi bấm lại.');return}
+  if(!endpoint){setSpatialStatus('CHƯA CẤU HÌNH VISION AI');showSpatialError('Ảnh đã được tải lên, nhưng chưa thể nhận diện bằng AI: cần backend HTTPS có API /analyze-spatial. Có thể tiếp tục tạo prompt dùng ảnh tham chiếu mà không cần backend.');return}
   if(!/^https:\/\/[^\s/?#]+/i.test(endpoint)){showSpatialError('Backend phải sử dụng địa chỉ HTTPS hợp lệ.');return}
   const requestVersion=++spatialRequestVersion;
   removeAppliedSpatialBlueprint();
@@ -659,8 +659,10 @@ function setReferences(files){
   if($('applyBlueprint')){$('applyBlueprint').disabled=true;$('applyBlueprint').textContent='ĐƯA BLUEPRINT VÀO PROMPT'}
   if($('spatialBadge'))$('spatialBadge').textContent='SPATIAL BLUEPRINT: CHƯA CÓ';
   const button=$('analyzeSpatial');if(button){button.disabled=false;button.textContent='PHÂN TÍCH KHÔNG GIAN'}
-  referenceFiles=Array.from(files||[]).filter(f=>f.type.startsWith('image/')).slice(0,12);
+  referenceFiles=Array.from(files||[]).filter(f=>f.type.startsWith('image/')||/\.(png|jpe?g|webp|gif|avif|heic)$/i.test(f.name)).slice(0,12);
   renderReferences();
+  setSpatialStatus(referenceFiles.length?'ẢNH ĐÃ TẢI · CHƯA PHÂN TÍCH AI':'CHƯA CÓ ẢNH');
+  showSpatialError(referenceFiles.length?'Đã nhận '+referenceFiles.length+' ảnh tham chiếu. Có thể dùng ảnh trong prompt ngay. Để AI nhận diện không gian, hãy kết nối backend Vision AI.':'');
 }
 $('ref').onchange=e=>setReferences(e.target.files);
 $('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('drag')};
