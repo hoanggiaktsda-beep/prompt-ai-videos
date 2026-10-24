@@ -317,10 +317,11 @@ function hgPickCameraOption(select,terms){
  for(const term of terms){const found=options.find(o=>o.textContent.toLocaleLowerCase('vi').includes(term.toLocaleLowerCase('vi')));if(found)return found;}
  return null;
 }
-function hgApplyCameraPreset(key){
+function hgApplyCameraPreset(key,options={}){
  const rules=HG_CAMERA_PRESET_RULES[key];if(!rules)return;
  let applied=0;const unavailable=[];
  Object.entries(rules).forEach(([id,terms])=>{
+  if(options.keepShotType&&id==="shotType")return;
   const control=$(id);if(!control)return;
   const chosen=hgPickCameraOption(control,terms);
   if(chosen){control.value=chosen.value;control.dispatchEvent(new Event('change',{bubbles:true}));applied++;}
@@ -328,6 +329,21 @@ function hgApplyCameraPreset(key){
  });
  const note=$('hgCameraPresetStatus');if(note)note.textContent='HG đã đề xuất '+applied+' thiết lập theo '+key.toUpperCase()+'.'+(unavailable.length?' Chưa có lựa chọn tương ứng: '+unavailable.join(', ')+'.':'');
 }
+const HG_SHOT_TYPE_MAP={
+ 'Toàn cảnh thiết lập':'reveal','Toàn cảnh /':'reveal','Trung toàn':'walk','Trung cảnh /':'orbit','Cận trung':'detail','Cận cảnh /':'detail','Siêu cận':'detail','Chi tiết /':'detail','Khung chủ đạo':'hero','Góc nhìn chủ thể':'walk','Qua vai':'detail','Từ trên xuống':'static','Toàn cảnh từ trên cao':'reveal','Đối xứng':'static','Nâng cao':'reveal'
+};
+function hgShotPresetForType(value){
+ const text=String(value||'');
+ for(const [label,key] of Object.entries(HG_SHOT_TYPE_MAP))if(text.startsWith(label))return key;
+ return null;
+}
+const hgShotTypeSelect=$('shotType');
+hgShotTypeSelect?.addEventListener('change',()=>{
+ const key=hgShotPresetForType(hgShotTypeSelect.value);
+ if(!key)return;
+ hgApplyCameraPreset(key,{keepShotType:true});
+ document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.classList.toggle('active',b.dataset.shot===key));
+});
 document.querySelectorAll('#cameraPresets .shot').forEach(b=>b.onclick=()=>{
  document.querySelectorAll('#cameraPresets .shot').forEach(x=>x.classList.remove('active'));
  b.classList.add('active');hgApplyCameraPreset(b.dataset.shot);
