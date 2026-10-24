@@ -450,7 +450,7 @@ function hgRenderShotPresets(){
  });
  const note=$('hgCameraPresetStatus');
  window.hgCameraAI?.setShotPriorities?.(Array.from(hgSelectedShotPresets));
- if(note)note.textContent=hgSelectedShotPresets.size?'Đã chọn +hgSelectedShotPresets.size+' shot ưu tiên: '+Array.from(hgSelectedShotPresets).map(k=>hgShotNames[k]).join(' → ')+'. Các thiết lập bên dưới phản ánh shot vừa chọn; prompt sẽ chứa toàn bộ shot ưu tiên.':'Chọn một hoặc nhiều shot ưu tiên. Các lựa chọn có thể kết hợp thành chuỗi cảnh.';
+ if(note)note.textContent=hgSelectedShotPresets.size?'Đã chọn '+hgSelectedShotPresets.size+' shot ưu tiên: '+Array.from(hgSelectedShotPresets).map(k=>hgShotNames[k]).join(' → ')+'. Các thiết lập bên dưới phản ánh shot vừa chọn; prompt sẽ chứa toàn bộ shot ưu tiên.':'Chọn một hoặc nhiều shot ưu tiên. Các lựa chọn có thể kết hợp thành chuỗi cảnh.';
 }
 document.querySelectorAll('#cameraPresets .shot').forEach(b=>{
  b.type='button';b.setAttribute('aria-pressed','false');
