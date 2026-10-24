@@ -47,6 +47,36 @@ if($panel){
   product:["Hasselblad","Fujifilm","Sony","Canon","Nikon","Phase One","Leica"],
   cinema:["Sony","Canon","Nikon","Leica","Fujifilm","Hasselblad","Phase One"]
  };
+ const shotProfiles={
+  hero:{styles:["furniture","cinematic","interior"],mm:[24,85],body:/A7R|A1|R5|Z8|Z9|GFX|X2D|SL3|IQ4/i},
+  reveal:{styles:["architecture","interior","cinematic"],mm:[10,40],body:/A7R|A1|R5|Z8|Z9|GFX|X2D|SL3|IQ4/i},
+  detail:{styles:["macro","furniture","bokeh"],mm:[50,200],body:/A7R|R5|Z8|Z9|GFX|X2D|IQ4|SL3/i},
+  walk:{styles:["interior","architecture","cinematic"],mm:[14,40],body:/A7S|A1|A7 IV|R5 C|R5 Mark|R6|Z6|Z8|Z9|SL3-S|SL2-S|GFX100 II/i},
+  orbit:{styles:["furniture","cinematic","bokeh"],mm:[24,105],body:/A7S|A1|A7 IV|R5 C|R5 Mark|R6|Z6|Z8|Z9|SL3-S|SL2-S|GFX100 II/i},
+  static:{styles:["architecture","interior","furniture"],mm:[14,85],body:/A7R|R5|Z8|Z9|GFX|X2D|IQ4|SL3/i}
+ };
+ let selectedShots=[];
+ const lensRange=name=>{
+  const nums=(name.match(/\d+(?:\.\d+)?/g)||[]).map(Number);
+  // Strip aperture numbers by extracting focal length before f/F when possible.
+  const focal=name.split(/\s[fF]\s*\/?\d|\sF\d/)[0];
+  const values=(focal.match(/\d+(?:\.\d+)?/g)||[]).map(Number).filter(n=>n>=10&&n<=400);
+  return values.length?[Math.min(...values),Math.max(...values)]:[0,0];
+ };
+ const lensFitsShot=(entry,key)=>{
+  const profile=shotProfiles[key];if(!profile)return true;
+  const [lo,hi]=lensRange(entry[0]);
+  const focalMatch=lo>0&&hi>=profile.mm[0]&&lo<=profile.mm[1];
+  const tagMatch=entry[1].split(" ").some(tag=>profile.styles.includes(tag));
+  return focalMatch&&tagMatch;
+ };
+ const bodyFitsShot=(name,key)=>!shotProfiles[key]||shotProfiles[key].body.test(name);
+ const recommendedStyle=()=>selectedShots.length?(shotProfiles[selectedShots.at(-1)]?.styles[0]||style.value):style.value;
+ const updateShotSelection=keys=>{
+  selectedShots=Array.isArray(keys)?keys.filter(k=>shotProfiles[k]):[];
+  style.value=selectedShots.length?recommendedStyle():(categoryStyle[domain?.value]||"interior");
+  all.checked=false;refresh(true);
+ };
  let lastDomain="";
  const applyDomain=()=>{
   const domainKey=domain?.value||"interior";
@@ -84,10 +114,12 @@ if($panel){
  const current=()=>db.find(d=>d[0]===brand.value)||db[0];
  function refresh(useRecommendation=false){
    const d=current(),oldBody=body.value,oldLens=lens.value;
-   body.replaceChildren(...d[2].map(x=>opt(x,d[0]+" "+x)));
-   if(d[2].includes(oldBody)&&!useRecommendation)body.value=oldBody;
-   else if(useRecommendation&&d[2].includes(body.dataset.hgPreferred||""))body.value=body.dataset.hgPreferred;
-   const filtered=d[3].filter(x=>all.checked||x[1].split(" ").includes(style.value));
+   const bodies=d[2].filter(x=>!selectedShots.length||selectedShots.some(k=>bodyFitsShot(x,k)));
+   const availableBodies=bodies.length?bodies:d[2];
+   body.replaceChildren(...availableBodies.map(x=>opt(x,d[0]+" "+x)));
+   if(availableBodies.includes(oldBody)&&!useRecommendation)body.value=oldBody;
+   else if(useRecommendation){const preferred=availableBodies.find(x=>bodyRank[domain?.value]?.test(x));if(preferred)body.value=preferred;}
+   const filtered=d[3].filter(x=>selectedShots.length?selectedShots.some(k=>lensFitsShot(x,k)):(all.checked||x[1].split(" ").includes(style.value)));
    lens.replaceChildren(...filtered.map(x=>opt(x[0],d[0]+" "+x[0])));
    if(filtered.some(x=>x[0]===oldLens)&&!useRecommendation)lens.value=oldLens;
    summary.textContent=(mode.value==="auto"?"AI đề xuất: ":"Đang chọn: ")+d[0]+" "+body.value+" · "+d[0]+" "+(lens.value||"Chưa có lens phù hợp")+" · "+resolvedAperture()+(aperture.value==="auto"?" (AI tự đề xuất: "+suggestedAperture().reason+")":"")+". "+purpose()[3]+".";
@@ -100,6 +132,7 @@ if($panel){
  window.hgCameraAI={
   getSnapshot:()=>({mode:mode.value,style:style.value,brand:brand.value,body:body.value,lens:lens.value,aperture:aperture.value,resolvedAperture:resolvedAperture(),focus:focus.value,lock:lock.checked,showAll:all.checked}),
   restore(v){if(!v||typeof v!=="object")return;for(const [n,k] of [[mode,"mode"],[style,"style"],[brand,"brand"]])if(typeof v[k]==="string"&&[...n.options].some(o=>o.value===v[k]))n.value=v[k];refresh();for(const [n,k] of [[body,"body"],[lens,"lens"],[aperture,"aperture"],[focus,"focus"]])if(typeof v[k]==="string"&&[...n.options].some(o=>o.value===v[k]))n.value=v[k];lock.checked=v.lock!==false;all.checked=v.showAll===true;refresh()},
+  setShotPriorities:keys=>updateShotSelection(keys),
   reset(){mode.value="auto";style.value="interior";brand.value="Sony";aperture.value="auto";focus.value="all";lock.checked=true;all.checked=false;refresh()},
   getPrompt(lang="vi"){
    const s=purpose(),d=current(),chosen=d[3].find(x=>x[0]===lens.value);
