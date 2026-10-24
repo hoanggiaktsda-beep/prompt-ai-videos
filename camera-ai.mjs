@@ -48,6 +48,7 @@ if($panel){
   cinema:["Sony","Canon","Nikon","Leica","Fujifilm","Hasselblad","Phase One"]
  };
  const shotProfiles={
+  flycam:{styles:['architecture','cinematic','interior'],mm:[10,40],body:/A7S|A1|A7 IV|R5 C|R5 Mark|R6|Z6|Z8|Z9|SL3-S|GFX100 II/i},
   hero:{styles:["furniture","cinematic","interior"],mm:[24,85],body:/A7R|A1|R5|Z8|Z9|GFX|X2D|SL3|IQ4/i},
   reveal:{styles:["architecture","interior","cinematic"],mm:[10,40],body:/A7R|A1|R5|Z8|Z9|GFX|X2D|SL3|IQ4/i},
   detail:{styles:["macro","furniture","bokeh"],mm:[50,200],body:/A7R|R5|Z8|Z9|GFX|X2D|IQ4|SL3/i},
