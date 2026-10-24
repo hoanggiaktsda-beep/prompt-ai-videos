@@ -124,7 +124,7 @@ button,input,textarea,select{touch-action:manipulation}
 <div class="field"><label>01 / Chế độ tham chiếu</label><select id="referenceMode"><option value="">— Bỏ trống / Không chỉ định —</option><option value="single">Thêm 1 ảnh · AI tự tìm hiểu và phát triển</option><option value="multi">Thêm nhiều ảnh · AI bám theo hình ảnh cung cấp</option></select></div>
 <div class="field"><label>02 / Quy tắc phát triển</label><select id="referenceBehavior"><option value="">— Bỏ trống / Không chỉ định —</option><option value="interpret">Tự phân tích và phát triển ý tưởng từ ảnh</option><option value="faithful">Bám sát hình ảnh tham chiếu, chỉ phát triển phần được yêu cầu</option></select></div>
 </div>
-<label class="drop" id="drop"><input id="ref" type="file" accept="image/*" multiple><div><strong>THẢ ẢNH THAM CHIẾU VÀO ĐÂY</strong><small id="uploadHint">1 ảnh: AI phân tích và phát triển · Nhiều ảnh: AI đối chiếu và bám theo toàn bộ reference set</small><div class="actions"><button class="btn" type="button" id="pick">CHỌN ẢNH</button></div></div></label>
+<div class="drop" id="drop"><input id="ref" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif" multiple style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none" aria-label="Chọn ảnh tham chiếu"><div><strong>THẢ ẢNH THAM CHIẾU VÀO ĐÂY</strong><small id="uploadHint">1 ảnh: AI phân tích và phát triển · Nhiều ảnh: AI đối chiếu và bám theo toàn bộ reference set</small><div class="actions"><button class="btn" type="button" id="pick">CHỌN ẢNH</button></div></div></div>
 <div class="preview" id="preview"></div><div class="count" id="count">0 / 0 ẢNH THAM CHIẾU</div>
 <div class="spatial-panel" id="spatialPanel">
   <div class="spatial-head"><strong>SPATIAL INTELLIGENCE · VISION AI</strong><span class="spatial-status" id="spatialStatus">CẦN BACKEND ĐỂ NHẬN DIỆN</span></div>
@@ -639,14 +639,14 @@ function applySpatialToPrompt(){
   $('progress').style.width='75%';
 }
 
-$('pick').onclick=()=>$('ref').click();
+$('pick').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();$('ref').click()});
 function renderReferences(){
 referenceObjectUrls.forEach(url=>URL.revokeObjectURL(url));
 referenceObjectUrls=[];
 const mode=referenceFiles.length===1?'single':referenceFiles.length>1?'multi':'';
 if(mode && !$('referenceMode').value)$('referenceMode').value=mode;
 $('preview').innerHTML='';
-referenceFiles.forEach((file,index)=>{const url=URL.createObjectURL(file);referenceObjectUrls.push(url);const img=document.createElement('img');img.src=url;img.alt='Reference '+(index+1);img.onclick=()=>{$('modalImg').src=url;$('modal').classList.add('show')};$('preview').appendChild(img)});
+referenceFiles.forEach((file,index)=>{const url=URL.createObjectURL(file);referenceObjectUrls.push(url);const img=document.createElement('img');img.src=url;img.alt='Reference '+(index+1);img.loading='lazy';img.onerror=()=>{img.alt='Không thể hiển thị '+file.name;showSpatialError('Trình duyệt không hỗ trợ xem trước '+file.name+'. Hãy thử PNG, JPEG hoặc WebP.')};img.onclick=()=>{$('modalImg').src=url;$('modal').classList.add('show')};$('preview').appendChild(img)});
 $('count').textContent=referenceFiles.length+' / 12 ẢNH THAM CHIẾU';
 $('sImage').textContent=referenceFiles.length?'SẴN SÀNG':'CHƯA CÓ';
 $('sImage').style.color=referenceFiles.length?'var(--ok)':'var(--muted)';
@@ -664,7 +664,7 @@ function setReferences(files){
   setSpatialStatus(referenceFiles.length?'ẢNH ĐÃ TẢI · CHƯA PHÂN TÍCH AI':'CHƯA CÓ ẢNH');
   showSpatialError(referenceFiles.length?'Đã nhận '+referenceFiles.length+' ảnh tham chiếu. Có thể dùng ảnh trong prompt ngay. Để AI nhận diện không gian, hãy kết nối backend Vision AI.':'');
 }
-$('ref').onchange=e=>setReferences(e.target.files);
+$('ref').addEventListener('change',e=>{setReferences(e.target.files);e.target.value='';});
 $('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('drag')};
 $('drop').ondragleave=e=>$('drop').classList.remove('drag');
 $('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('drag');setReferences(e.dataTransfer.files)};
