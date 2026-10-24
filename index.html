@@ -321,7 +321,7 @@ const HG_CAMERA_PRESET_RULES={
  static:{shotType:['Đối xứng','Khung chủ đạo'],lens:['35mm'],cameraHeight:['Ngang tầm mắt'],angle:['Chính diện','Ngang tầm mắt'],motion:['Khóa máy'],cameraSpeed:['Tĩnh'],parallax:['Không','Nhẹ'],focus:['Nét sâu'],depthOfField:['Sâu'],framing:['Đối xứng','Trung tâm']}
 };
 function hgPickCameraOption(select,terms){
- const options=Array.from(select.options).filter(o=>o.value&&o.value!=='__HG_AUTO__');
+ const options=Array.from(select.options).filter(o=>o.value&&o.value!=='__HG_AUTO__'&&!o.disabled&&!o.hidden);
  for(const term of terms){const found=options.find(o=>o.textContent.toLocaleLowerCase('vi').includes(term.toLocaleLowerCase('vi')));if(found)return found;}
  return null;
 }
@@ -1023,9 +1023,9 @@ cinema:{label:'Cinema',terms:/cinema|cinematic|điện ảnh|film|movie|story|k�
 const specific=['purpose','style','scene','shotType','lens','motion','framing','cameraHeight','angle','cameraSpeed','focus','depthOfField','parallax'];
 const common=/^(—|✦|hg tự đề xuất|không|none|auto|ai tự|tự động|bỏ trống|không chỉ định)/i;
 const shotTags={
-architecture:/toàn cảnh|extreme|wide|thiết lập|bird|aerial|top.down|elevation|mặt đứng|reveal|flythrough|walkthrough|architectural|kiến trúc|trục|cảnh mở|cảnh kết|khóa máy|tracking|dolly|cẩu|crane|đối xứng|góc cao|góc thấp|góc 3\/4|phối cảnh|hyperlapse|timelapse/i,
+architecture:/toàn cảnh|extreme|wide|thiết lập|bird|aerial|top.down|elevation|mặt đứng|reveal|flythrough|walkthrough|architectural|kiến trúc|trục|cảnh mở|cảnh kết|khóa máy|tracking|dolly|cẩu|crane|đối xứng|góc cao|góc thấp|góc 3\/4|phối cảnh|hyperlapse|timelapse|đi theo|gimbal|trượt ngang|xoay quanh|orbit|walk/i,
 interior:/toàn cảnh|wide|trung|medium|chi tiết|detail|hero|reveal|walk|orbit|dolly|tracking|static|locked|gimbal|góc|đối xứng|cận|close|kiến trúc|trục|phòng|room|nội thất|sofa|furniture|material|vật liệu|texture|craft|day.to.night|chuyển cảnh|mở đầu/i,
-product:/hero|product|sản phẩm|furniture|sofa|chi tiết|detail|cận|close|macro|vật liệu|texture|surface|craft|studio|orbit|xoay|static|khóa|dolly|zoom|reflection|phản chiếu|silhouette|b.roll|match.cut|chuyển nét|rack.focus|trung cảnh|medium|góc 3\/4|chính diện/i,
+product:/hero|product|sản phẩm|furniture|sofa|chi tiết|detail|cận|close|macro|vật liệu|texture|surface|craft|studio|orbit|xoay|static|khóa|dolly|zoom|reflection|phản chiếu|silhouette|b.roll|match.cut|chuyển nét|rack.focus|trung cảnh|medium|góc 3\/4|chính diện|gimbal|walk|đi theo|trượt ngang/i,
 cinema:/.*/
 };
 const defaults={
