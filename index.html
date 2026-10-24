@@ -326,6 +326,7 @@ function hgPickCameraOption(select,terms){
  return null;
 }
 function hgApplyCameraPreset(key,options={}){
+ window.hgApplyingShotPreset=true;
  const rules=HG_CAMERA_PRESET_RULES[key];if(!rules)return;
  let applied=0;const unavailable=[];
  Object.entries(rules).forEach(([id,terms])=>{
@@ -335,6 +336,7 @@ function hgApplyCameraPreset(key,options={}){
   if(chosen){control.value=chosen.value;control.dispatchEvent(new Event('change',{bubbles:true}));applied++;}
   else unavailable.push(id);
  });
+ window.hgApplyingShotPreset=false;
  const note=$('hgCameraPresetStatus');if(note)note.textContent='HG đã đề xuất '+applied+' thiết lập theo '+key.toUpperCase()+'.'+(unavailable.length?' Chưa có lựa chọn tương ứng: '+unavailable.join(', ')+'.':'');
 }
 const HG_SHOT_TYPE_MAP={
@@ -423,6 +425,7 @@ function hgShotPresetForType(value){
 }
 const hgShotTypeSelect=$('shotType');
 hgShotTypeSelect?.addEventListener('change',()=>{
+ if(window.hgApplyingShotPreset)return;
  const key=hgShotPresetForType(hgShotTypeSelect.value);
  if(!key)return;
  hgApplyCameraPreset(key,{keepShotType:true});
@@ -430,6 +433,37 @@ hgShotTypeSelect?.addEventListener('change',()=>{
 });
 const hgSelectedShotPresets=new Set();
 const hgShotNames={hero:'HERO',reveal:'REVEAL',detail:'DETAIL',walk:'WALK',orbit:'ORBIT',static:'STATIC'};
+/* HOANGGIA SHOT DIRECTOR: camera language + constrained choices */
+const HG_DIRECTOR_MEMORY={
+ hero:{intent:'Establish the primary subject with controlled forward movement',shotType:/khung chủ đạo|hero|trung toàn/i,lens:/35mm|50mm/,cameraHeight:/ngang tầm mắt/i,angle:/chính diện|góc 3\/4/i,motion:/tiến máy|dolly/i,cameraSpeed:/chậm/i,parallax:/nhẹ|trung bình/i,focus:/chủ thể/i,depthOfField:/vừa|trung bình/i,framing:/trung tâm|đối xứng/i},
+ reveal:{intent:'Reveal spatial depth with a wide establishing composition',shotType:/toàn cảnh|reveal|thiết lập/i,lens:/24mm|28mm|35mm/,cameraHeight:/ngang tầm mắt|góc cao/i,angle:/chính diện|góc cao|ngang tầm mắt/i,motion:/lùi máy|tiến máy|trượt ngang/i,cameraSpeed:/chậm/i,parallax:/trung bình|nhẹ/i,focus:/nét sâu/i,depthOfField:/sâu/i,framing:/đường dẫn|đối xứng|trung tâm/i},
+ detail:{intent:'Highlight material craftsmanship and fine detail with shallow focus',shotType:/chi tiết|cận cảnh|đặc tả|macro|texture/i,lens:/85mm|100mm|50mm/,cameraHeight:/ngang ngực|ngang tầm mắt/i,angle:/góc 3\/4|chính diện/i,motion:/tiến máy|khóa máy/i,cameraSpeed:/siêu chậm|chậm|tĩnh/i,parallax:/nhẹ|không/i,focus:/chủ thể|macro/i,depthOfField:/nông|mỏng|vừa/i,framing:/chủ thể|quy tắc 1\/3/i},
+ walk:{intent:'Walk through space with stable gimbal tracking',shotType:/walk|gimbal|đi theo|bay xuyên|toàn cảnh|trung toàn/i,lens:/20mm|24mm|28mm|35mm/,cameraHeight:/ngang tầm mắt/i,angle:/ngang tầm mắt|chính diện/i,motion:/gimbal|trượt ngang|di chuyển ngang|tiến máy/i,cameraSpeed:/chậm|trung bình/i,parallax:/trung bình|nhẹ/i,focus:/nét sâu/i,depthOfField:/sâu|vừa/i,framing:/đường dẫn|trung tâm/i},
+ orbit:{intent:'Orbit around a fixed subject with consistent distance and controlled parallax',shotType:/trung cảnh|khung chủ đạo|orbit|xoay|góc 3\/4/i,lens:/35mm|50mm|85mm/,cameraHeight:/ngang tầm mắt|ngang ngực/i,angle:/góc 3\/4|ngang tầm mắt/i,motion:/xoay vòng|orbit/i,cameraSpeed:/chậm|siêu chậm/i,parallax:/trung bình|mạnh/i,focus:/chủ thể/i,depthOfField:/vừa|trung bình/i,framing:/chủ thể|trung tâm/i},
+ static:{intent:'Maintain a locked camera for stable geometry and clean symmetry',shotType:/đối xứng|khung chủ đạo|cảnh kết|khóa máy|static/i,lens:/35mm|50mm|24mm/,cameraHeight:/ngang tầm mắt/i,angle:/chính diện|ngang tầm mắt/i,motion:/khóa máy|locked/i,cameraSpeed:/tĩnh|static/i,parallax:/không|none/i,focus:/nét sâu/i,depthOfField:/sâu/i,framing:/đối xứng|trung tâm/i}
+};
+const hgDirectorFields=['shotType','lens','cameraHeight','angle','motion','cameraSpeed','parallax','focus','depthOfField','framing'];
+const hgDirectorOriginal=new Map();
+function hgApplyDirectorConstraints(){
+ const active=Array.from(hgSelectedShotPresets);
+ for(const id of hgDirectorFields){
+  const select=$(id);if(!select)continue;
+  if(!hgDirectorOriginal.has(id))hgDirectorOriginal.set(id,Array.from(select.options).map(o=>({o,hidden:o.hidden,disabled:o.disabled})));
+  const records=hgDirectorOriginal.get(id);
+  for(const {o,hidden,disabled} of records){
+   const compatible=!active.length||active.some(key=>HG_DIRECTOR_MEMORY[key]?.[id]?.test(o.textContent+' '+o.value));
+   const generic=!o.value||o.value==='__HG_AUTO__';
+   o.hidden=hidden||(!generic&&!compatible);
+   o.disabled=disabled||(!generic&&!compatible);
+  }
+  const chosen=select.selectedOptions[0];
+  if(!chosen||chosen.disabled||chosen.hidden){
+   const candidate=Array.from(select.options).find(o=>o.value&&o.value!=='__HG_AUTO__'&&!o.hidden&&!o.disabled);
+   if(candidate)select.value=candidate.value;
+  }
+ }
+}
+
 function hgShotPrompt(lang='vi'){
  if(!hgSelectedShotPresets.size)return '';
  const keys=Array.from(hgSelectedShotPresets);
@@ -449,6 +483,7 @@ function hgRenderShotPresets(){
   b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));
  });
  const note=$('hgCameraPresetStatus');
+ hgApplyDirectorConstraints();
  window.hgCameraAI?.setShotPriorities?.(Array.from(hgSelectedShotPresets));
  if(note)note.textContent=hgSelectedShotPresets.size?'Đã chọn '+hgSelectedShotPresets.size+' shot ưu tiên: '+Array.from(hgSelectedShotPresets).map(k=>hgShotNames[k]).join(' → ')+'. Các thiết lập bên dưới phản ánh shot vừa chọn; prompt sẽ chứa toàn bộ shot ưu tiên.':'Chọn một hoặc nhiều shot ưu tiên. Các lựa chọn có thể kết hợp thành chuỗi cảnh.';
 }
