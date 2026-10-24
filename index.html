@@ -771,7 +771,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <script>
 document.addEventListener('DOMContentLoaded', function(){
  const AUTO='__HG_AUTO__';
- document.querySelectorAll('section.step select').forEach(function(el){
+ document.querySelectorAll('section.step select:not(#hgCamBrand):not(#hgCamBody):not(#hgCamLens):not(#hgCamStyle)').forEach(function(el){
   if(el.querySelector('option[value="'+AUTO+'"]'))return;
   const option=document.createElement('option');
   option.value=AUTO;
@@ -858,7 +858,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
   let filled=0,kept=0,missing=[];
   const root=scope==='all'?document:document.getElementById(scope);
-  root.querySelectorAll('select').forEach(el=>{
+  root.querySelectorAll('select:not(#hgCamBrand):not(#hgCamBody):not(#hgCamLens):not(#hgCamStyle)').forEach(el=>{
    const key=el.id||el.dataset.field;if(!key)return;
    const terms=candidates[key];if(!terms)return;
    if(el.value && el.value!=='__HG_AUTO__' && autoSet.get(el)!==el.value){kept++;return;}
@@ -881,6 +881,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
-<script type="module" src="./camera-ai.mjs?v=20261024-video-inline-v12"></script>
+<script type="module" src="./camera-ai.mjs?v=20261024-video-camera-fix-v13"></script>
 </body>
 </html>
